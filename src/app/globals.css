@@ -73,4 +73,8 @@
   body {
     @apply bg-background text-foreground;
   }
+
+  .dev {
+    @apply border border-rose-700
+  }
 }

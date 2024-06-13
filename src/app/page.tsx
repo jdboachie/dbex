@@ -1,38 +1,22 @@
-import { SignIn, SignOut } from "@/components/auth/components";
-import { auth } from "@/auth";
+import { Spotlight } from "@/components/ui/spotlight";
 
 
 export default async function Home () {
-
-  const session = await auth()
   return (
-    <main className="w-screen h-screen grid items-center justify-center">
-      { session?.user &&
-      <div className="flex flex-col gap-4 p-4 w-full bg-gray-100 rounded-md">
-        <h2 className="text-xl font-bold">Current Session Data</h2>
-        {Object.keys(session.user).length > 3 ? (
-          <p>
-            In this example, the whole session object is passed to the page,
-            including the raw user object. Our recommendation is to{" "}
-            <em>only pass the necessary fields</em> to the page, as the raw user
-            object may contain sensitive information.
-          </p>
-        ) : (
-          <p>
-            In this example, only some fields in the user object is passed to
-            the page to avoid exposing sensitive information.
-          </p>
-        )}
-        <div className="flex flex-col rounded-md bg-neutral-100">
-          <div className="p-4 font-bold rounded-t-md bg-neutral-200">
-            Session
-          </div>
-          <pre className="py-6 px-4 whitespace-pre-wrap break-all">
-            {JSON.stringify(session, null, 2)}
-          </pre>
-        </div>
-      </div> }
-      {session?.user ? <SignOut /> : <SignIn />}
-    </main>
+    <div className="h-screen w-screen font-sans flex md:items-center md:justify-center bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">
+      <Spotlight
+        className="-top-40 left-0 md:left-60 md:-top-20"
+        fill="white"
+      />
+      <div className="p-4 max-w-7xl mx-auto relative z-10 w-full pt-20 md:pt-0">
+        <h1 className="text-4xl md:text-7xl font-extrabold text-center bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 bg-opacity-50 pb-2">
+          We&apos;re cooking <br /> something stunning.
+        </h1>
+        <p className="mt-4 font-normal text-base text-neutral-300 max-w-lg text-center mx-auto">
+          Expect tasty code. Code that sizzles. A stunning new software. Get ready for a byte of <span className="italic">wow</span>.
+        </p>
+      </div>
+    </div>
   );
 }
+
