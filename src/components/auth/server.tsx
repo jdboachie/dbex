@@ -26,8 +26,8 @@ export function SignOut(props: React.ComponentPropsWithRef<typeof Button>) {
       }}
       className="w-full grid"
     >
-      <Button variant="ghost" {...props}>
-        Sign Out
+      <Button variant="ghost" className="flex justify-start py-0 px-2 h-8 rounded font-normal" {...props}>
+        Sign out
       </Button>
     </form>
   )
