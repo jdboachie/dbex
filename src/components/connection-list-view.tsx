@@ -105,7 +105,8 @@ const ConnectionsListView = async () => {
           ))}
         </div>
       </TabsContent>
-      <TabsContent value="active" className="m-0 px-4">
+      <TabsContent value="active" className="m-0 px-4 grid gap-2">
+        <ConnectionCardSkeleton />
         <ConnectionCardSkeleton />
       </TabsContent>
     </Tabs>

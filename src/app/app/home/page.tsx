@@ -8,7 +8,7 @@ const Page = () => {
   const { data } = useSession()
 
   return (
-    <div className="size-full relative flex flex-col items-center py-2 gap-4 px-4">
+    <div className="relative flex flex-col items-center py-2 gap-4 px-4">
       <div className="homeConnectCard bg-primary-foreground dark:bg-custom-gradient w-full h-2/5 rounded-lg py-4 px-5 relative">
         <div className="flex flex-col justify-center h-full gap-2 w-1/2">
           <div className="hello-text text-muted-foreground">

@@ -12,6 +12,8 @@ import { cn } from "@/lib/utils"
 
 const DropdownMenu = DropdownMenuPrimitive.Root
 
+const DropdownMenuArrow = DropdownMenuPrimitive.Arrow
+
 const DropdownMenuTrigger = DropdownMenuPrimitive.Trigger
 
 const DropdownMenuGroup = DropdownMenuPrimitive.Group
@@ -188,6 +190,7 @@ DropdownMenuShortcut.displayName = "DropdownMenuShortcut"
 
 export {
   DropdownMenu,
+  DropdownMenuArrow,
   DropdownMenuTrigger,
   DropdownMenuContent,
   DropdownMenuItem,

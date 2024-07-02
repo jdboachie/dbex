@@ -25,6 +25,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
+  DropdownMenuArrow,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 import { Input } from '../ui/input';
@@ -117,8 +118,8 @@ const QueryTool = () => {
                     />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent className='rounded-xl'>
-                  <EmojiPicker onEmojiClick={(emojiData) => setEmojiURL(emojiData.imageUrl)} />
+                <DropdownMenuContent className='rounded-xl p-0'>
+                  <EmojiPicker className='bg-primary-foreground border-0' onEmojiClick={(emojiData) => setEmojiURL(emojiData.imageUrl)} />
                 </DropdownMenuContent>
               </DropdownMenu>
               <Input placeholder='untitled.sql' type='text' className='shadow-none font-medium border-0 focus:border-0 focus-visible:ring-0 focus:outline-0' />
@@ -129,7 +130,6 @@ const QueryTool = () => {
                   <Button
                     disabled={isLoading}
                     size={'icon'}
-                    className='flex'
                     // type='reset'
                     // onClick={() => {
                     //   setCode('');
@@ -137,7 +137,7 @@ const QueryTool = () => {
                     // }}
                     variant={'ghost'}
                   >
-                    <FloppyDiskIcon className='size-4' />
+                    <FloppyDiskIcon className='size-5' />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -150,7 +150,7 @@ const QueryTool = () => {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button size={'icon'} variant={'ghost'}>
-                        <DownloadIcon className='size-4' />
+                        <DownloadIcon className='size-5' />
                         <p className="sr-only">Export</p>
                       </Button>
                     </TooltipTrigger>
@@ -161,12 +161,13 @@ const QueryTool = () => {
                   </Tooltip>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className='mx-2'>
+                  {/* <DropdownMenuArrow /> */}
                   <DropdownMenuItem onClick={handleExportCSV}>
-                    <FileCsv className='size-4 mr-2'/>
+                    <FileCsv className='size-5 mr-2'/>
                     <p className='text-xs'>Export to CSV</p>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <MicrosoftExcelLogo className='size-4 mr-2' />
+                    <MicrosoftExcelLogo className='size-5 mr-2' />
                     <p className="text-xs">Export to Microsoft Excel</p>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -176,15 +177,14 @@ const QueryTool = () => {
                   <Button
                     disabled={isLoading}
                     size={'icon'}
-                    className='flex'
                     type='submit'
                     variant={'ghost'}
                   >
                     {isLoading ? (
                       // <LoadingIcon className='size-5' />
-                      <div className="dev size-4"></div>
+                      <div className="dev size-5"></div>
                     ) : (
-                      <PlayIcon className='size-4' />
+                      <PlayIcon className='size-5' />
                     )}
                   </Button>
                 </TooltipTrigger>
