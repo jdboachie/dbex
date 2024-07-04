@@ -77,7 +77,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
     // fix repeated code pathname.startsWith(link.href || 'undefined')
     <div
       data-collapsed={isCollapsed}
-      className="group flex flex-col gap-4 py-2 data-[collapsed=true]:py-2"
+      className="group flex flex-col gap-2 py-2 data-[collapsed=true]:py-2"
     >
       <nav className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
         {links.map((link, index) =>
@@ -93,7 +93,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
                       "dark:bg-muted dark:hover:bg-muted dark:hover:text-white" : "text-muted-foreground"
                   )}
                 >
-                  <link.icon className="size-4" />
+                  <link.icon className="size-5" />
                   <span className="sr-only">{link.title}</span>
                 </Link>
               </TooltipTrigger>
@@ -120,7 +120,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
                 "text-primary/70"
               )}
             >
-              <link.icon className="mr-2 size-4" />
+              <link.icon size={16} className="mr-2 size-5" />
               {link.title}
               {link.label && (
                 <span
@@ -134,6 +134,8 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
             </Link>
           ),
         )}
+      </nav>
+      <nav className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
         {secondaryLinks.map((link, index) =>
           isCollapsed ? (
             <Tooltip key={index}>
@@ -148,7 +150,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
                           "dark:bg-muted dark:hover:bg-muted dark:hover:text-white" : "text-muted-foreground"
                       )}
                     >
-                      <link.icon className="size-4" />
+                      <link.icon className="size-5" />
                       <span className="sr-only">{link.title}</span>
                     </Button>
                   </DialogTrigger>
@@ -176,7 +178,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
           ) : (
             <Dialog
               key={index}
-            >
+              >
               <DialogTrigger>
                 <Button
                   variant={pathname.startsWith(link.href || 'undefined') ? 'default' : 'ghost'}
@@ -186,14 +188,14 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
                       "dark:bg-muted dark:hover:bg-muted dark:hover:text-white" : "text-muted-foreground"
                   )}
                 >
-                  <link.icon className="mr-2 size-4" />
+                  <link.icon className="mr-2 size-5" />
                   {link.title}
                   {link.label && (
                     <span
                       className={cn(
                         "ml-auto",
                       )}
-                    >
+                      >
                       {link.label}
                     </span>
                   )}
@@ -211,7 +213,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
             </Dialog>
           ),
         )}
-      </nav>
+        </nav>
     </div>
   );
 };

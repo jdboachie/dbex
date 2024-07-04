@@ -57,7 +57,7 @@ const MainNav = ({defaultSize, defaultCollapsed}: {defaultSize: number, defaultC
       </div>
       <Separator />
       <div className="grow p-2">
-        <CommandDialogButton />
+        <CommandDialogButton navCollapsed={isCollapsed} />
       </div>
       <Separator />
       <div className="grid p-2 gap-2">

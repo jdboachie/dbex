@@ -21,9 +21,9 @@ import {
   CommandSeparator,
   CommandShortcut,
 } from "@/components/ui/command"
-import { Input } from "./ui/input"
+import { Button } from "./ui/button"
 
-export function CommandDialogButton() {
+export function CommandDialogButton({navCollapsed}: {navCollapsed: boolean}) {
   const [open, setOpen] = React.useState(false)
 
   React.useEffect(() => {
@@ -40,18 +40,19 @@ export function CommandDialogButton() {
 
   return (
     <>
-      <div
+      <Button
+        variant={'secondary'}
         onClick={() => {setOpen(true)}}
-        className="relative border bg-input dark:bg-gradient-to-b dark:from-input/50 dark:via-primary-foreground dark:to-primary-foreground cursor-pointer flex justify-between p-2 rounded-md"
+        className="w-full relative border bg-input dark:bg-gradient-to-b dark:from-input/50 dark:via-primary-foreground dark:to-primary-foreground cursor-pointer flex justify-between p-2 px-4 rounded-md"
       >
-        <MagnifyingGlass className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
-        <p className="pl-6 text-muted-foreground truncate text-sm">Search commands</p>
-        <p className="text-sm text-muted-foreground">
+        <MagnifyingGlass className="absolute left-4 top-2 size-5 text-muted-foreground" />
+        <p className={`pl-6 text-muted-foreground truncate`}>Commands</p>
+        <p className={`text-sm text-muted-foreground`}>
           <kbd className="pointer-events-none right-2 top-2.5 inline-flex h-5 select-none items-center gap-1 rounded border-input bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
             <span className="text-xs">⌘</span>J
           </kbd>
         </p>
-      </div>
+      </Button>
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>
