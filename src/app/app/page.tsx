@@ -170,7 +170,7 @@ export default function Home() {
               <div className="p-4">
                 <form>
                   <div className="relative">
-                    <MagnifyingGlassIcon className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
+                    <MagnifyingGlassIcon className="absolute left-2 top-2.5 size-5 text-muted-foreground" />
                     <Input placeholder="Search" className="pl-8" />
                   </div>
                 </form>

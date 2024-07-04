@@ -32,7 +32,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.className} tracking-tight dark:bg-background`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.className} bg-primary-foreground dark:bg-background tracking-tight`}>
         <SessionProvider>
           <ThemeProvider
             attribute="class"
