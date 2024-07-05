@@ -13,11 +13,12 @@ const Layout = ({ children }: {children: React.ReactNode}) => {
         defaultSize={defaultLayout[1]}
         minSize={20}
         maxSize={25}
+        className="bg-background rounded-l-lg border border-r-0"
       >
         <ConnectionsListView />
       </ResizablePanel>
-      <ResizableHandle withHandle />
-      <ResizablePanel defaultSize={defaultLayout[2]} className="bg-background dark:bg-primary-foreground">
+      <ResizableHandle />
+      <ResizablePanel defaultSize={defaultLayout[2]} className="bg-background rounded-lg rounded-l-none border border-l-0">
         { children }
       </ResizablePanel>
     </>

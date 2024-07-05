@@ -15,11 +15,12 @@ const QueryPage = () => {
         defaultSize={defaultLayout[1]}
         minSize={20}
         maxSize={25}
+        className="bg-background rounded-l-lg border border-r-0"
       >
         <QueryListView />
       </ResizablePanel>
-      <ResizableHandle withHandle />
-      <ResizablePanel defaultSize={defaultLayout[2]} className="grid grid-flow-col bg-background dark:bg-primary-foreground">
+      <ResizableHandle />
+      <ResizablePanel defaultSize={defaultLayout[2]} className="bg-background rounded-r-lg border border-l-0">
         <QueryTool />
       </ResizablePanel>
     </>

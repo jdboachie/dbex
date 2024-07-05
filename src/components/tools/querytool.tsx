@@ -137,7 +137,7 @@ const QueryTool = () => {
                     // }}
                     variant={'ghost'}
                   >
-                    <FloppyDiskIcon className='size-5' />
+                    <FloppyDiskIcon  className='size-4' />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -150,7 +150,7 @@ const QueryTool = () => {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button size={'icon'} variant={'ghost'}>
-                        <DownloadIcon className='size-5' />
+                        <DownloadIcon  className='size-4' />
                         <p className="sr-only">Export</p>
                       </Button>
                     </TooltipTrigger>
@@ -163,11 +163,11 @@ const QueryTool = () => {
                 <DropdownMenuContent className='mx-2'>
                   {/* <DropdownMenuArrow /> */}
                   <DropdownMenuItem onClick={handleExportCSV}>
-                    <FileCsv className='size-5 mr-2'/>
+                    <FileCsv className='size-4 mr-2'/>
                     <p className='text-xs'>Export to CSV</p>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
-                    <MicrosoftExcelLogo className='size-5 mr-2' />
+                    <MicrosoftExcelLogo className='size-4 mr-2' />
                     <p className="text-xs">Export to Microsoft Excel</p>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -182,9 +182,9 @@ const QueryTool = () => {
                   >
                     {isLoading ? (
                       // <LoadingIcon className='size-5' />
-                      <div className="dev size-5"></div>
+                      <div className="size-4"></div>
                     ) : (
-                      <PlayIcon className='size-5' />
+                      <PlayIcon  className='size-' />
                     )}
                   </Button>
                 </TooltipTrigger>

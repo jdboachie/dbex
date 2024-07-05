@@ -25,11 +25,12 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/components/ui/tabs"
-import { Separator } from "@/components/ui/separator";
-import { Input } from "@/components/ui/input";
-import ConnectionCardSkeleton from '@/components/closet/skeletons/ConnectionCardSkeleton';
-import { fetchAllConnections } from "@/lib/actions";
 import { ScrollArea } from "./ui/scroll-area";
+import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { fetchAllConnections } from "@/lib/actions";
+import { Separator } from "@/components/ui/separator";
+import ConnectionCardSkeleton from '@/components/closet/skeletons/ConnectionCardSkeleton';
 
 
 const ConnectionsListView = async () => {
@@ -39,8 +40,7 @@ const ConnectionsListView = async () => {
 
   return (
     <Tabs defaultValue="all" className="flex flex-col items-stretch h-screen">
-      <div className="grid grid-cols-2 py-2 px-4">
-      <p className="py-1.5 font-medium text-muted-foreground">Connections</p>
+      <div className="grid p-2">
         <TabsList className="w-full">
           <TabsTrigger value="all" className="w-full"> All </TabsTrigger>
           <TabsTrigger value="active" className="w-full"> Active </TabsTrigger>
@@ -56,25 +56,29 @@ const ConnectionsListView = async () => {
         </form>
       </div>
       <ScrollArea>
-        <TabsContent value="all" className="m-0 grid px-4 pb-4">
+        <TabsContent value="all" className="m-0 grid px-2 pb-8">
           <div className='grid grid-flow-row gap-2 size-full'>
             {connections.map((connection) => (
               <ContextMenu key={connection.id}>
-                <ContextMenuTrigger className='border bg-card dark:bg-primary-foreground drop-shadow-sm rounded-lg p-4 grid gap-2'>
-                  <div className="flex gap-4 items-center justify-start">
-                    <PostgresIcon className="size-10 text-muted-foreground"/>
-                    <p className="font-medium">{connection.databaseName}</p>
-                  </div>
-                  <Badge variant={'secondary'} className='truncate font-medium'>
-                    {connection.isConnected ? (
-                      <div className="block bg-green-500 size-3 min-w-3 mr-2 animate-pulse rounded-full" />
-                    ) : (
-                      <div className="block bg-neutral-500 size-3 min-w-3 mr-2 rounded-full" />
-                    )}
-                    <p className="w-fit truncate">
-                      {connection.hostname} : {connection.port}
-                    </p>
-                  </Badge>
+                <ContextMenuTrigger className='grid'>
+                  <Button variant='ghost' className='p-2 h-20 flex gap-2 items-center justify-start'>
+                    <div className="border grid p-1.5 size-10 min-h-10 min-w-10 rounded-full">
+                      <PostgresIcon className=""/>
+                    </div>
+                    <div className="grid grid-flow-row w-full gap-1 items-center justify-start">
+                      <p className="text-start font-normal truncate text-sm">{connection.databaseName}</p>
+                      <Badge variant={'secondary'} className='truncate w-full font-medium'>
+                        {connection.isConnected ? (
+                          <div className="block bg-green-500 size-3 min-w-3 mr-2 animate-pulse rounded-full" />
+                        ) : (
+                          <div className="block bg-neutral-500 size-3 min-w-3 mr-2 rounded-full" />
+                        )}
+                        <p className="w-fit truncate">
+                          {connection.hostname} : {connection.port}
+                        </p>
+                      </Badge>
+                    </div>
+                  </Button>
                 </ContextMenuTrigger>
                 <ContextMenuContent className="w-56">
                   <ContextMenuCheckboxItem checked={connection.isConnected}>
@@ -108,15 +112,7 @@ const ConnectionsListView = async () => {
             ))}
           </div>
         </TabsContent>
-        <TabsContent value="active" className="m-0 px-4 grid gap-2">
-          <ConnectionCardSkeleton />
-          <ConnectionCardSkeleton />
-          <ConnectionCardSkeleton />
-          <ConnectionCardSkeleton />
-          <ConnectionCardSkeleton />
-          <ConnectionCardSkeleton />
-          <ConnectionCardSkeleton />
-          <ConnectionCardSkeleton />
+        <TabsContent value="active" className="m-0 px-4 pb-8 grid gap-2">
           <ConnectionCardSkeleton />
           <ConnectionCardSkeleton />
           <ConnectionCardSkeleton />

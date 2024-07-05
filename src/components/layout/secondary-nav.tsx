@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/context-menu"
 import { Query } from '@prisma/client/edge';
 import { fetchAllQueries } from '@/lib/actions';
-import { Button } from "./ui/button";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import {
   MagnifyingGlass as MagnifyingGlassIcon,
@@ -26,18 +26,17 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Input } from "@/components/ui/input";
 import ConnectionCardSkeleton from '@/components/closet/skeletons/ConnectionCardSkeleton';
-import { Badge } from "./ui/badge";
+import { Badge } from "@/components/ui/badge";
 
 
-const QueryListView = async () => {
+const SecondaryNav = async () => {
 
   const queries = await fetchAllQueries()
-
   // const queries: Query[] = []
 
   return (
-    <Tabs defaultValue="all">
-      <div className="grid p-2">
+    <Tabs defaultValue="all" className='size-full flex flex-col bg-background'>
+      <div className="grid py-2 px-4">
         <TabsList className="w-full">
           <TabsTrigger value="all" className="w-full"> All </TabsTrigger>
           <TabsTrigger value="active" className="w-full"> Active </TabsTrigger>
@@ -108,4 +107,4 @@ const QueryListView = async () => {
 }
 
 
-export { QueryListView }
+export default SecondaryNav;

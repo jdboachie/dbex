@@ -3,13 +3,11 @@
 import * as React from 'react'
 import { cn } from "@/lib/utils";
 import Nav from "@/components/nav";
-import { useSession } from "next-auth/react";
-// import { DbexIcon } from "@/components/icons"
+import { DbexIcon } from "@/components/icons"
 import { Separator } from "@/components/ui/separator";
 import UserButton from "@/components/auth/user-button"
 import { ResizablePanel } from "@/components/ui/resizable";
-import { Empty } from "../ui/empty";
-import { ThemeToggle } from "@/components/theme/theme-toggle";
+import { ThemeToggle, ThemeToggleAlt } from "@/components/theme/theme-toggle";
 import { CommandDialogButton } from "@/components/command-dialog";
 import UserButtonSkeleton from "@/components/closet/skeletons/UserButtonSkeleton";
 
@@ -25,7 +23,7 @@ const MainNav = ({defaultSize, defaultCollapsed}: {defaultSize: number, defaultC
       defaultSize={resolvedSize}
       collapsedSize={navCollapsedSize}
       collapsible={true}
-      minSize={10}
+      minSize={13}
       maxSize={25}
       onCollapse={() => {
         setIsCollapsed(true);
@@ -40,35 +38,28 @@ const MainNav = ({defaultSize, defaultCollapsed}: {defaultSize: number, defaultC
         )}`;
       }}
       className={cn(
-        "flex flex-col",
+        "flex flex-col py-2 mr-2",
         isCollapsed &&
-          "min-w-[50px] transition-all duration-300 ease-in-out",
+          "min-w-[50px] transition-all duration-300 ease-in-out items-center",
       )}
     >
-      <div className="p-2 grid">
-        <div className="flex gap-2">
-          {/* <DbexIcon className="size-5 -rotate-6 text-primary" /> */}
-          <Empty className="size-9" />
-        </div>
+      <div className="py-2 px-4 flex gap-2 place-items-center">
+        <DbexIcon className="size-6 -rotate-6 text-primary grayscale" />
+        {!isCollapsed && <p className="text-base font-mono font-medium">DBEX</p> }
       </div>
-      <Separator />
-      <div className="">
+      <Separator className='bg-transparent' />
+      <div className='my-4'>
         <Nav isCollapsed={isCollapsed} />
       </div>
-      <Separator />
+      <Separator className='bg-transparent' />
       <div className="grow p-2">
         <CommandDialogButton navCollapsed={isCollapsed} />
       </div>
-      <Separator />
+      <Separator className='bg-transparent' />
       <div className="grid p-2 gap-2">
-        <p className="text-muted-foreground text-sm px-2">
-          Preferences
-        </p>
-        <div className="grid grid-flow-col items-center">
-          <ThemeToggle />
-        </div>
+        {isCollapsed ? <ThemeToggleAlt /> : <ThemeToggle />}
       </div>
-      <Separator />
+      <Separator className='bg-transparent' />
       <div className="grid">
         <React.Suspense fallback={<UserButtonSkeleton isCollapsed={isCollapsed} />}>
           <UserButton isCollapsed={isCollapsed} />

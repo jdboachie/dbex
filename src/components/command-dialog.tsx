@@ -40,19 +40,24 @@ export function CommandDialogButton({navCollapsed}: {navCollapsed: boolean}) {
 
   return (
     <>
-      <Button
-        variant={'secondary'}
-        onClick={() => {setOpen(true)}}
-        className="w-full relative border bg-input dark:bg-gradient-to-b dark:from-input/50 dark:via-primary-foreground dark:to-primary-foreground cursor-pointer flex justify-between p-2 px-4 rounded-md"
-      >
-        <MagnifyingGlass className="absolute left-4 top-2 size-5 text-muted-foreground" />
-        <p className={`pl-6 text-muted-foreground truncate`}>Commands</p>
-        <p className={`text-sm text-muted-foreground`}>
-          <kbd className="pointer-events-none right-2 top-2.5 inline-flex h-5 select-none items-center gap-1 rounded border-input bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
-            <span className="text-xs">⌘</span>J
-          </kbd>
-        </p>
-      </Button>
+      {
+        navCollapsed ?
+          <Button onClick={() => {setOpen(true)}} variant='outline' size='icon'><MagnifyingGlass className="size-4 text-muted-foreground" /></Button>
+        :
+          <Button
+            variant={'secondary'}
+            onClick={() => {setOpen(true)}}
+            className="w-full relative border bg-ground cursor-pointer flex justify-between p-2 px-4 rounded-md"
+          >
+            <MagnifyingGlass className="absolute left-4 top-2 size-4 text-muted-foreground" />
+            <p className={`pl-6 text-muted-foreground truncate`}>Commands</p>
+            <p className={`text-sm text-muted-foreground`}>
+              <kbd className="pointer-events-none right-2 top-2.5 inline-flex h-5 select-none items-center gap-1 rounded border-input bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+                <span className="text-xs">⌘</span>J
+              </kbd>
+            </p>
+          </Button>
+      }
       <CommandDialog open={open} onOpenChange={setOpen}>
         <CommandInput placeholder="Type a command or search..." />
         <CommandList>

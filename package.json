@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.2.0",
+    "@heroicons/react": "^2.1.4",
     "@monaco-editor/react": "^4.6.0",
     "@nextui-org/skeleton": "^2.0.29",
     "@nextui-org/system": "^2.2.2",
