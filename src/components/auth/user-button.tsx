@@ -14,7 +14,6 @@ import { Button } from "@/components/ui/button";
 import { useSession } from "next-auth/react";
 import { DotsThree as DotsThreeIcon } from "@phosphor-icons/react"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// import { ThemeToggle } from "@/components/theme/theme-toggle";
 import UserButtonSkeleton from "@/components/closet/skeletons/UserButtonSkeleton";
 import { SignOut } from "./client";
 
@@ -39,9 +38,9 @@ export default function UserButton ({isCollapsed} : {isCollapsed: boolean}) {
             )}
           >
             <div className={cn("flex items-center w-full", isCollapsed && 'w-fit')}>
-              <Avatar className="border">
+              <Avatar className="">
                 <AvatarImage
-                  src={data?.user.image || 'jude.png'}
+                  src={data?.user.image || ''}
                   alt="user avatar"
                 />
                 <AvatarFallback></AvatarFallback>

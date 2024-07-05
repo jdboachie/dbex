@@ -1,11 +1,11 @@
 import React from 'react'
-import { PlugsConnected } from '@phosphor-icons/react/dist/ssr'
+import { ServerStackIcon } from '@heroicons/react/16/solid'
 
 const Page = () => {
   return (
     <div className='grid divide-y'>
       <section className='flex gap-4 p-4 py-3 items-center'>
-        <PlugsConnected className='size-6 text-primary/70' />
+        <ServerStackIcon className='size-6 text-primary/70' />
         <h4 className='text-lg'>Connections</h4>
       </section>
       <section className="p-4">

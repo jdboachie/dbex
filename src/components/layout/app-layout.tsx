@@ -16,7 +16,7 @@ export default function AppLayout({
             sizes,
           )}`;
         }}
-        className="grid size-full items-stretch"
+        className="grid size-full items-stretch p-2"
       >
         {children}
       </ResizablePanelGroup>

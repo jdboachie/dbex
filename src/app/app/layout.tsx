@@ -2,8 +2,9 @@ import { auth } from "@/auth";
 import { cookies } from "next/headers"
 import { SignIn } from "@/components/auth/server";
 import MainNav from "@/components/layout/main-nav";
+import SecondaryNav from "@/components/layout/secondary-nav"
 import AppLayout from "@/components/layout/app-layout";
-import { ResizableHandle } from "@/components/ui/resizable";
+import { ResizableHandle, ResizablePanel } from "@/components/ui/resizable";
 
 export default async function Home({
   children,
@@ -19,15 +20,16 @@ export default async function Home({
 
   const session = await auth()
 
-  if ( !session ) {
+   if ( !session ) {
     return (
-      <>
-        <p>You are not authorized to access this page</p>
-        <p className="">{session}</p>
-        <SignIn />
-      </>
-    )
-  } else {
+       <div className='grid size-full h-screen place-items-center gap-4'>
+        <div className="gap-2 grid grid-flow-row h-fit">
+          <p>You are not authorized to access this page</p>
+          <SignIn />
+         </div>
+       </div>
+     )
+   } else {
     return (
       <main className="h-screen size-full">
         <AppLayout>
@@ -35,7 +37,11 @@ export default async function Home({
           defaultCollapsed={defaultCollapsed}
           defaultSize={defaultLayout[0]}
         />
-          <ResizableHandle withHandle />
+        <ResizableHandle className='bg-transparent' />
+        {/* <ResizablePanel defaultSize={defaultLayout[1]}>
+          <SecondaryNav />
+        </ResizablePanel> */}
+
           {children}
         </AppLayout>
       </main>

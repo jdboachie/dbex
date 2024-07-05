@@ -1,23 +1,14 @@
 "use client";
 
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
-import {
-  House as HomeIcon,
-  Chat as ChatIcon,
-  GearFine as GearIcon,
   HardDrives as ConnectionsIcon,
   ListMagnifyingGlass as ListMagnifyingGlassIcon,
 } from "@phosphor-icons/react"
+import { HomeIcon, ServerStackIcon, DocumentMagnifyingGlassIcon } from '@heroicons/react/16/solid'
+
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import {
   Tooltip,
   TooltipArrow,
@@ -49,28 +40,15 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
     {
       title: "Connections",
       label: "3",
-      icon: ConnectionsIcon,
+      icon: ServerStackIcon,
       href: '/app/connections',
     },
     {
       title: "Queries",
       label: "12",
-      icon: ListMagnifyingGlassIcon,
+      icon: DocumentMagnifyingGlassIcon,
       href: '/app/queries',
     },
-  ]
-
-  const secondaryLinks: LinkInterface[] = [
-    {
-      title: "Settings",
-      label: "",
-      icon: GearIcon,
-    },
-    {
-      title: "Feedback",
-      label: "",
-      icon: ChatIcon,
-    }
   ]
 
   return (
@@ -90,10 +68,10 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
                     buttonVariants({ variant: pathname.startsWith(link.href || 'undefined') ? 'default': 'ghost', size: "icon" }),
                     "h-9 w-9",
                     pathname.startsWith(link.href || 'undefined') ?
-                      "dark:bg-muted dark:hover:bg-muted dark:hover:text-white" : "text-muted-foreground"
+                      "dark:bg-muted dark:hover:bg-muted dark:hover:text-white dark:text-primary" : "text-muted-foreground"
                   )}
                 >
-                  <link.icon className="size-5" />
+                  <link.icon className="size-4" />
                   <span className="sr-only">{link.title}</span>
                 </Link>
               </TooltipTrigger>
@@ -120,7 +98,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
                 "text-primary/70"
               )}
             >
-              <link.icon size={16} className="mr-2 size-5" />
+              <link.icon size={16}  className="mr-2 size-4" />
               {link.title}
               {link.label && (
                 <span
@@ -135,85 +113,6 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
           ),
         )}
       </nav>
-      <nav className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
-        {secondaryLinks.map((link, index) =>
-          isCollapsed ? (
-            <Tooltip key={index}>
-              <TooltipTrigger asChild>
-                <Dialog>
-                  <DialogTrigger>
-                    <Button
-                      size={'icon'}
-                      variant={pathname.startsWith(link.href || 'undefined') ? 'default' : 'ghost'}
-                      className={cn(
-                        pathname.startsWith(link.href || 'undefined') ?
-                          "dark:bg-muted dark:hover:bg-muted dark:hover:text-white" : "text-muted-foreground"
-                      )}
-                    >
-                      <link.icon className="size-5" />
-                      <span className="sr-only">{link.title}</span>
-                    </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Are you absolutely sure?</DialogTitle>
-                      <DialogDescription>
-                        This action cannot be undone. This will permanently delete your account
-                        and remove your data from our servers.
-                      </DialogDescription>
-                    </DialogHeader>
-                  </DialogContent>
-                </Dialog>
-              </TooltipTrigger>
-              <TooltipContent side="right" className="flex items-center gap-4">
-                <TooltipArrow />
-                {link.title}
-                {link.label && (
-                  <span className="ml-auto text-muted-foreground">
-                    {link.label}
-                  </span>
-                )}
-              </TooltipContent>
-            </Tooltip>
-          ) : (
-            <Dialog
-              key={index}
-              >
-              <DialogTrigger>
-                <Button
-                  variant={pathname.startsWith(link.href || 'undefined') ? 'default' : 'ghost'}
-                  className={cn(
-                    "justify-start w-full",
-                    pathname.startsWith(link.href || 'undefined') ?
-                      "dark:bg-muted dark:hover:bg-muted dark:hover:text-white" : "text-muted-foreground"
-                  )}
-                >
-                  <link.icon className="mr-2 size-5" />
-                  {link.title}
-                  {link.label && (
-                    <span
-                      className={cn(
-                        "ml-auto",
-                      )}
-                      >
-                      {link.label}
-                    </span>
-                  )}
-                </Button>
-              </DialogTrigger>
-              <DialogContent>
-                <DialogHeader>
-                  <DialogTitle>Are you absolutely sure?</DialogTitle>
-                  <DialogDescription>
-                    This action cannot be undone. This will permanently delete your account
-                    and remove your data from our servers.
-                  </DialogDescription>
-                </DialogHeader>
-              </DialogContent>
-            </Dialog>
-          ),
-        )}
-        </nav>
     </div>
   );
 };
