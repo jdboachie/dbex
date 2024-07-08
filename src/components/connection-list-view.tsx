@@ -1,4 +1,10 @@
 import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
@@ -10,26 +16,20 @@ import {
   ContextMenuSubTrigger,
   ContextMenuCheckboxItem,
 } from "@/components/ui/context-menu"
-import React from 'react';
-import { Badge } from '@/components/ui/badge'
-import { Connection } from '@prisma/client/edge';
-import { Lock as LockIcon, User as UserIcon } from '@phosphor-icons/react/dist/ssr';
-import { PostgresIcon } from "./icons";
-import Link from "next/link";
 import {
   MagnifyingGlass as MagnifyingGlassIcon,
 } from "@phosphor-icons/react/dist/ssr";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
+import React from 'react';
+import Link from "next/link";
+import { PostgresIcon } from "./icons";
+import { Badge } from '@/components/ui/badge'
 import { ScrollArea } from "./ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Connection } from '@prisma/client/edge';
 import { fetchAllConnections } from "@/lib/actions";
 import { Separator } from "@/components/ui/separator";
+import AddConnectionButton from "./experimental/addConnectionButton";
 import ConnectionCardSkeleton from '@/components/closet/skeletons/ConnectionCardSkeleton';
 
 
@@ -40,8 +40,8 @@ const ConnectionsListView = async () => {
 
   return (
     <Tabs defaultValue="all" className="flex flex-col items-stretch h-screen">
-      <div className="grid p-2">
-        <TabsList className="w-full">
+      <div className="grid p-2 px-2 items-center">
+        <TabsList>
           <TabsTrigger value="all" className="w-full"> All </TabsTrigger>
           <TabsTrigger value="active" className="w-full"> Active </TabsTrigger>
         </TabsList>
@@ -50,13 +50,16 @@ const ConnectionsListView = async () => {
       <div className="p-4">
         <form>
           <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-2 top-2.5 size-5 text-muted-foreground" />
+            <MagnifyingGlassIcon className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
             <Input placeholder="Search" className="pl-8" />
           </div>
         </form>
       </div>
+      <div className=" grid px-4 mb-2">
+        <AddConnectionButton />
+      </div>
       <ScrollArea className='pb-8'>
-        <TabsContent value="all" className="m-0 grid px-2">
+        <TabsContent value="all" className="m-0 grid px-4">
           <div className='grid grid-flow-row size-full gap-2'>
             {connections.map((connection) => (
               <ContextMenu key={connection.id}>
@@ -114,8 +117,8 @@ const ConnectionsListView = async () => {
           <ConnectionCardSkeleton />
           <ConnectionCardSkeleton />
           <ConnectionCardSkeleton />
-          {/* <ConnectionCardSkeleton />
-          <ConnectionCardSkeleton /> */}
+          <ConnectionCardSkeleton />
+          <ConnectionCardSkeleton />
         </TabsContent>
       </ScrollArea>
     </Tabs>

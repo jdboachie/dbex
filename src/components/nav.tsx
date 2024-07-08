@@ -1,13 +1,10 @@
 "use client";
 
 import {
-  // HomeIcon,
+  HomeIcon,
   ServerStackIcon,
   DocumentMagnifyingGlassIcon
 } from '@heroicons/react/16/solid'
-import {
-  HomeIcon
-} from "@radix-ui/react-icons"
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";

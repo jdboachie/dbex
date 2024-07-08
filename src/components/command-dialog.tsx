@@ -47,9 +47,9 @@ export function CommandDialogButton({navCollapsed}: {navCollapsed: boolean}) {
           <Button
             variant={'secondary'}
             onClick={() => {setOpen(true)}}
-            className="w-full relative border bg-background cursor-pointer flex justify-between p-2 px-4 rounded-md"
+            className="w-full relative bg-background cursor-pointer flex justify-between p-2 px-4 rounded-md"
           >
-            <MagnifyingGlass className="absolute left-4 top-2 size-4 text-muted-foreground" />
+            <MagnifyingGlass className="absolute left-4 top-2 size-4" />
             <p className={`pl-6 text-muted-foreground truncate`}>Commands</p>
             <p className={`text-sm text-muted-foreground`}>
               <kbd className="pointer-events-none right-2 top-2.5 inline-flex h-5 select-none items-center gap-1 rounded border-input bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">

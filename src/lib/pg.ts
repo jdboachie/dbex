@@ -3,8 +3,17 @@
 
 import pg from 'pg';
 import { QueryToolSettings } from './hooks/querytoolsettings';
+import { parsePostgresConnectionString } from './utils';
 
 const { Pool } = pg;
+
+export async function testConnection (connectionString: string) {
+  const credentials = parsePostgresConnectionString(connectionString);
+  const client = new Pool(credentials)
+  await client.connect()
+    .then(() => {return true})
+    .catch(() => {return false})
+}
 
 export async function runQuery (text: string, settings: QueryToolSettings | null): Promise<{
   // output: pg.QueryResult<any>;
