@@ -59,18 +59,15 @@ export function ThemeToggleAlt() {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='mx-2'>
+      <DropdownMenuContent className='mx-2 w-fit min-w-fit'>
         <DropdownMenuItem onClick={() => setTheme("light")}>
-          <SunIcon className="size-4 mr-2" />
-          Light
+          <SunIcon className="size-4" />
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("dark")}>
-          <MoonIcon className="size-4 mr-2" />
-          Dark
+          <MoonIcon className="size-4" />
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => setTheme("system")}>
-          <ComputerDesktopIcon className="size-4 mr-2" />
-          System
+          <ComputerDesktopIcon className="size-4" />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

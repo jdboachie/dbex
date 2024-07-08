@@ -1,6 +1,6 @@
 import { cookies } from "next/headers"
-import { ResizableHandle, ResizablePanel } from '@/components/ui/resizable';
 import { ConnectionsListView } from '@/components/connection-list-view'
+import { ResizableHandle, ResizablePanel } from '@/components/ui/resizable';
 
 const Layout = ({ children }: {children: React.ReactNode}) => {
 
@@ -13,12 +13,12 @@ const Layout = ({ children }: {children: React.ReactNode}) => {
         defaultSize={defaultLayout[1]}
         minSize={20}
         maxSize={25}
-        className="bg-background rounded-l-lg border border-r-0"
+        className="bg-background rounded-l-xl border border-r-0"
       >
         <ConnectionsListView />
       </ResizablePanel>
       <ResizableHandle />
-      <ResizablePanel defaultSize={defaultLayout[2]} className="bg-background rounded-lg rounded-l-none border border-l-0">
+      <ResizablePanel defaultSize={defaultLayout[2]} className="bg-background rounded-xl rounded-l-none border border-l-0">
         { children }
       </ResizablePanel>
     </>

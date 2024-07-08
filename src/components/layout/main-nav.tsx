@@ -38,28 +38,25 @@ const MainNav = ({defaultSize, defaultCollapsed}: {defaultSize: number, defaultC
         )}`;
       }}
       className={cn(
-        "flex flex-col py-2 mr-2",
+        "flex flex-col mr-2",
         isCollapsed &&
           "min-w-[50px] transition-all duration-300 ease-in-out items-center",
       )}
     >
-      <div className="py-2 px-4 flex gap-2 place-items-center">
+      {/* <div className="py-2 px-4 flex gap-2 place-items-center">
         <DbexIcon className="size-6 -rotate-6 text-primary grayscale" />
         {!isCollapsed && <p className="text-base font-mono font-medium">DBEX</p> }
-      </div>
-      <Separator className='bg-transparent' />
-      <div className='my-4'>
+      </div> */}
+      {/* <Separator className='bg-transparent' /> */}
+      <div className=''>
         <Nav isCollapsed={isCollapsed} />
       </div>
-      <Separator className='bg-transparent' />
       <div className="grow p-2">
         <CommandDialogButton navCollapsed={isCollapsed} />
       </div>
-      <Separator className='bg-transparent' />
       <div className="grid p-2 gap-2">
         {isCollapsed ? <ThemeToggleAlt /> : <ThemeToggle />}
       </div>
-      <Separator className='bg-transparent' />
       <div className="grid">
         <React.Suspense fallback={<UserButtonSkeleton isCollapsed={isCollapsed} />}>
           <UserButton isCollapsed={isCollapsed} />
