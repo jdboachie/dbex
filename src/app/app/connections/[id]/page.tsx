@@ -11,7 +11,7 @@ export default async function Page({ params }: { params: { id: string } }) {
   return (
     <div className="grid divide-y max-w-5xl mx-auto">
       <div className="p-10 grid grid-flow-col">
-        <h2 className="text-4xl font-bold">
+        <h2 className="text-4xl font-semibold">
           {data?.databaseName}
         </h2>
         <div className="grid grid-flow-col gap-2">
