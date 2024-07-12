@@ -24,7 +24,7 @@ const MainNav = ({defaultSize, defaultCollapsed}: {defaultSize: number, defaultC
       collapsedSize={navCollapsedSize}
       collapsible={true}
       minSize={13}
-      maxSize={25}
+      maxSize={17}
       onCollapse={() => {
         setIsCollapsed(true);
         document.cookie = `react-resizable-panels:collapsed=${JSON.stringify(

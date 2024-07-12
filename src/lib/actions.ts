@@ -1,27 +1,32 @@
 'use server'
 
 import { prisma } from '../lib/prisma'
-import { Connection } from '@prisma/client/edge';
+import { Connection, Query, User } from '@prisma/client/edge';
 import { unstable_noStore as noStore } from "next/cache";
 
 
 // CREATE
-export const createConnection = async (data: any) => { // edit this later
+export const createConnection = async (data: any) => {
   await prisma.connection.create({
+    data: data
+  })
+}
+
+export const createQuery = async (data: any) : Promise<Query> => {
+  return await prisma.query.create({
     data: data
   })
 }
 
 
 // READ
-
-export const fetchUserById = async ({ email } : { email: string }) : Promise<string | null> => {
+export const fetchUserByEmail = async (email: string) : Promise<User | null> => {
   noStore();
 
   const user = await prisma.user.findUnique({
     where: {email: email}
   })
-  return user?.id || null
+  return user || null
 }
 
 export const fetchAllConnections = async () : Promise<Connection[]> => {

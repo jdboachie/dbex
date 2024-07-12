@@ -48,12 +48,11 @@ import { toast } from "sonner";
 import { testConnection } from "@/lib/pg"
 import { useForm } from "react-hook-form"
 import { useSession } from "next-auth/react"
-import { Connection } from '@prisma/client/edge';
+import { Connection, User } from '@prisma/client/edge';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { parsePostgresConnectionString } from "@/lib/utils"
-import { createConnection, fetchUserById } from "@/lib/actions"
+import { createConnection, fetchUserByEmail } from "@/lib/actions"
 import { deleteConnection, fetchAllConnections } from "@/lib/actions";
-import { useRouter } from "next/navigation"
 
 
 const ConnectionStringFormSchema = z.object({
@@ -67,11 +66,12 @@ function ConnectionStringForm() {
 
   React.useEffect(() => {
     const getId = async () => {
-      await fetchUserById({email: data?.user?.email || ''})
-                 .then((res) => {setUserId(res || '')})
+      await fetchUserByEmail(data?.user?.email || '')
+                 .then((res) => {res && setUserId(res.id)})
     }
+
     getId()
-  });
+  }, [data?.user?.email]);
 
   const form = useForm<z.infer<typeof ConnectionStringFormSchema>>({
     resolver: zodResolver(ConnectionStringFormSchema),
@@ -91,7 +91,7 @@ function ConnectionStringForm() {
             protocol: credentials.protocol,
             port: credentials.port,
             ssl: credentials.ssl,
-            isConnected: true, // edit this later
+            isConnected: true,
           })
         }),
       {
@@ -136,14 +136,19 @@ function ConnectionStringForm() {
 
 
 const ConnectionsListView = () => {
-  const router  = useRouter();
   const [connections, setConnections] = React.useState<Connection[]>([]);
+  const [refreshingConnections, setRefreshingConnections] = React.useState<boolean>(false)
 
   React.useEffect(() => {
     const getConnections = async () => {
-      await fetchAllConnections().then((res: Connection[]) => {setConnections(res || [])})
+      setRefreshingConnections(true)
+      await fetchAllConnections()
+        .then((res: Connection[]) => {setConnections(res || [])})
+        .then(() => {setRefreshingConnections(false)})
     };
-    getConnections();
+    getConnections().then(() => {
+      setRefreshingConnections(false)
+    })
   }, [connections]);
 
   const handleDelete = async (connection : Connection) => {
@@ -184,7 +189,7 @@ const ConnectionsListView = () => {
             <Button
               variant={'ghost'}
               size={'lg'}
-              className='w-full border first:border-dashed'
+              className='w-full border border-dashed'
             >
               <PlusCircleIcon className='block size-5 mr-2.5 h-12' />
               Add connection
@@ -216,6 +221,7 @@ const ConnectionsListView = () => {
       </div>
       <ScrollArea className='pb-8'>
         <TabsContent value="all" className="m-0 grid px-4">
+          {/* {refreshingConnections && 'Loading...'} */}
           <React.Suspense fallback={<ConnectionCardSkeleton/>}>
             {connections ?
               <div className='relative grid grid-flow-row size-full gap-2'>

@@ -1,5 +1,23 @@
-'use client'
+'use client';
 
+import React, { useRef, useState } from 'react';
+import { toast } from 'sonner';
+import Papa from 'papaparse';
+import { FieldDef } from 'pg';
+import { useTheme } from 'next-themes';
+import Editor from '@monaco-editor/react';
+import EmojiPicker from 'emoji-picker-react';
+import Image from 'next/image';
+
+import { Button } from '@/components/ui/button';
+import { Input } from '../ui/input';
+import ConnectionSelector from '../ui/connection-selector';
+import { useQueryToolContext } from '@/lib/hooks/querytoolsettings';
+import useDatabase from '@/lib/hooks/useDatabase';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipArrow } from "@/components/ui/tooltip";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { LoadingIcon } from '@/components/icons';
 import {
   FileCsv,
   Play as PlayIcon,
@@ -7,59 +25,20 @@ import {
   Download as DownloadIcon,
   FloppyDisk as FloppyDiskIcon,
 } from '@phosphor-icons/react';
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-  TooltipArrow
-} from "@/components/ui/tooltip";
-import {
-  ResizableHandle,
-  ResizablePanel,
-  ResizablePanelGroup
-} from "@/components/ui/resizable";
-
-import Papa from 'papaparse';
-import { FieldDef } from 'pg';
-import Image from 'next/image';
-import { toast } from 'sonner';
-import { Input } from '../ui/input';
-import { useTheme } from 'next-themes';
-import Editor from '@monaco-editor/react';
-import EmojiPicker from 'emoji-picker-react';
-import { Button } from '@/components/ui/button';
-import React, { useRef, useState } from 'react';
-import { LoadingIcon } from '@/components/icons';
-import ConnectionSelector from '../ui/connection-selector';
-import { useQueryToolContext } from '@/lib/hooks/querytoolsettings';
-import useDatabase from '@/lib/hooks/useDatabase';
-
 
 const QueryTool = () => {
   const { query } = useDatabase();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const editorRef = useRef(null);
 
-  const [outputString, setOutputString] = useState<string>('')
-  const [outputData, setOutputData] = useState<{ columns: { name: string, type: number }[]; rows: any[] } | null>(null);
+  const [outputData, setOutputData] = useState<{ columns: { name: string, type: number }[], rows: any[] } | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [code, setCode] = useState<string | undefined>('SELECT NOW()');
-  const [emojiURL, setEmojiURL] = useState<string>('https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f601.png')
+  const [emojiURL, setEmojiURL] = useState<string>('https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f601.png');
   const [queryCompletionTime, setQueryCompletionTime] = useState<number | null>(null);
 
-  let editorTheme;
-  const { theme, resolvedTheme } = useTheme()
-  if (( theme === 'dark' ) || ( resolvedTheme === 'dark' )) {
-    editorTheme = 'vs-dark'
-  } else {
-    editorTheme = 'light'
-  }
+  const { theme, resolvedTheme } = useTheme();
+  const editorTheme = (theme === 'dark' || resolvedTheme === 'dark') ? 'vs-dark' : 'light';
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -67,34 +46,22 @@ const QueryTool = () => {
 
     if (code) {
       try {
-
-        toast.info(`Running ${code?.split(' ')[0].toUpperCase() || ''} query...`)
+        toast.info(`Running ${code?.split(' ')[0].toUpperCase() || ''} query...`);
         const result = await query(code);
 
         if (result.error) {
-          toast.error(`${result.error}`, {
+          toast.error(result.error, {
             description: result.error === 'AggregateError' ? 'Check your connection.' : 'Most likely our fault.'
-          })
-        } else {
-          toast.success(`Query run successfully in ${result.time}ms`)
+          });
+        } else if (result.res) {
+          toast.success(`Query run successfully in ${result.time}ms`);
           setQueryCompletionTime(result.time || 0);
-          setOutputString(result.output || '')
-
-          const outputJson = JSON.parse(outputString)
-          setOutputData(outputJson)
-          console.log(outputData)
-          // const columns = result!.output!.fields.map((field: FieldDef) => ({ name: field.name, type: field.dataTypeID }));
-          // const outputData = {
-          //   columns: columns,
-          //   rows: result!.output!.rows,
-          // };
-          // setOutputData(outputData);
+          setOutputData(result.res);
         }
       } catch (error) {
-        toast.error(`${error}`, {
-          description: error === 'AggregateError' ? 'Check your connection.' : 'Most likely our fault.'
-        })
-        setOutputData(null);
+        toast.error(error!.toString(), {
+          description: error!.toString() === 'AggregateError' ? 'Check your connection.' : 'Try that again.'
+        });
       }
     }
     setIsLoading(false);
@@ -121,7 +88,6 @@ const QueryTool = () => {
       toast.error('No data to export');
     }
   };
-
 
   return (
     <div className="grid size-full">
@@ -163,7 +129,7 @@ const QueryTool = () => {
                     }}
                     variant={'ghost'}
                   >
-                    <FloppyDiskIcon  className='size-4' />
+                    <FloppyDiskIcon className='size-4' />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -176,7 +142,7 @@ const QueryTool = () => {
                   <Tooltip>
                     <TooltipTrigger asChild>
                       <Button size={'icon'} variant={'ghost'}>
-                        <DownloadIcon  className='size-4' />
+                        <DownloadIcon className='size-4' />
                         <p className="sr-only">Export</p>
                       </Button>
                     </TooltipTrigger>
@@ -187,7 +153,6 @@ const QueryTool = () => {
                   </Tooltip>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent className='mx-2'>
-                  {/* <DropdownMenuArrow /> */}
                   <DropdownMenuItem onClick={handleExportCSV}>
                     <FileCsv className='size-4 mr-2'/>
                     <p className='text-xs'>Export to CSV</p>
@@ -205,18 +170,17 @@ const QueryTool = () => {
                     size={'icon'}
                     type='submit'
                     variant={'ghost'}
-                    onClick={() => {handleSubmit}}
                   >
                     {isLoading ? (
-                      <LoadingIcon className='size-5' />
+                      <LoadingIcon className='size-4' />
                     ) : (
-                      <PlayIcon  className='size-' />
+                      <PlayIcon className='size-4' />
                     )}
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
                   <TooltipArrow />
-                  Run query
+                  <p>Run query</p>
                 </TooltipContent>
               </Tooltip>
             </div>
@@ -237,14 +201,13 @@ const QueryTool = () => {
             />
             <ResizablePanel minSize={20} defaultSize={50}>
               <div className="border-b flex text-xs w-full p-2 gap-2">
-                <div className='flex gap-1'>Num rows: <p className="px-px rounded bg-primary-foreground">{outputData?.rows.length || '---'}</p> </div>
-                {/* <div className='flex gap-1'>Num columns: <p className="px-px rounded bg-primary-foreground">{outputData?.columns.length || '---'}</p></div> */}
-                <div className='flex gap-1'>Query completed in <p className="px-px rounded bg-primary-foreground">{queryCompletionTime ? queryCompletionTime : '---'}ms</p></div>
+                <div className='flex gap-1'>Num rows: <p className="px-1 rounded bg-primary-foreground">{outputData?.rows.length || '---'}</p></div>
+                <div className="flex gap-1">Num cols: </div>
+                <div className='flex gap-1'>Query completed in <p className="px-1 rounded bg-primary-foreground">{queryCompletionTime ? queryCompletionTime : '---'}ms</p></div>
               </div>
-              <div className={`overflow-auto h-[calc(100%-49px)]`}>
-                {outputString}
-                {/* {outputData ? (
-                  <table className='table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
+              <div className={`overflow-auto shadow-inner h-[calc(100%-89px)]`}>
+                {outputData ? (
+                  <table className='text-sm font-mono tracking-tight table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
                     <thead className='sticky top-[-1px] bg-primary-foreground drop-shadow max-h-[1rem] min-h-[1rem]'>
                       <tr className='truncate'>
                         {outputData.columns.map((col, index) => (
@@ -278,9 +241,7 @@ const QueryTool = () => {
                   </table>
                 ) : (
                   <p className='p-2 size-full flex text-foreground/70 items-center justify-center'>No data to display</p>
-                )} */}
-                outputData:  {'{'}{outputData?.toString()}{'}'}
-                hmmm....
+                )}
               </div>
             </ResizablePanel>
           </ResizablePanelGroup>

@@ -42,7 +42,7 @@ export default function RootLayout({
             disableTransitionOnChange
             >
             <TooltipProvider>
-              <Toaster richColors={true} expand={true} closeButton={false} />
+              <Toaster richColors={false} expand={false} closeButton={true} />
               {children}
             </TooltipProvider>
           </ThemeProvider>

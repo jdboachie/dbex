@@ -1,30 +1,34 @@
 'use server'
 
-
 import pg from 'pg';
 import { QueryToolSettings } from './hooks/querytoolsettings';
 import { parsePostgresConnectionString } from './utils';
 
 const { Pool } = pg;
 
-export async function testConnection (connectionString: string) {
+export async function testConnection(connectionString: string): Promise<boolean> {
   const credentials = parsePostgresConnectionString(connectionString);
-  const client = new Pool(credentials)
-  await client.connect()
-    .then(() => {return true})
-    .catch(() => {return false})
+  const client = new Pool(credentials);
+
+  try {
+    await client.connect();
+    return true;
+  } catch {
+    return false;
+  } finally {
+    await client.end();
+  }
 }
 
-export async function runQuery (text: string, settings: QueryToolSettings | null): Promise<{
-  output: string;
-  time: number;
-  error?: undefined;
-  null?: undefined;
-} | {
-  error?: string;
-  output?: undefined;
-  time?: undefined;
+export async function runQuery(
+  text: string,
+  settings: QueryToolSettings | null
+): Promise<{
+  res?: { columns: { name: string, type: number }[], rows: any[] },
+  time?: number,
+  error?: string
 }> {
+
 
   const client = new Pool({
     user: settings?.connection.username,
@@ -39,16 +43,23 @@ export async function runQuery (text: string, settings: QueryToolSettings | null
 
   try {
     const start = Date.now();
-    const res = await client.query(text)
-    const output = JSON.stringify(res)
+    const result = await client.query(text);
     const end = Date.now();
-    const time = end - start
-    return { output, time }
+
+    const columns = result.fields.map(field => ({
+      name: field.name,
+      type: field.dataTypeID
+    }));
+
+    const rows = result.rows;
+
+    return {
+      res: { columns, rows },
+      time: end - start
+    };
   } catch (err) {
-    const error = err!.toString()
-    console.log(err)
-    return { error }
+    return { error: err!.toString() };
   } finally {
-    client.end()
+    await client.end();
   }
 }
