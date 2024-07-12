@@ -49,7 +49,9 @@ export function ThemeToggle() {
 }
 
 export function ThemeToggleAlt() {
+
   const { theme, setTheme } = useTheme();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -59,18 +61,15 @@ export function ThemeToggleAlt() {
           <span className="sr-only">Toggle theme</span>
         </Button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent className='mx-2'>
-        <DropdownMenuItem onClick={() => setTheme("light")}>
-          <SunIcon className="size-4 mr-2" />
-          Light
+      <DropdownMenuContent className='mx-2 w-fit min-w-fit'>
+        <DropdownMenuItem className="size-9 grid place-items-center" onClick={() => setTheme("light")}>
+          <SunIcon className="size-4" />
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("dark")}>
-          <MoonIcon className="size-4 mr-2" />
-          Dark
+        <DropdownMenuItem className="size-9 grid place-items-center" onClick={() => setTheme("dark")}>
+          <MoonIcon className="size-4" />
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme("system")}>
-          <ComputerDesktopIcon className="size-4 mr-2" />
-          System
+        <DropdownMenuItem className="size-9 grid place-items-center" onClick={() => setTheme("system")}>
+          <ComputerDesktopIcon className="size-4" />
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

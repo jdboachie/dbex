@@ -1,17 +1,52 @@
 'use server'
 
 import { prisma } from '../lib/prisma'
-import { Connection, Query } from '@prisma/client/edge';
+import { Connection, Query, User } from '@prisma/client/edge';
 import { unstable_noStore as noStore } from "next/cache";
 
-export const fetchAllConnections = async () => {
+
+// CREATE
+export const createConnection = async (data: any) => {
+  await prisma.connection.create({
+    data: data
+  })
+}
+
+export const createQuery = async (data: any) : Promise<Query> => {
+  return await prisma.query.create({
+    data: data
+  })
+}
+
+
+// READ
+export const fetchUserByEmail = async (email: string) : Promise<User | null> => {
+  noStore();
+
+  const user = await prisma.user.findUnique({
+    where: {email: email}
+  })
+  return user || null
+}
+
+export const fetchAllConnections = async () : Promise<Connection[]> => {
   noStore();
 
   const connections: Connection[] = await prisma.connection.findMany()
   return connections
 }
 
-export const fetchConnectionById = async ( {id} : {id : string} ) => {
+export const fetchUserConnections = async (id: string) : Promise<Connection[]> => {
+  noStore();
+
+  const connections: Connection[] = await prisma.connection.findMany({
+    where: {id: id}
+  })
+  return connections
+}
+
+
+export const fetchConnectionById = async ( id: string ) => {
   noStore();
 
   const connection: Connection | null = await prisma.connection.findFirst({
@@ -34,4 +69,14 @@ export const fetchAllQueries = async () => {
     }
   )
   return queries
+}
+
+// DELETE
+export const deleteConnection = async (id: string) : Promise<Connection> => { // edit this later
+  const deletedConnection = await prisma.connection.delete({
+    where: {
+      id: id
+    }
+  })
+  return deletedConnection
 }

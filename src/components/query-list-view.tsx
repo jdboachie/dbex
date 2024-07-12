@@ -1,4 +1,10 @@
 import {
+  Tabs,
+  TabsContent,
+  TabsList,
+  TabsTrigger,
+} from "@/components/ui/tabs"
+import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
@@ -10,30 +16,21 @@ import {
   ContextMenuSubTrigger,
   ContextMenuCheckboxItem,
 } from "@/components/ui/context-menu"
-import { Query } from '@prisma/client/edge';
-import { fetchAllQueries } from '@/lib/actions';
-import { Button } from "./ui/button";
 import Image from "next/image";
-import {
-  MagnifyingGlass as MagnifyingGlassIcon,
-} from "@phosphor-icons/react/dist/ssr";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
-import { Separator } from "@/components/ui/separator";
+import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import ConnectionCardSkeleton from '@/components/closet/skeletons/ConnectionCardSkeleton';
-import { Badge } from "./ui/badge";
+import { MagnifyingGlass as MagnifyingGlassIcon } from "@phosphor-icons/react/dist/ssr";
+
+import { fetchAllQueries } from '@/lib/actions';
+import { PlusCircleIcon } from "@heroicons/react/16/solid";
 
 
 const QueryListView = async () => {
 
   const queries = await fetchAllQueries()
-
-  // const queries: Query[] = []
 
   return (
     <Tabs defaultValue="all">
@@ -51,6 +48,16 @@ const QueryListView = async () => {
             <Input placeholder="Search" className="pl-8" />
           </div>
         </form>
+      </div>
+      <div className=" grid px-4 mb-2">
+        <Button
+          variant={'ghost'}
+          size={'lg'}
+          className='w-full border border-dashed'
+        >
+          <PlusCircleIcon className='block size-5 mr-2.5 h-12' />
+          New query
+        </Button>
       </div>
       <TabsContent value='all'>
         <div className='grid grid-flow-row gap-1 size-full px-2'>

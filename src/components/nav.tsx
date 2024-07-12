@@ -1,11 +1,10 @@
 "use client";
 
 import {
-  HardDrives as ConnectionsIcon,
-  ListMagnifyingGlass as ListMagnifyingGlassIcon,
-} from "@phosphor-icons/react"
-import { HomeIcon, ServerStackIcon, DocumentMagnifyingGlassIcon } from '@heroicons/react/16/solid'
-
+  HomeIcon,
+  ServerStackIcon,
+  DocumentMagnifyingGlassIcon
+} from '@heroicons/react/16/solid'
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";

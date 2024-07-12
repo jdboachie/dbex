@@ -1,10 +1,11 @@
 import "./globals.css";
 import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Inter } from "next/font/google"
+import { Inter_Tight } from "next/font/google"
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { SessionProvider } from "next-auth/react"
+import { Toaster } from "@/components/ui/sonner";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -15,9 +16,9 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
 });
 
-const inter = Inter({
+const inter = Inter_Tight({
   subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  weight: ['400', '500', '600', '700', '800', '900'],
 })
 
 export const metadata: Metadata = {
@@ -32,7 +33,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.className}`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.className} antialiased font-sans tracking-tight`}>
         <SessionProvider>
           <ThemeProvider
             attribute="class"
@@ -41,6 +42,7 @@ export default function RootLayout({
             disableTransitionOnChange
             >
             <TooltipProvider>
+              <Toaster richColors={false} expand={false} closeButton={true} />
               {children}
             </TooltipProvider>
           </ThemeProvider>
