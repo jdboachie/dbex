@@ -18,7 +18,7 @@ const geistMono = localFont({
 
 const inter = Inter_Tight({
   subsets: ['latin'],
-  weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900'],
+  weight: ['400', '500', '600', '700', '800', '900'],
 })
 
 export const metadata: Metadata = {
@@ -33,7 +33,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.className}`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.className} antialiased font-sans tracking-tight`}>
         <SessionProvider>
           <ThemeProvider
             attribute="class"
