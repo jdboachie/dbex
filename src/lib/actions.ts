@@ -15,7 +15,7 @@ export const createConnection = async (data: any) => { // edit this later
 
 // READ
 
-export const getUserById = async ({ email } : { email: string }) : Promise<string | null> => {
+export const fetchUserById = async ({ email } : { email: string }) : Promise<string | null> => {
   noStore();
 
   const user = await prisma.user.findUnique({
@@ -31,7 +31,17 @@ export const fetchAllConnections = async () : Promise<Connection[]> => {
   return connections
 }
 
-export const fetchConnectionById = async ( {id} : {id : string} ) => {
+export const fetchUserConnections = async (id: string) : Promise<Connection[]> => {
+  noStore();
+
+  const connections: Connection[] = await prisma.connection.findMany({
+    where: {id: id}
+  })
+  return connections
+}
+
+
+export const fetchConnectionById = async ( id: string ) => {
   noStore();
 
   const connection: Connection | null = await prisma.connection.findFirst({
@@ -54,4 +64,14 @@ export const fetchAllQueries = async () => {
     }
   )
   return queries
+}
+
+// DELETE
+export const deleteConnection = async (id: string) : Promise<Connection> => { // edit this later
+  const deletedConnection = await prisma.connection.delete({
+    where: {
+      id: id
+    }
+  })
+  return deletedConnection
 }

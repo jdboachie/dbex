@@ -16,7 +16,6 @@ export async function testConnection (connectionString: string) {
 }
 
 export async function runQuery (text: string, settings: QueryToolSettings | null): Promise<{
-  // output: pg.QueryResult<any>;
   output: string;
   time: number;
   error?: undefined;
@@ -37,12 +36,6 @@ export async function runQuery (text: string, settings: QueryToolSettings | null
     connectionTimeoutMillis: 60000,
     query_timeout: 60000,
   });
-
-  // const client = new Pool({
-  //   connectionTimeoutMillis: 60000,
-  //   query_timeout: 60000,
-  //   connectionString: 'postgresql://neondb_owner:JCPEoudOf91r@ep-bold-truth-a58tdfn1.us-east-2.aws.neon.tech/neondb?sslmode=require'
-  // })
 
   try {
     const start = Date.now();
