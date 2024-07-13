@@ -24,6 +24,7 @@ import ConnectionSelector from '@/components/ui/connection-selector';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipArrow } from "@/components/ui/tooltip";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { TableIcon } from '@radix-ui/react-icons';
 
 
 const QueryTool = () => {
@@ -209,48 +210,56 @@ const QueryTool = () => {
             <div className="flex gap-1">Num cols: <p className="px-1 rounded bg-primary-foreground">{outputData?.columns.length || '---'}</p></div>
             <div className='flex gap-1'>Query completed in <p className="px-1 rounded bg-primary-foreground">{queryCompletionTime ? queryCompletionTime : '---'}ms</p></div>
           </div>
-          <ScrollArea className={`text-sm font-mono tracking-normal overflow-auto w-[calc(100%-2px)] h-[calc(100%-86px)]`}>
+          <div className="h-[calc(100%-86px)]">
             {outputData ? (
-              <table className='m-1 table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
-                <thead className='sticky top-[-1px] bg-primary-foreground drop-shadow max-h-[1rem] min-h-[1rem]'>
-                  <tr className='truncate'>
-                    {outputData.columns.map((col, index) => (
-                      <th key={index} className='border border-t-none p-2 min-w-[10rem] w-[10rem] max-w-[10rem]'>
-                        {col.name}
-                        <br />
-                        <span className='text-xs text-muted-foreground'>{getBuiltinTypeString(col.type)}</span>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {outputData.rows.map((row, rowIndex) => (
-                    <tr
-                      key={rowIndex}
-                      className='max-h-[1rem] min-h-[1rem] transition-all duration-300 ease-in-out'
-                    >
-                      {outputData.columns.map((col, colIndex) => (
-                        <td
-                          key={colIndex}
-                          className='min-w-[10rem] w-[10rem] max-w-[10rem] truncate
-                                    border hover:border-double hover:border-primary
-                                    whitespace-nowrap p-2 hover:bg-secondary'
-                        >
-                          {row[col.name] instanceof Date ? row[col.name].toString() : row[col.name]}
-                        </td>
+              <ScrollArea className={`text-sm flex flex-col-reverse dev place-items-center font-mono tracking-normal w-[calc(100%-2px)]`}>
+                <table className='table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
+                  <thead className='sticky top-[-1px] bg-primary-foreground drop-shadow max-h-[1rem] min-h-[1rem]'>
+                    <tr className='truncate'>
+                      {outputData.columns.map((col, index) => (
+                        <th key={index} className='border border-t-none p-2 min-w-[10rem] w-[10rem] max-w-[10rem]'>
+                          {col.name}
+                          <br />
+                          <span className='text-xs text-muted-foreground'>{getBuiltinTypeString(col.type)}</span>
+                        </th>
                       ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {outputData.rows.map((row, rowIndex) => (
+                      <tr
+                        key={rowIndex}
+                        className='max-h-[1rem] min-h-[1rem] transition-all duration-300 ease-in-out'
+                      >
+                        {outputData.columns.map((col, colIndex) => (
+                          <td
+                            key={colIndex}
+                            className='min-w-[10rem] w-[10rem] max-w-[10rem] truncate
+                                      border hover:border-double hover:border-primary
+                                      whitespace-nowrap p-2 hover:bg-secondary'
+                          >
+                            {row[col.name] instanceof Date ? row[col.name].toString() : row[col.name]}
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <ScrollBar orientation="horizontal" className='backdrop-blur-sm opacity-75' />
+              </ScrollArea>
             ) : (
-            <div className="p-4 h-full border rounded-lg">
-              {/* https://vercel.com/geist/empty-state */}
-              <p className='size-full flex text-muted-foreground items-center justify-center'>No data to display</p>
-            </div>
+              <div className="p-4 grow h-full">
+                {/* https://vercel.com/geist/empty-state */}
+                <div className='h-full border border-dashed rounded-md flex text-muted-foreground items-center justify-center'>
+                  <div className="h-fit justify-center items-center grid gap-2">
+                    <TableIcon className='size-20 text-muted-foreground' />
+                    <p className="text-base">No data to show</p>
+                    <p className="text-muted-foreground">Execute a query to get started</p>
+                  </div>
+                </div>
+              </div>
             )}
-            <ScrollBar orientation="horizontal" />
-          </ScrollArea>
+          </div>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>
