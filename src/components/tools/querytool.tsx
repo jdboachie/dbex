@@ -245,7 +245,7 @@ const QueryTool = () => {
                     ))}
                   </tbody>
                 </table>
-                <ScrollBar orientation="horizontal" className='backdrop-blur-sm bg-background/50' />
+                <ScrollBar orientation="horizontal" />
               </ScrollArea>
             ) : (
               <div className="p-4 grow h-full">
