@@ -100,6 +100,7 @@ const QueryTool = () => {
     <div className="size-full">
       <form onSubmit={handleSubmit} className='flex p-1 px-2 border-b justify-between items-center w-full'>
         <div className="flex items-center">
+          <ConnectionSelector />
           <div className="flex">
             <DropdownMenu>
               <DropdownMenuTrigger>
@@ -117,9 +118,8 @@ const QueryTool = () => {
                 <EmojiPicker className='bg-primary-foreground border-0' onEmojiClick={(emojiData) => setEmojiURL(emojiData.imageUrl)} />
               </DropdownMenuContent>
             </DropdownMenu>
-            <Input placeholder='untitled.sql' type='text' className='shadow-none font-medium border-0 focus:border-0 focus-visible:ring-0 focus:outline-0' />
+            <Input placeholder='untitled.sql' type='text' className='shadow-none font-medium border-0 focus:border-0 focus:bg-input focus-visible:ring-0 focus:outline-0' />
           </div>
-          <ConnectionSelector />
         </div>
         <div className="flex gap-1 p-1">
           <Tooltip>

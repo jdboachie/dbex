@@ -47,10 +47,10 @@ export default function ConnectionSelector() {
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between gap-2"
+          className="w-[200px] shadow-none justify-between gap-2"
         >
           <Database className="min-w-4" />
           <p className="truncate">
@@ -61,7 +61,7 @@ export default function ConnectionSelector() {
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-56 p-0">
         <Command>
           <CommandInput placeholder="Search connections..." className="h-9" />
           {/* <CommandEmpty>No connection found.</CommandEmpty> */}
