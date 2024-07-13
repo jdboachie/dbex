@@ -37,7 +37,7 @@ const QueryTool = () => {
   const [emojiURL, setEmojiURL] = useState<string>('https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f601.png');
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [outputData, setOutputData] = useState<{ columns: { name: string, type: number }[], rows: any[] } | null>(null);
-  const [code, setCode] = useState<string | undefined>('SELECT NOW()');
+  const [code, setCode] = useState<string | undefined>('select now()');
   const [queryCompletionTime, setQueryCompletionTime] = useState<number | null>(null);
 
   const { theme, resolvedTheme } = useTheme();
@@ -193,19 +193,7 @@ const QueryTool = () => {
             height="100%"
             theme={editorTheme}
             defaultLanguage="sql"
-            defaultValue="SELECT
-                              table_schema,
-                              table_name,
-                              column_name,
-                              data_type
-                          FROM
-                              information_schema.columns
-                          WHERE
-                              table_schema NOT IN ('information_schema', 'pg_catalog')
-                          ORDER BY
-                              table_schema,
-                              table_name,
-                              ordinal_position;"
+            defaultValue="select now()"
           />
         </ResizablePanel>
         <ResizableHandle
