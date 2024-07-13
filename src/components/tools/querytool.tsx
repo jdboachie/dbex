@@ -251,8 +251,8 @@ const QueryTool = () => {
               <div className="p-4 grow h-full">
                 {/* https://vercel.com/geist/empty-state */}
                 <div className='h-full text-sm border border-dashed rounded-md flex items-center justify-center'>
-                  <div className="h-fit justify-center items-center flex flex-col gap-2">
-                    <TableIcon className='size-20 text-muted-foreground' />
+                  <div className="h-fit justify-center items-center flex flex-col gap-1">
+                    <TableIcon className='size-16 m-2 text-muted-foreground' />
                     <p className="text-base text-center">No data to show</p>
                     <p className="text-muted-foreground">Execute a query to get started</p>
                   </div>
