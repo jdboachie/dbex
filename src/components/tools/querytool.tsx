@@ -49,13 +49,13 @@ const QueryTool = () => {
   const handleSave = async () => {
     toast.promise(
     createQuery({
-      userId: queryToolSettings?.connection.userId,
-      connection_id: queryToolSettings?.connection.id,
+      user: queryToolSettings?.connection.userId,
+      relatedConnection: queryToolSettings?.connection.id,
       content: code,
       emojiUrl: emojiURL,
       name: inputRef.current || ''
     }),
-    { loading: 'Saving query...', success: 'Saved', error: 'Error'}
+    { loading: 'Saving query...', success: 'Saved', error: 'Error saving query'}
     )
   }
 
@@ -110,7 +110,7 @@ const QueryTool = () => {
 
   return (
     <div className="size-full">
-      <div className="flex px-2 p-1 border-b justify-between items-center w-full">
+      <div className="flex px-1.5 p-1 border-b justify-between items-center w-full">
       <form onSubmit={handleSubmit} className='flex pr-1 justify-between items-center w-full'>
         <div className="flex items-center">
           <ConnectionSelector />
