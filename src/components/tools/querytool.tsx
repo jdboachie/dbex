@@ -212,7 +212,7 @@ const QueryTool = () => {
           </div>
           <div className="h-[calc(100%-86px)]">
             {outputData ? (
-              <ScrollArea className={`text-sm flex flex-col-reverse place-items-center font-mono tracking-normal w-[calc(100%-1px)] h-[calc(100%-86px)]`}>
+              <ScrollArea className={`text-sm flex flex-col-reverse place-items-center font-mono tracking-normal w-[calc(100%-1px)] h-[calc(100%-33px)]`}>
                 <table className='table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
                   <thead className='sticky top-[-1px] bg-primary-foreground drop-shadow max-h-[1rem] min-h-[1rem]'>
                     <tr className='truncate'>
