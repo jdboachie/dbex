@@ -52,7 +52,7 @@ export default function ConnectionSelector() {
           aria-expanded={open}
           className="w-50 shadow-none justify-between"
         >
-          <div>
+          <div className="flex gap-2">
             <Database className="min-w-4 mr-2" />
             <p className="truncate">
               {value
