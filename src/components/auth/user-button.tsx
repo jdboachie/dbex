@@ -48,7 +48,7 @@ export default function UserButton ({isCollapsed} : {isCollapsed: boolean}) {
                   <AvatarFallback></AvatarFallback>
                 </Skeleton>
               </Avatar>
-              <div className={isCollapsed ? 'hidden': 'flex items-center w-full justify-between ml-2'}>
+              <div className={isCollapsed ? 'hidden': 'flex items-center w-full justify-between mx-2'}>
                 <p className="text-sm text-start text-muted-foreground truncate grow pt-0.5">{data?.user.name}</p>
                 <DotsThreeIcon className="size-5" />
               </div>

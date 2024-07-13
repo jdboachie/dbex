@@ -212,7 +212,7 @@ const QueryTool = () => {
           </div>
           <div className="h-[calc(100%-86px)]">
             {outputData ? (
-              <ScrollArea className={`text-sm flex flex-col-reverse place-items-center font-mono tracking-normal w-[calc(100%-1px)] h-[calc(100%-1px)]`}>
+              <ScrollArea className={`text-xs flex flex-col-reverse place-items-center font-mono tracking-normal w-[calc(100%-1px)] h-[calc(100%-1px)]`}>
                 <table className='table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
                   <thead className='sticky top-[-1px] bg-primary-foreground drop-shadow max-h-[1rem] min-h-[1rem]'>
                     <tr className='truncate'>
@@ -229,7 +229,7 @@ const QueryTool = () => {
                     {outputData.rows.map((row, rowIndex) => (
                       <tr
                         key={rowIndex}
-                        className='max-h-[1rem] min-h-[1rem] hover:bg-secondary transition-all duration-300 ease-in-out'
+                        className='max-h-[1rem] min-h-[1rem] hover:bg-secondary transition-all duration-250 ease-in-out'
                       >
                         {outputData.columns.map((col, colIndex) => (
                           <td
@@ -250,11 +250,11 @@ const QueryTool = () => {
             ) : (
               <div className="p-4 grow h-full">
                 {/* https://vercel.com/geist/empty-state */}
-                <div className='h-full text-sm border border-dashed rounded-md flex items-center justify-center'>
+                <div className='h-full border border-dashed rounded-md flex items-center justify-center'>
                   <div className="h-fit justify-center items-center flex flex-col gap-1">
                     <TableIcon className='size-16 m-2 text-muted-foreground' />
                     <p className="text-base text-center">No data to show</p>
-                    <p className="text-muted-foreground">Execute a query to get started</p>
+                    <p className="text-muted-foreground text-sm">Execute a query to get started</p>
                   </div>
                 </div>
               </div>
