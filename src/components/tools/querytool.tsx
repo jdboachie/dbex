@@ -25,11 +25,14 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipArrow } from "@/compone
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { TableIcon } from '@radix-ui/react-icons';
+import { createQuery } from '@/lib/actions';
+import { useQueryToolContext } from '@/lib/hooks/querytoolsettings';
 
 
 const QueryTool = () => {
 
   const { query } = useDatabase();
+  const { queryToolSettings } = useQueryToolContext();
 
   const editorRef = useRef(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -44,7 +47,16 @@ const QueryTool = () => {
   const editorTheme = (theme === 'dark' || resolvedTheme === 'dark') ? 'vs-dark' : 'light';
 
   const handleSave = async () => {
-
+    toast.promise(
+    createQuery({
+      userId: queryToolSettings?.connection.userId,
+      connection_id: queryToolSettings?.connection.id,
+      content: code,
+      emojiUrl: emojiURL,
+      name: inputRef.current || ''
+    }),
+    { loading: 'Saving query...', success: 'Saved', error: 'Error'}
+    )
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -98,7 +110,8 @@ const QueryTool = () => {
 
   return (
     <div className="size-full">
-      <form onSubmit={handleSubmit} className='flex p-1 px-2 border-b justify-between items-center w-full'>
+      <div className="flex px-2 p-1 border-b justify-between items-center w-full">
+      <form onSubmit={handleSubmit} className='flex pr-1 justify-between items-center w-full'>
         <div className="flex items-center">
           <ConnectionSelector />
           <div className="flex gap-1">
@@ -122,26 +135,6 @@ const QueryTool = () => {
           </div>
         </div>
         <div className="flex gap-1 p-1">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                disabled={isLoading}
-                size={'icon'}
-                type='reset'
-                onClick={() => {
-                  setCode('');
-                  setOutputData(null);
-                }}
-                variant={'ghost'}
-              >
-                <FloppyDiskIcon className='size-4' />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <TooltipArrow />
-              <p>Save</p>
-            </TooltipContent>
-          </Tooltip>
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Tooltip>
@@ -190,6 +183,22 @@ const QueryTool = () => {
           </Tooltip>
         </div>
       </form>
+      <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                size={'icon'}
+                onClick={() => {handleSave()}}
+                variant={'ghost'}
+              >
+                <FloppyDiskIcon className='size-4' />
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <TooltipArrow />
+              <p>Save</p>
+            </TooltipContent>
+          </Tooltip>
+      </div>
       <ResizablePanelGroup direction="vertical" className='size-full'>
         <ResizablePanel defaultSize={40} minSize={0} className='size-full'>
           <Editor

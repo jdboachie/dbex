@@ -19,7 +19,7 @@ export default async function Page({ params }: { params: { id: string } }) {
             {data.databaseName}
           </h2>
           <div className="grid grid-flow-col gap-2">
-            <Link href={'/app/queries/new'} className='grid rounded-md'>
+            <Link href={'/app/queries'} className='grid rounded-md'>
               <Button size={'lg'}>Query database</Button>
             </Link>
             {/* <Button size={'lg'} variant={'outline'} className='text-red-500 hover:text-red-500'>

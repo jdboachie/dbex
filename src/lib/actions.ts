@@ -12,8 +12,8 @@ export const createConnection = async (data: any) => {
   })
 }
 
-export const createQuery = async (data: any) : Promise<Query> => {
-  return await prisma.query.create({
+export const createQuery = async (data: any) => {
+  await prisma.query.create({
     data: data
   })
 }
@@ -21,7 +21,7 @@ export const createQuery = async (data: any) : Promise<Query> => {
 
 // READ
 export const fetchUserByEmail = async (email: string) : Promise<User | null> => {
-  noStore();
+  // noStore();
 
   const user = await prisma.user.findUnique({
     where: {email: email}
