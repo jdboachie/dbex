@@ -50,9 +50,9 @@ export default function ConnectionSelector() {
           variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className="w-50 shadow-none justify-between"
+          className="w-72 shadow-none justify-between"
         >
-          <div className="flex gap-2">
+          <div className="flex gap-2 items-center">
             <Database className="min-w-4 mr-2" />
             <p className="truncate">
               {value
@@ -63,7 +63,7 @@ export default function ConnectionSelector() {
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-50 p-0">
+      <PopoverContent className="p-0">
         <Command>
           <CommandInput placeholder="Search connections..." className="h-9" />
           {/* <CommandEmpty>No connection found.</CommandEmpty> */}

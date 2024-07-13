@@ -14,7 +14,7 @@ const QueryPage = () => {
     <>
       <ResizablePanel
         defaultSize={defaultLayout[1]}
-        minSize={15}
+        minSize={20}
         maxSize={25}
         className="bg-background rounded-l-xl border border-r-0"
       >
