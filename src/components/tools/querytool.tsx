@@ -25,6 +25,7 @@ import {
   Download as DownloadIcon,
   FloppyDisk as FloppyDiskIcon,
 } from '@phosphor-icons/react';
+import { getBuiltinTypeString } from '@/lib/utils';
 
 const QueryTool = () => {
 
@@ -190,9 +191,21 @@ const QueryTool = () => {
           <Editor
             onChange={(value) => setCode(value)}
             height="100%"
-            defaultLanguage="sql"
-            defaultValue="SELECT NOW()"
             theme={editorTheme}
+            defaultLanguage="sql"
+            defaultValue="SELECT
+                              table_schema,
+                              table_name,
+                              column_name,
+                              data_type
+                          FROM
+                              information_schema.columns
+                          WHERE
+                              table_schema NOT IN ('information_schema', 'pg_catalog')
+                          ORDER BY
+                              table_schema,
+                              table_name,
+                              ordinal_position;"
           />
         </ResizablePanel>
         <ResizableHandle
@@ -214,7 +227,7 @@ const QueryTool = () => {
                       <th key={index} className='border border-t-none p-2 min-w-[10rem] w-[10rem] max-w-[10rem]'>
                         {col.name}
                         <br />
-                        <span className='text-xs text-foreground/70'>({col.type})</span>
+                        <span className='text-xs text-foreground/70'>({getBuiltinTypeString(col.type)})</span>
                       </th>
                     ))}
                   </tr>
@@ -240,7 +253,10 @@ const QueryTool = () => {
                 </tbody>
               </table>
             ) : (
-              <p className='p-2 size-full flex text-foreground/70 items-center justify-center'>No data to display</p>
+            <div className="p-4 h-full">
+              {/* https://vercel.com/geist/empty-state */}
+              <p className='border rounded-lg size-full flex text-muted-foreground items-center justify-center'>No data to display</p>
+            </div>
             )}
           </div>
         </ResizablePanel>
