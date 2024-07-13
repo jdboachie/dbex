@@ -1,23 +1,5 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
-import { toast } from 'sonner';
-import Papa from 'papaparse';
-// import { FieldDef } from 'pg';
-import { useTheme } from 'next-themes';
-import Editor from '@monaco-editor/react';
-import EmojiPicker from 'emoji-picker-react';
-import Image from 'next/image';
-
-import { Button } from '@/components/ui/button';
-import { Input } from '../ui/input';
-import ConnectionSelector from '../ui/connection-selector';
-// import { useQueryToolContext } from '@/lib/hooks/querytoolsettings';
-import useDatabase from '@/lib/hooks/useDatabase';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipArrow } from "@/components/ui/tooltip";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { LoadingIcon } from '@/components/icons';
 import {
   FileCsv,
   Play as PlayIcon,
@@ -25,7 +7,24 @@ import {
   Download as DownloadIcon,
   FloppyDisk as FloppyDiskIcon,
 } from '@phosphor-icons/react';
+import Papa from 'papaparse';
+import Image from 'next/image';
+import { toast } from 'sonner';
+import { useTheme } from 'next-themes';
+import Editor from '@monaco-editor/react';
+import EmojiPicker from 'emoji-picker-react';
+import { Input } from '@/components/ui/input';
+import React, { useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { LoadingIcon } from '@/components/icons';
+import useDatabase from '@/lib/hooks/useDatabase';
 import { getBuiltinTypeString } from '@/lib/utils';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import ConnectionSelector from '@/components/ui/connection-selector';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipArrow } from "@/components/ui/tooltip";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+
 
 const QueryTool = () => {
 
@@ -42,6 +41,10 @@ const QueryTool = () => {
 
   const { theme, resolvedTheme } = useTheme();
   const editorTheme = (theme === 'dark' || resolvedTheme === 'dark') ? 'vs-dark' : 'light';
+
+  const handleSave = async () => {
+
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -203,19 +206,19 @@ const QueryTool = () => {
         <ResizablePanel minSize={20} defaultSize={80}>
           <div className="border-b flex text-xs w-full p-2 gap-2">
             <div className='flex gap-1'>Num rows: <p className="px-1 rounded bg-primary-foreground">{outputData?.rows.length || '---'}</p></div>
-            <div className="flex gap-1">Num cols: </div>
+            <div className="flex gap-1">Num cols: <p className="px-1 rounded bg-primary-foreground">{outputData?.columns.length || '---'}</p></div>
             <div className='flex gap-1'>Query completed in <p className="px-1 rounded bg-primary-foreground">{queryCompletionTime ? queryCompletionTime : '---'}ms</p></div>
           </div>
-          <div className={`overflow-auto shadow-inner h-[calc(100%-89px)]`}>
+          <ScrollArea className={`text-sm font-mono tracking-normal overflow-auto w-[calc(100%-2px)] h-[calc(100%-86px)]`}>
             {outputData ? (
-              <table className='text-sm font-mono tracking-normal table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
+              <table className='m-1 table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
                 <thead className='sticky top-[-1px] bg-primary-foreground drop-shadow max-h-[1rem] min-h-[1rem]'>
                   <tr className='truncate'>
                     {outputData.columns.map((col, index) => (
                       <th key={index} className='border border-t-none p-2 min-w-[10rem] w-[10rem] max-w-[10rem]'>
                         {col.name}
                         <br />
-                        <span className='text-xs text-foreground/70'>({getBuiltinTypeString(col.type)})</span>
+                        <span className='text-xs text-muted-foreground'>{getBuiltinTypeString(col.type)}</span>
                       </th>
                     ))}
                   </tr>
@@ -241,12 +244,13 @@ const QueryTool = () => {
                 </tbody>
               </table>
             ) : (
-            <div className="p-4 h-full">
+            <div className="p-4 h-full border rounded-lg">
               {/* https://vercel.com/geist/empty-state */}
-              <p className='border rounded-lg size-full flex text-muted-foreground items-center justify-center'>No data to display</p>
+              <p className='size-full flex text-muted-foreground items-center justify-center'>No data to display</p>
             </div>
             )}
-          </div>
+            <ScrollBar orientation="horizontal" />
+          </ScrollArea>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

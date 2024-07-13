@@ -21,20 +21,22 @@ import { fetchAllConnections } from "@/lib/actions"
 import { toast } from "sonner"
 import { Database } from "@phosphor-icons/react"
 import { useQueryToolContext } from "@/lib/hooks/querytoolsettings"
+import { testConnection } from "@/lib/pg"
+import { LoadingIcon } from "../icons"
 
 
 export default function ConnectionSelector() {
 
   const { setQueryToolSettings } = useQueryToolContext();
 
-  const [value, setValue] = React.useState("")
   const [open, setOpen] = React.useState(false)
+  const [value, setValue] = React.useState("")
   const [connections, setConnections] = React.useState<Connection[]>([]);
 
   React.useEffect(() => {
     const fetchConnections = async () => {
-      const res: Connection[] = await fetchAllConnections();
-      setConnections(res)
+      await fetchAllConnections()
+        .then((res) => {setConnections(res)})
     }
 
     fetchConnections()
@@ -69,6 +71,7 @@ export default function ConnectionSelector() {
                 key={key}
                 onClick={() => {
                   setValue(connection.databaseName)
+                  testConnection(connection.protocol)
                   setQueryToolSettings({connection})
                   setOpen(false)
                 }}
@@ -84,6 +87,7 @@ export default function ConnectionSelector() {
                 />
               </div>
             ))}
+            {!connections && <LoadingIcon className="w-4"/>}
           </CommandGroup>
         </Command>
       </PopoverContent>
