@@ -101,7 +101,7 @@ const QueryTool = () => {
       <form onSubmit={handleSubmit} className='flex p-1 px-2 border-b justify-between items-center w-full'>
         <div className="flex items-center">
           <ConnectionSelector />
-          <div className="flex">
+          <div className="flex gap-1">
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button size={'icon'} variant={'ghost'}>
@@ -191,7 +191,7 @@ const QueryTool = () => {
         </div>
       </form>
       <ResizablePanelGroup direction="vertical" className='size-full'>
-        <ResizablePanel defaultSize={20} minSize={0} className='size-full'>
+        <ResizablePanel defaultSize={40} minSize={0} className='size-full'>
           <Editor
             onChange={(value) => setCode(value)}
             height="100%"
@@ -204,7 +204,7 @@ const QueryTool = () => {
           withHandle
           className='activehandle'
         />
-        <ResizablePanel minSize={20} defaultSize={80}>
+        <ResizablePanel minSize={20} defaultSize={60}>
           <div className="border-b flex text-xs w-full p-2 gap-2">
             <div className='flex gap-1'>Num rows: <p className="px-1 rounded bg-primary-foreground">{outputData?.rows.length || '---'}</p></div>
             <div className="flex gap-1">Num cols: <p className="px-1 rounded bg-primary-foreground">{outputData?.columns.length || '---'}</p></div>
@@ -229,14 +229,14 @@ const QueryTool = () => {
                     {outputData.rows.map((row, rowIndex) => (
                       <tr
                         key={rowIndex}
-                        className='max-h-[1rem] min-h-[1rem] hover:bg-secondary transition-all duration-250 ease-in-out'
+                        className='max-h-[1rem] min-h-[1rem] hover:bg-primary-foreground transition-all duration-250 ease-in-out'
                       >
                         {outputData.columns.map((col, colIndex) => (
                           <td
                             key={colIndex}
                             className='min-w-[10rem] w-[10rem] max-w-[10rem] truncate
                                       border hover:border-double hover:border-primary
-                                      whitespace-nowrap p-2 hover:bg-secondary'
+                                      whitespace-nowrap p-2 hover:bg-primary-foreground'
                           >
                             {row[col.name] instanceof Date ? row[col.name].toString() : row[col.name]}
                           </td>

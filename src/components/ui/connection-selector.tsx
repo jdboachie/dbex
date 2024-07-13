@@ -50,18 +50,20 @@ export default function ConnectionSelector() {
           variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] shadow-none justify-between gap-2"
+          className="w-50 shadow-none justify-between"
         >
-          <Database className="min-w-4" />
-          <p className="truncate">
-            {value
-              ? connections?.find((connection) => connection.databaseName === value)?.databaseName
-              : "Select connection..."}
-          </p>
+          <div>
+            <Database className="min-w-4 mr-2" />
+            <p className="truncate">
+              {value
+                ? connections?.find((connection) => connection.databaseName === value)?.databaseName
+                : "Select connection..."}
+            </p>
+          </div>
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-56 p-0">
+      <PopoverContent className="w-50 p-0">
         <Command>
           <CommandInput placeholder="Search connections..." className="h-9" />
           {/* <CommandEmpty>No connection found.</CommandEmpty> */}
