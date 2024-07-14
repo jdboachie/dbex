@@ -60,7 +60,7 @@ const QueryListView = async () => {
         </Button>
       </div>
       <TabsContent value='all'>
-        <div className='grid grid-flow-row gap-1 size-full px-2'>
+        <div className='grid grid-flow-row gap-1 size-full px-4 py-2'>
           {queries.map((query) => (
             <ContextMenu key={query.id}>
               <ContextMenuTrigger>

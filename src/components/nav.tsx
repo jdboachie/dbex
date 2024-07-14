@@ -2,9 +2,9 @@
 
 import {
   HomeIcon,
-  ServerStackIcon,
-  DocumentMagnifyingGlassIcon
-} from '@heroicons/react/16/solid'
+  CircleStackIcon,
+  CommandLineIcon,
+} from '@heroicons/react/24/outline'
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -38,14 +38,14 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
     ,
     {
       title: "Connections",
-      label: "3",
-      icon: ServerStackIcon,
+      label: "",
+      icon: CircleStackIcon,
       href: '/app/connections',
     },
     {
-      title: "Queries",
-      label: "12",
-      icon: DocumentMagnifyingGlassIcon,
+      title: "SQL Editor",
+      label: "",
+      icon: CommandLineIcon,
       href: '/app/queries',
     },
   ]

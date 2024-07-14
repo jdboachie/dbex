@@ -52,11 +52,14 @@ const QueryTool = () => {
         name: inputRef.current || 'untitled',
         content: code,
         emojiUrl: emojiURL,
-        userId: queryToolSettings?.connection.userId,
-        relatedConnection: queryToolSettings?.connection.id,
-        user: {}
+        userId: queryToolSettings?.connection.userId || '',
+        connectionId: queryToolSettings?.connection.id || '',
       }),
-    { loading: 'Saving query...', success: 'Saved', error: 'Error saving query'}
+    {
+      loading: 'Saving query...',
+      success: 'Saved',
+      error: 'Error saving query'
+    }
     )
   }
 
@@ -102,7 +105,7 @@ const QueryTool = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.setAttribute('href', url);
-      link.setAttribute('download', 'query_results.csv');
+      link.setAttribute('download', inputRef.current || 'output.csv');
       link.click();
     } else {
       toast.error('No data to export');
@@ -110,6 +113,7 @@ const QueryTool = () => {
   };
 
   return (
+    // overlay the play icon with the loading icon (relative and absolute) while it is running (also disabled)
     <div className="size-full">
       <div className="flex p-1 border-b justify-between items-center w-full">
       <form onSubmit={handleSubmit} className='flex justify-between items-center w-full'>
@@ -185,20 +189,20 @@ const QueryTool = () => {
         </div>
       </form>
       <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                size={'icon'}
-                onClick={() => {handleSave()}}
-                variant={'ghost'}
-              >
-                <FloppyDiskIcon className='size-4' />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <TooltipArrow />
-              <p>Save</p>
-            </TooltipContent>
-          </Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            size={'icon'}
+            onClick={() => {handleSave()}}
+            variant={'ghost'}
+          >
+            <FloppyDiskIcon className='size-4' />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <TooltipArrow />
+          <p>Save</p>
+        </TooltipContent>
+      </Tooltip>
       </div>
       <ResizablePanelGroup direction="vertical" className='size-full'>
         <ResizablePanel defaultSize={40} minSize={0} className='size-full'>
@@ -230,7 +234,7 @@ const QueryTool = () => {
                         <th key={index} className='border border-t-none p-2 min-w-[10rem] w-[10rem] max-w-[10rem]'>
                           {col.name}
                           <br />
-                          <span className='text-xs text-muted-foreground'>{getBuiltinTypeString(col.type)}</span>
+                          <span className='text-xs font-normal text-muted-foreground'>{getBuiltinTypeString(col.type)}</span>
                         </th>
                       ))}
                     </tr>
@@ -262,7 +266,7 @@ const QueryTool = () => {
                 {/* https://vercel.com/geist/empty-state */}
                 <div className='h-full border border-dashed rounded-md flex items-center justify-center'>
                   <div className="h-fit justify-center items-center flex flex-col gap-1">
-                    <TableIcon className='size-16 m-2 text-muted-foreground' />
+                    <TableIcon className='size-10 m-2 text-muted-foreground' />
                     <p className="text-base text-center">No data to show</p>
                     <p className="text-muted-foreground text-sm">Execute a query to get started</p>
                   </div>

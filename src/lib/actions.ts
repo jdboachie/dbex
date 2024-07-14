@@ -1,7 +1,7 @@
 'use server'
 
 import { prisma } from '../lib/prisma'
-import { Connection, Query, User } from '@prisma/client/edge';
+import { Connection, User } from '@prisma/client/edge';
 import { unstable_noStore as noStore } from "next/cache";
 
 
