@@ -32,7 +32,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { PostgresIcon } from "./icons";
+import { PostgresAltIcon } from "./icons";
 import { Badge } from '@/components/ui/badge'
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -231,7 +231,7 @@ const ConnectionsListView = () => {
                       href={`/app/connections/${connection.id}`}
                     >
                     <div className='border rounded-md p-4 h-fit flex gap-3 items-center justify-start'>
-                      <PostgresIcon className="size-10"/>
+                      <PostgresAltIcon className="size-10"/>
                       <div className="grid grid-flow-row w-full gap-1 items-center justify-start">
                         <div className="items-center grid grid-cols-2">
                           <p className="text-start truncate text-sm">{connection.databaseName}</p>

@@ -219,7 +219,7 @@ const QueryTool = () => {
           className='activehandle'
         />
         <ResizablePanel minSize={20} defaultSize={60}>
-          <div className="border-b flex text-xs w-full p-2 gap-2">
+          <div className="border-b flex text-sm w-full p-2 gap-2">
             <div className='flex gap-1'>Num rows: <p className="px-1 rounded bg-primary-foreground">{outputData?.rows.length || '---'}</p></div>
             <div className="flex gap-1">Num cols: <p className="px-1 rounded bg-primary-foreground">{outputData?.columns.length || '---'}</p></div>
             <div className='flex gap-1'>Query completed in <p className="px-1 rounded bg-primary-foreground">{queryCompletionTime ? queryCompletionTime : '---'}ms</p></div>
@@ -230,7 +230,7 @@ const QueryTool = () => {
               :
               <>
               {outputData ? (
-                <ScrollArea className={`text-sm flex flex-col-reverse place-items-center font-mono tracking-normal w-[calc(100%-1px)] h-[calc(100%-1px)]`}>
+                <ScrollArea className={`text-sm flex flex-col-reverse place-items-center font-mono tracking-normal w-[calc(100%-0px)] h-[calc(100%-0px)]`}>
                   <table className='text-primary table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
                     <thead className='sticky top-[-1px] bg-primary-foreground drop-shadow max-h-[1rem] min-h-[1rem]'>
                       <tr className='truncate'>

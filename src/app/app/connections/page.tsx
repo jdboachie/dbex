@@ -5,7 +5,7 @@ const Page = () => {
   return (
     <div className='grid divide-y'>
       <section className='flex gap-4 p-4 py-3 items-center'>
-        <ServerIcon className='size-5' />
+        <ServerIcon className='size-4' />
         <h4 className='text-lg'>Connections</h4>
       </section>
       <section className="p-4">
