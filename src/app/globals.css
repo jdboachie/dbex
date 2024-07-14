@@ -73,6 +73,7 @@
     @apply border-border;
   }
   body {
+    text-rendering: optimizeLegibility;
     @apply bg-ground text-foreground;
   }
 
