@@ -19,10 +19,9 @@ import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
 import { Connection } from "@prisma/client/edge"
 import { fetchAllConnections } from "@/lib/actions"
 import { toast } from "sonner"
-import { Database } from "@phosphor-icons/react"
 import { useQueryToolContext } from "@/lib/hooks/querytoolsettings"
 import { testConnection } from "@/lib/pg"
-import { LoadingIcon } from "../icons"
+import { DatabaseIcon, LoadingIcon } from "../icons"
 
 
 export default function ConnectionSelector() {
@@ -53,7 +52,7 @@ export default function ConnectionSelector() {
           className="w-52 shadow-none justify-between"
         >
           <div className="flex gap-2 items-center">
-            <Database className="min-w-4 mr-2" />
+            <DatabaseIcon className="size-4 mr-2" />
             <p className="truncate">
               {value
                 ? connections?.find((connection) => connection.databaseName === value)?.databaseName

@@ -1,11 +1,11 @@
 import React from 'react'
-import { ServerStackIcon } from '@heroicons/react/16/solid'
+import { ServerIcon } from '@/components/icons'
 
 const Page = () => {
   return (
     <div className='grid divide-y'>
       <section className='flex gap-4 p-4 py-3 items-center'>
-        <ServerStackIcon className='size-6 text-primary/70' />
+        <ServerIcon className='size-5' />
         <h4 className='text-lg'>Connections</h4>
       </section>
       <section className="p-4">

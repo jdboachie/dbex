@@ -98,7 +98,7 @@ export default function Home() {
           >
             <div className="p-2 grid">
               <div className="p-2 flex gap-2">
-                <DbexIcon className="size-5 -rotate-6 text-primary" />
+                <DbexIcon className="size-5 -rotate-6" />
               </div>
             </div>
             <Separator />

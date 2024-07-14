@@ -5,28 +5,28 @@ import {
   Play as PlayIcon,
   MicrosoftExcelLogo,
   Download as DownloadIcon,
-  FloppyDisk as FloppyDiskIcon,
 } from '@phosphor-icons/react';
 import Papa from 'papaparse';
 import Image from 'next/image';
 import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
 import Editor from '@monaco-editor/react';
+import { createQuery } from '@/lib/actions';
 import EmojiPicker from 'emoji-picker-react';
 import { Input } from '@/components/ui/input';
 import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { LoadingIcon } from '@/components/icons';
+import { FloppyDiskIcon, LoadingIcon } from '@/components/icons';
+import { TableIcon } from '@radix-ui/react-icons';
 import useDatabase from '@/lib/hooks/useDatabase';
 import { getBuiltinTypeString } from '@/lib/utils';
+import { useQueryToolContext } from '@/lib/hooks/querytoolsettings';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import ConnectionSelector from '@/components/ui/connection-selector';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipArrow } from "@/components/ui/tooltip";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { TableIcon } from '@radix-ui/react-icons';
-import { createQuery } from '@/lib/actions';
-import { useQueryToolContext } from '@/lib/hooks/querytoolsettings';
+import { Skeleton } from '../ui/skeleton';
 
 
 const QueryTool = () => {
@@ -136,7 +136,7 @@ const QueryTool = () => {
                 <EmojiPicker className='bg-primary-foreground border-0' onEmojiClick={(emojiData) => setEmojiURL(emojiData.imageUrl)} />
               </DropdownMenuContent>
             </DropdownMenu>
-            <Input placeholder='untitled.sql' type='text' className='shadow-none font-medium border-0 focus:border-0 focus:bg-input focus-visible:ring-0 focus:outline-0' />
+            <Input ref={inputRef} placeholder='untitled.sql' type='text' className='shadow-none font-medium border-0 focus:border-0 focus:bg-input focus-visible:ring-0 focus:outline-0' />
           </div>
         </div>
         <div className="flex gap-1 p-1">
@@ -262,16 +262,24 @@ const QueryTool = () => {
                 <ScrollBar orientation="horizontal" />
               </ScrollArea>
             ) : (
-              <div className="p-4 grow h-full">
-                {/* https://vercel.com/geist/empty-state */}
-                <div className='h-full border border-dashed rounded-md flex items-center justify-center'>
-                  <div className="h-fit justify-center items-center flex flex-col gap-1">
-                    <TableIcon className='size-10 m-2 text-muted-foreground' />
-                    <p className="text-base text-center">No data to show</p>
-                    <p className="text-muted-foreground text-sm">Execute a query to get started</p>
+              <>
+                {isLoading ?
+                  <Skeleton className='grow h-full' />
+                  :
+                  (
+                  <div className="p-4 grow h-full">
+                    <div className='h-full border border-dashed rounded-md flex items-center justify-center'>
+                      {/* https://vercel.com/geist/empty-state */}
+                      <div className="h-fit justify-center items-center flex flex-col gap-0">
+                        <TableIcon className='size-8 m-2 text-muted-foreground' />
+                        <p className="text-base text-center">No data to show</p>
+                        <p className="text-muted-foreground text-sm">Execute a query to get started</p>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
+                  )
+                }
+              </>
             )}
           </div>
         </ResizablePanel>
