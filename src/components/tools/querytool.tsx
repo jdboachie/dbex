@@ -225,62 +225,68 @@ const QueryTool = () => {
             <div className='flex gap-1'>Query completed in <p className="px-1 rounded bg-primary-foreground">{queryCompletionTime ? queryCompletionTime : '---'}ms</p></div>
           </div>
           <div className="h-[calc(100%-86px)]">
-            {outputData ? (
-              <ScrollArea className={`text-xs flex flex-col-reverse place-items-center font-mono tracking-normal w-[calc(100%-1px)] h-[calc(100%-1px)]`}>
-                <table className='table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
-                  <thead className='sticky top-[-1px] bg-primary-foreground drop-shadow max-h-[1rem] min-h-[1rem]'>
-                    <tr className='truncate'>
-                      {outputData.columns.map((col, index) => (
-                        <th key={index} className='border border-t-none p-2 min-w-[10rem] w-[10rem] max-w-[10rem]'>
-                          {col.name}
-                          <br />
-                          <span className='text-xs font-normal text-muted-foreground'>{getBuiltinTypeString(col.type)}</span>
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {outputData.rows.map((row, rowIndex) => (
-                      <tr
-                        key={rowIndex}
-                        className='max-h-[1rem] min-h-[1rem] hover:bg-primary-foreground transition-all duration-250 ease-in-out'
-                      >
-                        {outputData.columns.map((col, colIndex) => (
-                          <td
-                            key={colIndex}
-                            className='min-w-[10rem] w-[10rem] max-w-[10rem] truncate
-                                      border hover:border-double hover:border-primary
-                                      whitespace-nowrap p-2 hover:bg-primary-foreground'
-                          >
-                            {row[col.name] instanceof Date ? row[col.name].toString() : row[col.name]}
-                          </td>
+            {isLoading ?
+              <Skeleton className='grow h-full' />
+              :
+              <>
+              {outputData ? (
+                <ScrollArea className={`text-sm flex flex-col-reverse place-items-center font-mono tracking-normal w-[calc(100%-1px)] h-[calc(100%-1px)]`}>
+                  <table className='text-primary table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
+                    <thead className='sticky top-[-1px] bg-primary-foreground drop-shadow max-h-[1rem] min-h-[1rem]'>
+                      <tr className='truncate'>
+                        {outputData.columns.map((col, index) => (
+                          <th key={index} className='border border-t-none p-2 min-w-[10rem] w-[10rem] max-w-[10rem]'>
+                            {col.name}
+                            <br />
+                            <span className='text-xs font-normal text-muted-foreground'>{getBuiltinTypeString(col.type)}</span>
+                          </th>
                         ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            ) : (
-              <>
-                {isLoading ?
-                  <Skeleton className='grow h-full' />
-                  :
-                  (
-                  <div className="p-4 grow h-full">
-                    <div className='h-full border border-dashed rounded-md flex items-center justify-center'>
-                      {/* https://vercel.com/geist/empty-state */}
-                      <div className="h-fit justify-center items-center flex flex-col gap-0">
-                        <TableIcon className='size-8 m-2 text-muted-foreground' />
-                        <p className="text-base text-center">No data to show</p>
-                        <p className="text-muted-foreground text-sm">Execute a query to get started</p>
-                      </div>
-                    </div>
-                  </div>
-                  )
-                }
-              </>
-            )}
+                    </thead>
+                    <tbody>
+                      {outputData.rows.map((row, rowIndex) => (
+                        <tr
+                          key={rowIndex}
+                          className='max-h-[1rem] min-h-[1rem] hover:bg-primary-foreground transition-all duration-250 ease-in-out'
+                        >
+                          {outputData.columns.map((col, colIndex) => (
+                            <td
+                              key={colIndex}
+                              className='min-w-[10rem] w-[10rem] max-w-[10rem] truncate
+                                        border hover:border-double hover:border-primary
+                                        whitespace-nowrap p-2 hover:bg-primary-foreground'
+                            >
+                              {row[col.name] instanceof Date ? row[col.name].toString() : row[col.name]}
+                            </td>
+                          ))}
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+              ) : (
+                <>
+                  {isLoading ?
+                    <></>
+                    :
+                    (
+                    <div className="p-4 grow h-full">
+                      <div className='h-full border border-dashed rounded-md flex items-center justify-center'>
+                        {/* https://vercel.com/geist/empty-state */}
+                        <div className="h-fit justify-center items-center flex flex-col gap-0">
+                          <TableIcon className='size-8 m-2 text-muted-foreground' />
+                          <p className="text-base text-center">No data to show</p>
+                          <p className="text-muted-foreground text-sm">Execute a query to get started</p>
+                          </div>
+                          </div>
+                          </div>
+                    )
+                  }
+                </>
+              )}
+            </>
+          }
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

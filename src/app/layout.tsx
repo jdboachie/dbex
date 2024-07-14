@@ -34,7 +34,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans tracking-[initial] text-muted-foreground`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans tracking-[initial] text-muted-foreground text-sm`}>
         <SessionProvider>
           <ThemeProvider
             attribute="class"

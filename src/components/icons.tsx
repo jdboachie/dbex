@@ -26,7 +26,7 @@ export const LoadingIcon = ({ className }: { className?: string }) => {
           <rect x="11" y="1" width="1" height="5" transform="rotate(120 12 12)" opacity=".71"/>
           <rect x="11" y="1" width="1" height="5" transform="rotate(150 12 12)" opacity=".86"/>
           <rect x="11" y="1" width="1" height="5" transform="rotate(180 12 12)"/>
-          <animateTransform attributeName="transform" type="rotate" calcMode="discrete" dur="0.5s" values="0 12 12;30 12 12;60 12 12;90 12 12;120 12 12;150 12 12;180 12 12;210 12 12;240 12 12;270 12 12;300 12 12;330 12 12;360 12 12" repeatCount="indefinite"/>
+          <animateTransform attributeName="transform" type="rotate" calcMode="discrete" dur="0.6s" values="0 12 12;30 12 12;60 12 12;90 12 12;120 12 12;150 12 12;180 12 12;210 12 12;240 12 12;270 12 12;300 12 12;330 12 12;360 12 12" repeatCount="indefinite"/>
           </g>
         </svg>
     </>
