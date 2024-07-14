@@ -35,7 +35,7 @@ const QueryTool = () => {
   const { queryToolSettings } = useQueryToolContext();
 
   const editorRef = useRef(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const inputRef = useRef(null);
 
   const [emojiURL, setEmojiURL] = useState<string>('https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f601.png');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -46,15 +46,16 @@ const QueryTool = () => {
   const { theme, resolvedTheme } = useTheme();
   const editorTheme = (theme === 'dark' || resolvedTheme === 'dark') ? 'vs-dark' : 'light';
 
-  const handleSave = async () => {
+  const handleSave = () => {
     toast.promise(
-    createQuery({
-      user: queryToolSettings?.connection.userId,
-      relatedConnection: queryToolSettings?.connection.id,
-      content: code,
-      emojiUrl: emojiURL,
-      name: inputRef.current || ''
-    }),
+      createQuery({
+        name: inputRef.current || 'untitled',
+        content: code,
+        emojiUrl: emojiURL,
+        userId: queryToolSettings?.connection.userId,
+        relatedConnection: queryToolSettings?.connection.id,
+        user: {}
+      }),
     { loading: 'Saving query...', success: 'Saved', error: 'Error saving query'}
     )
   }
@@ -110,8 +111,8 @@ const QueryTool = () => {
 
   return (
     <div className="size-full">
-      <div className="flex px-1.5 p-1 border-b justify-between items-center w-full">
-      <form onSubmit={handleSubmit} className='flex pr-1 justify-between items-center w-full'>
+      <div className="flex p-1 border-b justify-between items-center w-full">
+      <form onSubmit={handleSubmit} className='flex justify-between items-center w-full'>
         <div className="flex items-center">
           <ConnectionSelector />
           <div className="flex gap-1">
