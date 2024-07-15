@@ -1,18 +1,17 @@
 import {
-    Github01Icon,
-} from "hugeicons-react"
+    GithubIcon,
+    GoogleIcon
+} from "@/components/icons"
 
-import { GoogleIcon } from "@/components/icons/GoogleIcon"
 import { Button } from "@/components/ui/button"
 
 export function SignInWithGoogle() {
     return (
         <Button onClick={async (event) => {
             event.preventDefault();
-            await authSignIn(providerMap[1])
         }}
-            className="w-full dark:bg-secondary dark:hover:bg-secondary-foreground dark:text-secondary-foreground dark:hover:text-secondary">
-            <GoogleIcon size="28"></GoogleIcon>
+            className="w-full rounded-lg dark:bg-secondary dark:hover:bg-secondary-foreground dark:text-secondary-foreground dark:hover:text-secondary">
+            <GoogleIcon size="24"></GoogleIcon>
         </Button>
     )
 }
@@ -21,9 +20,8 @@ export function SignInWithGithub() {
     return (
         <Button onClick={async (event) => {
             event.preventDefault();
-            await authSignIn(providerMap[0])
-        }} className="w-full dark:bg-secondary dark:hover:bg-secondary-foreground dark:text-secondary-foreground dark:hover:text-secondary">
-            <Github01Icon size={28} className=""></Github01Icon>
+        }} className="w-full dark:bg-secondary rounded-lg dark:hover:bg-secondary-foreground dark:text-secondary-foreground dark:hover:text-secondary">
+            <GithubIcon className="size-5"></GithubIcon>
         </Button>
     )
 }

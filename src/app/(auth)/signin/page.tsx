@@ -3,11 +3,13 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
 import { useEffect, useState } from "react"
-import { useRouter } from 'next/navigation'
+import React from "react";
+import { BackgroundBeams } from "@/components/ui/background-beams";
 
 import {
     MailIcon as Mail,
-    LockIcon as Lock
+    LockIcon as Lock,
+    DbexIcon
 } from "@/components/icons"
 
 import { Button } from "@/components/ui/button"
@@ -22,7 +24,7 @@ import {
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 
-import { SignInWithGithub, SignInWithGoogle } from "@/components/auth/SignInWithGoogleGithub"
+import { SignInWithGithub, SignInWithGoogle } from "@/components/auth/SignUpWIthGoogleAndGithub"
 // import { signUserIn } from "@/lib/actions"
 import { getCsrfToken } from "next-auth/react"
 
@@ -49,10 +51,10 @@ export default function SignInPage() {
             console.log('Fetched CSRF token:', token);
             setCsrfToken(token);
         }
-    
+
         fetchCsrfToken();
     }, []);
-    
+
 
     const form = useForm<z.infer<typeof signInFormSchema>>({
         resolver: zodResolver(signInFormSchema),
@@ -62,81 +64,88 @@ export default function SignInPage() {
         },
     })
 
-    const router = useRouter()
     const onSubmit = async (values: z.infer<typeof signInFormSchema>) => {
         if (!csrfToken) {
             console.error("CSRF token is not set. Form submission is blocked.");
             return;
         }
-    
+
         console.log("Entered onSubmit");
         const { email, password } = values;
         console.log("CSRF token before submission:", csrfToken);
-        const result = await signUserIn({ email, password, csrfToken });
-        if (result.success) {
-            router.push('/app/home');
-          } else {
-            console.error(result.error);
-          }
+        // const result = await signUserIn({ email, password, csrfToken });
+        // if (result.success) {
+        //     router.push('/app/home');
+        //   } else {
+        //     console.error(result.error);
+        //   }
     };
-    
+
 
     return (
-        <div className="flex flex-row justify-center items-center min-h-screen font-sans">
-            <div className="form-wrapper w-96 rounded-lg border p-3 shadow-2xl">
-                <Form {...form}>
-                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" method="post">
-                        <div className="flex flex-col justify-center items-center gap-2">
-                            <h1 className="text-3xl font-bold">Sign In</h1>
-                            <div className="text-sm">
-                                <span className="text-muted-foreground">Don't have an account? </span>
-                                <Link href="/signUp" className="underline">Sign Up</Link>
+        <div className="w-full rounded-md dark:bg-neutral-950 relative flex flex-col items-center justify-center antialiased">
+            <div className="flex flex-row justify-center items-center min-h-screen font-sans">
+                <div className="form-wrapper w-96 rounded-lg border p-5 shadow-2xl bg-background relative z-50">
+                    <Form {...form}>
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" method="post">
+                            <div className="flex flex-col justify-center items-center gap-3">
+                                <DbexIcon></DbexIcon>
+                                <h1 className="text-xl font-bold">Welcome Back</h1>
+                                <div className="text-sm">
+                                    <span className="text-muted-foreground">Don't have an account? </span>
+                                    <Link href="/signUp" className="underline">Sign Up</Link>
+                                </div>
                             </div>
-                        </div>
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-sm">Email</FormLabel>
-                                    <FormControl>
-                                        <div className="input-icon flex flex-row relative">
-                                            <Mail className="absolute flex flex-row top-1/2 -translate-y-1/2 mx-1.5 stroke-slate-400 size-4 text-muted-foreground"></Mail>
-                                            <Input type="email" placeholder="Enter email" {...field} className="placeholder-shown:px-6 px-6 text-muted-foreground" />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <FormField
-                            control={form.control}
-                            name="password"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel className="text-sm">Password</FormLabel>
-                                    <FormControl>
-                                        <div className="input-icon flex flex-row relative">
-                                            <Lock className="absolute flex flex-row top-1/2 -translate-y-1/2 mx-1.5 stroke-slate-400 size-4 text-muted-foreground"></Lock>
-                                            <Input type="password" placeholder="Enter password" {...field} className="placeholder-shown:px-6 px-6 text-muted-foreground" />
-                                        </div>
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
-                        <input name="csrfToken" type="hidden" defaultValue={csrfToken || ""} />
-                        <Button type="submit" className="w-full dark:bg-secondary dark:hover:bg-secondary-foreground dark:text-secondary-foreground dark:hover:text-secondary">Submit</Button>
-                        <div className="flex flex-row justify-center items-center">
-                            <span className="text-sm capitalize">Or Continue With</span>
-                        </div>
-                        <div className="signInWithGoogleAndGitHub flex gap-5">
-                            <SignInWithGoogle />
-                            <SignInWithGithub />
-                        </div>
-                    </form>
-                </Form>
+                            <FormField
+                                control={form.control}
+                                name="email"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-sm">Email</FormLabel>
+                                        <FormControl>
+                                            <div className="input-icon flex flex-row relative">
+                                                <Mail className="absolute flex flex-row top-1/2 -translate-y-1/2 mx-2 stroke-slate-400 size-4 text-muted-foreground"></Mail>
+                                                <Input type="email" placeholder="Enter mail" {...field} className="placeholder-shown:px-7 px-7 text-muted-foreground rounded-lg" />
+                                            </div>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <FormField
+                                control={form.control}
+                                name="password"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-sm">Password</FormLabel>
+                                        <FormControl>
+                                            <div className="input-icon flex flex-row relative">
+                                                <Lock className="absolute flex flex-row top-1/2 -translate-y-1/2 mx-2 stroke-slate-400 size-4 text-muted-foreground"></Lock>
+                                                <Input type="password" placeholder="Enter password" {...field} className="placeholder-shown:px-7 px-7 text-muted-foreground rounded-lg" />
+                                            </div>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <input name="csrfToken" type="hidden" defaultValue={csrfToken || ""} />
+                            <Button type="submit" className="w-full dark:bg-secondary dark:hover:bg-secondary-foreground dark:text-secondary-foreground dark:hover:text-secondary rounded-lg">Submit</Button>
+                            <div className="flex flex-row justify-center items-center">
+                                <div className="line w-1/2 h-[1.5px] rounded-full bg-foreground-50"></div>
+                                <span className="text-sm capitalize px-3 text-foreground-300"> OR </span>
+                                <div className="line w-1/2 h-[1.5px] rounded-full bg-foreground-50"></div>
+                            </div>
+                            <div className="signInWithGoogleAndGitHub flex gap-3">
+                                <SignInWithGoogle />
+                                <SignInWithGithub />
+                            </div>
+                        </form>
+                    </Form>
+                </div>
             </div>
+            <BackgroundBeams />
         </div>
+
     )
 }
+
