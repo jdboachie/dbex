@@ -29,20 +29,18 @@ export const fetchUserByEmail = async (email: string) : Promise<User | null> => 
   return user || null
 }
 
-export const fetchAllConnections = async () : Promise<Connection[]> => {
+export const fetchUserConnections = async (userId: string | undefined) : Promise<Connection[]> => {
   noStore();
 
-  const connections: Connection[] = await prisma.connection.findMany()
-  return connections
-}
+  if ( userId ) {
+    const connections: Connection[] = await prisma.connection.findMany({
+      where: {userId: userId}
+    })
+    return connections
+  } else {
+    return []
+  }
 
-export const fetchUserConnections = async (id: string) : Promise<Connection[]> => {
-  noStore();
-
-  const connections: Connection[] = await prisma.connection.findMany({
-    where: {id: id}
-  })
-  return connections
 }
 
 

@@ -51,8 +51,8 @@ import { useSession } from "next-auth/react"
 import { Connection, User } from '@prisma/client/edge';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { parsePostgresConnectionString } from "@/lib/utils"
-import { createConnection, fetchUserByEmail } from "@/lib/actions"
-import { deleteConnection, fetchAllConnections } from "@/lib/actions";
+import { createConnection, fetchUserByEmail, fetchUserConnections } from "@/lib/actions"
+import { deleteConnection } from "@/lib/actions";
 
 
 const ConnectionStringFormSchema = z.object({
@@ -136,20 +136,18 @@ function ConnectionStringForm() {
 
 
 const ConnectionsListView = () => {
+
+  const { data } = useSession()
   const [connections, setConnections] = React.useState<Connection[]>([]);
-  const [refreshingConnections, setRefreshingConnections] = React.useState<boolean>(false)
 
   React.useEffect(() => {
     const getConnections = async () => {
-      setRefreshingConnections(true)
-      await fetchAllConnections()
-        .then((res: Connection[]) => {setConnections(res || [])})
-        .then(() => {setRefreshingConnections(false)})
+      await fetchUserConnections(data?.user?.id)
+      .then((res: Connection[]) => {setConnections(res || [])})
     };
-    getConnections().then(() => {
-      setRefreshingConnections(false)
-    })
-  }, [connections]);
+    getConnections();
+  }, [data?.user?.id, connections]);
+
 
   const handleDelete = async (connection : Connection) => {
     toast.promise(

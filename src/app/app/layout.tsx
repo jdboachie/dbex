@@ -3,7 +3,8 @@ import { cookies } from "next/headers"
 import { SignIn } from "@/components/auth/server";
 import MainNav from "@/components/layout/main-nav";
 import AppLayout from "@/components/layout/app-layout";
-import { ResizableHandle, ResizablePanel } from "@/components/ui/resizable";
+import { ResizableHandle } from "@/components/ui/resizable";
+
 
 export default async function Home({
   children,

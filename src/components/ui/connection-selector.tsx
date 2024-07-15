@@ -15,16 +15,19 @@ import {
 import * as React from "react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
 import { Connection } from "@prisma/client/edge"
-import { fetchAllConnections } from "@/lib/actions"
+import { fetchUserConnections } from "@/lib/actions"
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
 import { toast } from "sonner"
 import { useQueryToolContext } from "@/lib/hooks/querytoolsettings"
 import { testConnection } from "@/lib/pg"
 import { DatabaseIcon, LoadingIcon } from "../icons"
+import { useSession } from "next-auth/react"
 
 
 export default function ConnectionSelector() {
+
+  const { data } = useSession()
 
   const { setQueryToolSettings } = useQueryToolContext();
 
@@ -34,7 +37,7 @@ export default function ConnectionSelector() {
 
   React.useEffect(() => {
     const fetchConnections = async () => {
-      await fetchAllConnections()
+      await fetchUserConnections(data?.user?.id)
         .then((res) => {setConnections(res)})
     }
 
