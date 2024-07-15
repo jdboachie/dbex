@@ -33,9 +33,9 @@ import { Query } from '@prisma/client/edge';
 const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
 
   //debug. delete later.
-  if (!queryObject) {
-    toast.warning("This page doesn't work yet", {'description': 'We are working on it'})
-  }
+  // if (!queryObject) {
+  //   toast.warning("This page doesn't work yet", {'description': 'We are working on it'})
+  // }
 
   // Hooks
   const { query } = useDatabase();
