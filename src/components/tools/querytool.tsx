@@ -11,6 +11,7 @@ import Image from 'next/image';
 import { toast } from 'sonner';
 import { useTheme } from 'next-themes';
 import Editor from '@monaco-editor/react';
+import { Skeleton } from '../ui/skeleton';
 import { createQuery } from '@/lib/actions';
 import EmojiPicker from 'emoji-picker-react';
 import { Input } from '@/components/ui/input';
@@ -26,30 +27,32 @@ import ConnectionSelector from '@/components/ui/connection-selector';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipArrow } from "@/components/ui/tooltip";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Skeleton } from '../ui/skeleton';
+import { Query } from '@prisma/client/edge';
 
 
-const QueryTool = () => {
+const QueryTool = ({queryObject} : {queryObject?: Query}) => {
 
+  // Hooks
   const { query } = useDatabase();
   const { queryToolSettings } = useQueryToolContext();
 
-  const editorRef = useRef(null);
-  const inputRef = useRef(null);
-
-  const [emojiURL, setEmojiURL] = useState<string>('https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f601.png');
+  // State
+  const [code, setCode] = useState<string | undefined>(queryObject?.content || '');
+  const [emojiURL, setEmojiURL] = useState<string>(queryObject?.emojiUrl || 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f601.png');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [queryName, setQueryName] = useState<string>(queryObject?.name || '')
   const [outputData, setOutputData] = useState<{ columns: { name: string, type: number }[], rows: any[] } | null>(null);
-  const [code, setCode] = useState<string | undefined>('select now()');
   const [queryCompletionTime, setQueryCompletionTime] = useState<number | null>(null);
 
+  // Editor Theme
   const { theme, resolvedTheme } = useTheme();
   const editorTheme = (theme === 'dark' || resolvedTheme === 'dark') ? 'vs-dark' : 'light';
 
+  // Query Editor Functions
   const handleSave = () => {
     toast.promise(
       createQuery({
-        name: inputRef.current || 'untitled',
+        name: queryName || 'untitled',
         content: code,
         emojiUrl: emojiURL,
         userId: queryToolSettings?.connection.userId || '',
@@ -105,13 +108,14 @@ const QueryTool = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.setAttribute('href', url);
-      link.setAttribute('download', inputRef.current || 'output.csv');
+      link.setAttribute('download', queryName || 'output');
       link.click();
     } else {
       toast.error('No data to export');
     }
   };
 
+  // Query Editor UI
   return (
     // overlay the play icon with the loading icon (relative and absolute) while it is running (also disabled)
     <div className="size-full">
@@ -136,7 +140,14 @@ const QueryTool = () => {
                 <EmojiPicker className='bg-primary-foreground border-0' onEmojiClick={(emojiData) => setEmojiURL(emojiData.imageUrl)} />
               </DropdownMenuContent>
             </DropdownMenu>
-            <Input ref={inputRef} placeholder='untitled.sql' type='text' className='shadow-none font-medium border-0 focus:border-0 focus:bg-input focus-visible:ring-0 focus:outline-0' />
+            <Input
+              value={queryName}
+              onChange={(e) => setQueryName(e.target.value)}
+              placeholder='untitled.sql'
+              type='text'
+              className='shadow-none font-medium border-0 focus:border-0 focus:bg-input focus-visible:ring-0 focus:outline-0'
+            />
+
           </div>
         </div>
         <div className="flex gap-1 p-1">
@@ -169,10 +180,10 @@ const QueryTool = () => {
           <Tooltip>
             <TooltipTrigger>
               <Button
-                disabled={isLoading}
-                size={'icon'}
                 type='submit'
+                size={'icon'}
                 variant={'ghost'}
+                disabled={isLoading}
               >
                 {isLoading ? (
                   <LoadingIcon className='size-4' />
@@ -211,7 +222,7 @@ const QueryTool = () => {
             height="100%"
             theme={editorTheme}
             defaultLanguage="sql"
-            defaultValue="select now()"
+            defaultValue={code}
           />
         </ResizablePanel>
         <ResizableHandle

@@ -71,6 +71,18 @@ export const fetchAllQueries = async () => {
   return queries
 }
 
+export const fetchQuerybyId = async ( id: string ) => {
+  noStore();
+
+  const query = await prisma.query.findFirst({
+    where: {
+      id: id
+    }
+  })
+
+  return query
+}
+
 // DELETE
 export const deleteConnection = async (id: string) : Promise<Connection> => { // edit this later
   const deletedConnection = await prisma.connection.delete({
