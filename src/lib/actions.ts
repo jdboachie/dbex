@@ -1,5 +1,6 @@
 'use server'
 
+import { auth } from '@/auth'
 import { prisma } from '../lib/prisma'
 import { Connection, User } from '@prisma/client/edge';
 import { unstable_noStore as noStore } from "next/cache";
@@ -21,7 +22,7 @@ export const createQuery = async (data: any) => {
 
 // READ
 export const fetchUserByEmail = async (email: string) : Promise<User | null> => {
-  // noStore();
+  noStore();
 
   const user = await prisma.user.findUnique({
     where: {email: email}
@@ -29,27 +30,30 @@ export const fetchUserByEmail = async (email: string) : Promise<User | null> => 
   return user || null
 }
 
-export const fetchUserConnections = async (userId: string | undefined) : Promise<Connection[]> => {
+export const fetchConnections = async () : Promise<Connection[]> => {
   noStore();
 
-  if ( userId ) {
-    const connections: Connection[] = await prisma.connection.findMany({
-      where: {userId: userId}
-    })
-    return connections
-  } else {
-    return []
-  }
+  const session = await auth()
+  const authId = session?.user?.id
 
+  return prisma.connection.findMany({
+    where: {
+      userId: authId,
+    }
+  })
 }
 
 
 export const fetchConnectionById = async ( id: string ) => {
   noStore();
 
+  const session = await auth()
+  const authId = session?.user?.id
+
   const connection: Connection | null = await prisma.connection.findFirst({
     where: {
-      id: id
+      id: id,
+      userId: authId,
     }
   })
 
@@ -59,10 +63,16 @@ export const fetchConnectionById = async ( id: string ) => {
 export const fetchAllQueries = async () => {
   noStore();
 
+  const session = await auth()
+  const authId = session?.user?.id
+
   const queries = await prisma.query.findMany(
     {
       include: {
         relatedConnection: true
+      },
+      where: {
+        userId: authId
       }
     }
   )
@@ -72,9 +82,13 @@ export const fetchAllQueries = async () => {
 export const fetchQuerybyId = async ( id: string ) => {
   noStore();
 
+  const session = await auth()
+  const authId = session?.user?.id
+
   const query = await prisma.query.findFirst({
     where: {
-      id: id
+      id: id,
+      userId: authId,
     }
   })
 

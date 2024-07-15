@@ -51,7 +51,7 @@ import { useSession } from "next-auth/react"
 import { Connection, User } from '@prisma/client/edge';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { parsePostgresConnectionString } from "@/lib/utils"
-import { createConnection, fetchUserByEmail, fetchUserConnections } from "@/lib/actions"
+import { createConnection, fetchUserByEmail, fetchConnections } from "@/lib/actions"
 import { deleteConnection } from "@/lib/actions";
 
 
@@ -137,16 +137,15 @@ function ConnectionStringForm() {
 
 const ConnectionsListView = () => {
 
-  const { data } = useSession()
   const [connections, setConnections] = React.useState<Connection[]>([]);
+
 
   React.useEffect(() => {
     const getConnections = async () => {
-      await fetchUserConnections(data?.user?.id)
-      .then((res: Connection[]) => {setConnections(res || [])})
+      await fetchConnections().then((res: Connection[]) => {setConnections(res || [])})
     };
     getConnections();
-  }, [data?.user?.id, connections]);
+  }, []);
 
 
   const handleDelete = async (connection : Connection) => {

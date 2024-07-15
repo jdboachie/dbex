@@ -14,36 +14,29 @@ import {
 } from "@/components/ui/popover"
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { testConnection } from "@/lib/pg"
 import { Button } from "@/components/ui/button"
 import { Connection } from "@prisma/client/edge"
-import { fetchUserConnections } from "@/lib/actions"
+import { fetchConnections } from "@/lib/actions"
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
-import { toast } from "sonner"
 import { useQueryToolContext } from "@/lib/hooks/querytoolsettings"
-import { testConnection } from "@/lib/pg"
 import { DatabaseIcon, LoadingIcon } from "../icons"
-import { useSession } from "next-auth/react"
 
 
 export default function ConnectionSelector() {
 
-  const { data } = useSession()
-
   const { setQueryToolSettings } = useQueryToolContext();
 
-  const [open, setOpen] = React.useState(false)
-  const [value, setValue] = React.useState("")
+  const [open, setOpen] = React.useState<boolean>(false)
+  const [value, setValue] = React.useState<string>("")
   const [connections, setConnections] = React.useState<Connection[]>([]);
 
   React.useEffect(() => {
-    const fetchConnections = async () => {
-      await fetchUserConnections(data?.user?.id)
-        .then((res) => {setConnections(res)})
-    }
-
-    fetchConnections()
-  }, [])
-
+    const getConnections = async () => {
+      await fetchConnections().then((res: Connection[]) => {setConnections(res || [])})
+    };
+    getConnections();
+  }, []);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>

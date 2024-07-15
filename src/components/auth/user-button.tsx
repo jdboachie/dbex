@@ -25,7 +25,7 @@ export default function UserButton ({isCollapsed} : {isCollapsed: boolean}) {
   return (
     data?.user ?
     <div className={cn(
-      "w-full grid grid-flow-col p-2 mx-2",
+      "w-full grid grid-flow-col p-2",
       isCollapsed && 'px-1 mx-0'
       )}>
       <DropdownMenu>

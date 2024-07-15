@@ -1,7 +1,7 @@
 'use client';
 
 import * as React from "react";
-import { Connection } from "@prisma/client/edge";
+import { Connection } from "@prisma/client";
 
 export interface QueryToolSettings {
   connection: Connection;

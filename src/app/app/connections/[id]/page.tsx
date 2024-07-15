@@ -1,10 +1,11 @@
 import Link from 'next/link'
-import { Connection } from '@prisma/client'
+import { Connection } from '@prisma/client/edge'
 import { Button } from '@/components/ui/button'
 import { fetchConnectionById } from '@/lib/actions'
 import { PlugsConnected } from '@phosphor-icons/react/dist/ssr'
 import { GlobeAltIcon, TableCellsIcon, UserIcon } from '@heroicons/react/16/solid'
 import DeleteConnection from '@/components/delete-connection-button'
+import Loading from './loading'
 
 
 export default async function Page({ params }: { params: { id: string } }) {
@@ -59,7 +60,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         </div>
       </div>
     ) : (
-      <>Loading data...</>
+      <Loading />
     )
   )
 }
