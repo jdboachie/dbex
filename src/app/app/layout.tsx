@@ -2,7 +2,6 @@ import { auth } from "@/auth";
 import { cookies } from "next/headers"
 import { SignIn } from "@/components/auth/server";
 import MainNav from "@/components/layout/main-nav";
-import SecondaryNav from "@/components/layout/secondary-nav"
 import AppLayout from "@/components/layout/app-layout";
 import { ResizableHandle, ResizablePanel } from "@/components/ui/resizable";
 
@@ -38,10 +37,6 @@ export default async function Home({
           defaultSize={defaultLayout[0]}
         />
         <ResizableHandle className='bg-transparent' />
-        {/* <ResizablePanel defaultSize={defaultLayout[1]}>
-          <SecondaryNav />
-        </ResizablePanel> */}
-
           {children}
         </AppLayout>
       </main>
