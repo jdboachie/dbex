@@ -55,6 +55,9 @@ import { createConnection, fetchUserByEmail, fetchConnections } from "@/lib/acti
 import { deleteConnection } from "@/lib/actions";
 
 
+// const shouldRefreshConnections: booolean = false
+// global connections: Connection[] = []
+
 const ConnectionStringFormSchema = z.object({
   connectionString: z.string().min(1, { message: "Connection string is required." }),
 })
