@@ -20,7 +20,7 @@ import { SignOut } from "./client";
 
 export default function UserButton ({isCollapsed} : {isCollapsed: boolean}) {
 
-  const { data } = useSession()
+  const { data } = useSession() // prefer the auth() export
 
   return (
     data?.user ?
