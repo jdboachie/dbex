@@ -17,17 +17,15 @@ import EmojiPicker from 'emoji-picker-react';
 import { Input } from '@/components/ui/input';
 import React, { useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { FloppyDiskIcon, LoadingIcon } from '@/components/icons';
-import { TableIcon } from '@radix-ui/react-icons';
 import useDatabase from '@/lib/hooks/useDatabase';
 import { getBuiltinTypeString } from '@/lib/utils';
 import { useQueryToolContext } from '@/lib/hooks/querytoolsettings';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import ConnectionSelector from '@/components/ui/connection-selector';
+import { FloppyDiskIcon, LayoutIcon, LoadingIcon } from '@/components/icons';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipArrow } from "@/components/ui/tooltip";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Query } from '@prisma/client/edge';
 
 
 const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
@@ -291,12 +289,12 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
                       <div className='h-full border border-dashed rounded-md flex items-center justify-center'>
                         {/* https://vercel.com/geist/empty-state */}
                         <div className="h-fit justify-center items-center flex flex-col gap-0">
-                          <TableIcon className='size-8 m-2 text-muted-foreground' />
-                          <p className="text-base text-center">No data to show</p>
-                          <p className="text-muted-foreground text-sm">Execute a query to get started</p>
-                          </div>
-                          </div>
-                          </div>
+                          <LayoutIcon className='border rounded-lg size-16 p-4 m-5 text-muted-foreground' />
+                          <p className="text-base text-primary text-center">No data to show</p>
+                          <p className="text-muted-foreground text-xs">Select a database to view details</p>
+                        </div>
+                      </div>
+                    </div>
                     )
                   }
                 </>

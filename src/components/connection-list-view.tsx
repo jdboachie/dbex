@@ -32,7 +32,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { PostgresAltIcon } from "./icons";
+import { DatabaseIcon, PostgresAltIcon } from "./icons";
 import { Badge } from '@/components/ui/badge'
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -53,6 +53,8 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { parsePostgresConnectionString } from "@/lib/utils"
 import { createConnection, fetchUserByEmail, fetchConnections } from "@/lib/actions"
 import { deleteConnection } from "@/lib/actions";
+import { useRouter } from "next/navigation"
+import EmptyState from "./closet/empty-state"
 
 
 // const shouldRefreshConnections: booolean = false
@@ -62,17 +64,103 @@ const ConnectionStringFormSchema = z.object({
   connectionString: z.string().min(1, { message: "Connection string is required." }),
 })
 
-function ConnectionStringForm() {
+// function ConnectionStringForm() {
 
+//   const { data } = useSession()
+//   const [userId, setUserId] = React.useState<string>('')
+
+//   React.useEffect(() => {
+//     const getId = async () => {
+//       await fetchUserByEmail(data?.user?.email || '')
+//                  .then((res) => {res && setUserId(res.id)})
+//     }
+
+//     getId()
+//   }, [data?.user?.email]);
+
+//   const form = useForm<z.infer<typeof ConnectionStringFormSchema>>({
+//     resolver: zodResolver(ConnectionStringFormSchema),
+//   });
+
+//   async function onSubmit(data: z.infer<typeof ConnectionStringFormSchema>) {
+//     toast.promise(
+//       testConnection(data.connectionString)
+//         .then(() => {
+//           const credentials = parsePostgresConnectionString(data.connectionString);
+//           createConnection({
+//             userId: userId,
+//             username: credentials.username,
+//             password: credentials.password,
+//             hostname: credentials.hostname,
+//             databaseName: credentials.databaseName,
+//             protocol: credentials.protocol,
+//             port: credentials.port,
+//             ssl: credentials.ssl,
+//             isConnected: true,
+//           })
+//         }),
+//       {
+//         loading: 'Connecting...',
+//         success: `Connected successfully`,
+//         error: 'Error connecting to database'
+//       }
+//     )
+//   }
+
+//   return (
+//     <Form {...form}>
+//       <form onSubmit={form.handleSubmit(onSubmit)} className="">
+//         <div className="grid grid-flow-row gap-2 px-6">
+//           <FormField
+//             control={form.control}
+//             name="connectionString"
+//             render={({ field }) => (
+//               <FormItem>
+//                 <FormLabel>Connection String</FormLabel>
+//                 <FormControl>
+//                   <Input spellCheck={false} {...field} />
+//                 </FormControl>
+//                 <FormMessage />
+//               </FormItem>
+//             )}
+//           />
+//         </div>
+//         <DialogFooter className="col-span-2">
+//           <DialogClose asChild>
+//             <Button size={'default'} variant="outline">Cancel</Button>
+//           </DialogClose>
+//           <DialogClose asChild>
+//             <Button size={'default'} type="submit">Save changes</Button>
+//           </DialogClose>
+//         </DialogFooter>
+//       </form>
+//     </Form>
+//   );
+
+// }
+
+
+
+const ConnectionsListView = () => {
+
+  const router = useRouter()
   const { data } = useSession()
+
   const [userId, setUserId] = React.useState<string>('')
+  const [connections, setConnections] = React.useState<Connection[]>([]);
+
+  React.useEffect(() => {
+    const getConnections = async () => {
+      await fetchConnections().then((res: Connection[]) => {setConnections(res || [])})
+    };
+    getConnections();
+  }, []);
 
   React.useEffect(() => {
     const getId = async () => {
       await fetchUserByEmail(data?.user?.email || '')
                  .then((res) => {res && setUserId(res.id)})
     }
-
     getId()
   }, [data?.user?.email]);
 
@@ -96,6 +184,10 @@ function ConnectionStringForm() {
             ssl: credentials.ssl,
             isConnected: true,
           })
+          .then((res) => {
+            setConnections([...connections, res]);
+            router.push(`/app/connections/${res.id}`)
+          })
         }),
       {
         loading: 'Connecting...',
@@ -105,55 +197,9 @@ function ConnectionStringForm() {
     )
   }
 
-  return (
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="">
-        <div className="grid grid-flow-row gap-2 px-6">
-          <FormField
-            control={form.control}
-            name="connectionString"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Connection String</FormLabel>
-                <FormControl>
-                  <Input spellCheck={false} {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </div>
-        <DialogFooter className="col-span-2">
-          <DialogClose asChild>
-            <Button size={'default'} variant="outline">Cancel</Button>
-          </DialogClose>
-          <DialogClose asChild>
-            <Button size={'default'} type="submit">Save changes</Button>
-          </DialogClose>
-        </DialogFooter>
-      </form>
-    </Form>
-  );
-
-}
-
-
-const ConnectionsListView = () => {
-
-  const [connections, setConnections] = React.useState<Connection[]>([]);
-
-
-  React.useEffect(() => {
-    const getConnections = async () => {
-      await fetchConnections().then((res: Connection[]) => {setConnections(res || [])})
-    };
-    getConnections();
-  }, []);
-
-
   const handleDelete = async (connection : Connection) => {
     toast.promise(
-      deleteConnection(connection.id),
+      deleteConnection(connection.id).then(() => router.push('/app/connections')),
       {
         loading: `Removing ${connection.databaseName}...`,
         success: () => {
@@ -168,13 +214,12 @@ const ConnectionsListView = () => {
 
   return (
     <Tabs defaultValue="all" className="flex flex-col items-stretch h-screen">
-      <div className="grid p-2 px-2 items-center">
+      <div className="grid border-b p-2 px-2 items-center">
         <TabsList>
           <TabsTrigger value="all" className="w-full">All</TabsTrigger>
           <TabsTrigger value="active" className="w-full">Active</TabsTrigger>
         </TabsList>
       </div>
-      <Separator />
       <div className="p-4">
         <form>
           <div className="relative">
@@ -183,7 +228,7 @@ const ConnectionsListView = () => {
           </div>
         </form>
       </div>
-      <div className=" grid px-4 mb-2">
+      <div className="grid px-4">
         <Dialog>
           <DialogTrigger>
             <Button
@@ -211,7 +256,33 @@ const ConnectionsListView = () => {
                   </TabsList>
                 </div>
                 <TabsContent value="connection-string">
-                  <ConnectionStringForm />
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="">
+                      <div className="grid grid-flow-row gap-2 px-6">
+                        <FormField
+                          control={form.control}
+                          name="connectionString"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Connection String</FormLabel>
+                              <FormControl>
+                                <Input spellCheck={false} {...field} />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+                      <DialogFooter className="col-span-2">
+                        <DialogClose asChild>
+                          <Button size={'default'} variant="outline">Cancel</Button>
+                        </DialogClose>
+                        <DialogClose asChild>
+                          <Button size={'default'} type="submit">Save changes</Button>
+                        </DialogClose>
+                      </DialogFooter>
+                    </form>
+                  </Form>
                 </TabsContent>
                 <TabsContent value="credentials"></TabsContent>
               </Tabs>
@@ -219,22 +290,21 @@ const ConnectionsListView = () => {
           </DialogContent>
         </Dialog>
       </div>
-      <ScrollArea className='pb-8'>
-        <TabsContent value="all" className="m-0 grid px-4">
-          {/* {refreshingConnections && 'Loading...'} */}
+      <ScrollArea>
+        <TabsContent value="all" className="m-0 dev h-full grid px-4 py-2">
           <React.Suspense fallback={<ConnectionCardSkeleton/>}>
-            {connections ?
+            {connections.length >= 1 ?
               <div className='relative grid grid-flow-row size-full gap-2'>
                 {connections.map((connection) => (
                   <Link
                     key={connection.id}
                       href={`/app/connections/${connection.id}`}
                     >
-                    <div className='border rounded-md p-4 h-fit flex gap-3 items-center justify-start'>
+                    <div className='border rounded-lg transition-colors duration-250 ease-out hover:text-primary p-4 h-fit flex gap-3 items-center justify-start'>
                       <PostgresAltIcon className="size-10"/>
                       <div className="grid grid-flow-row w-full gap-1 items-center justify-start">
                         <div className="items-center grid grid-cols-2">
-                          <p className="text-start truncate text-sm">{connection.databaseName}</p>
+                          <p className="text-start truncate text-sm font-medium">{connection.databaseName}</p>
                           <div className="grid justify-end">
                             <DropdownMenu>
                               <DropdownMenuTrigger className="rounded-full p-1 hover:bg-secondary">
@@ -273,7 +343,12 @@ const ConnectionsListView = () => {
                 ))}
               </div>
               :
-              <ConnectionCardSkeleton />
+              <EmptyState
+                small
+                icon={DatabaseIcon}
+                title={'No connections yet'}
+                description={'Add a connection to get started'}
+              />
             }
           </React.Suspense>
         </TabsContent>

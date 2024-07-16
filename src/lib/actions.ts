@@ -7,8 +7,8 @@ import { unstable_noStore as noStore } from "next/cache";
 
 
 // CREATE
-export const createConnection = async (data: any) => {
-  await prisma.connection.create({
+export const createConnection = async (data: any): Promise<Connection> => {
+  return await prisma.connection.create({
     data: data
   })
 }

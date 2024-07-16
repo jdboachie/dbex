@@ -29,9 +29,9 @@ export default async function Page({ params }: { params: { id: string } }) {
             <DeleteConnection connectionId={data.id}/>
           </div>
         </div>
-        <div className='p-8 grid gap-4'>
+        <div className='p-10 grid gap-4'>
           <h5 className="text-xl font-semibold">Credentials</h5>
-          <section className="grid grid-flow-row[&>*:nth-child(even)]:bg-background [&>*:nth-child(odd)]:bg-primary-foreground">
+          <section className="text-primary grid grid-flow-row [&>*:nth-child(even)]:bg-background [&>*:nth-child(odd)]:bg-primary-foreground">
             <div className="p-2 px-3 flex gap-2 items-center rounded-sm">
               <TableCellsIcon className='size-5' />
               <span className='flex items-center'>
