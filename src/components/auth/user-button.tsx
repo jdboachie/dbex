@@ -1,4 +1,4 @@
-'use client'
+'use server'
 
 import {
   DropdownMenu,
@@ -8,22 +8,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import * as React from 'react'
+import { auth } from "@/auth";
 import { cn } from "@/lib/utils";
+import { SignOut } from "./server";
 import { Button } from "@/components/ui/button";
-import { useSession } from "next-auth/react";
-import { DotsThree as DotsThreeIcon } from "@phosphor-icons/react"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Skeleton } from '@/components/ui/skeleton'
+import { DotsThree as DotsThreeIcon } from "@phosphor-icons/react/dist/ssr" // TODO: change this to geist icons
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import UserButtonSkeleton from "@/components/closet/skeletons/UserButtonSkeleton";
-import { SignOut } from "./client";
 
-export default function UserButton ({isCollapsed} : {isCollapsed: boolean}) {
+export default async function UserButton ({isCollapsed} : {isCollapsed: boolean}) {
 
-  const { data } = useSession() // prefer the auth() export
+  const session  = await auth() // prefer the auth() export
 
   return (
-    data?.user ?
+    session?.user ?
     <div className={cn(
       "w-full grid grid-flow-col p-2",
       isCollapsed && 'px-1 mx-0'
@@ -41,7 +40,7 @@ export default function UserButton ({isCollapsed} : {isCollapsed: boolean}) {
             <div className={cn("flex items-center w-full", isCollapsed && 'w-fit')}>
               <Avatar className="">
                 <AvatarImage
-                  src={data?.user.image || ''}
+                  src={session?.user.image || ''}
                   alt="user avatar"
                 />
                 <Skeleton>
@@ -49,7 +48,7 @@ export default function UserButton ({isCollapsed} : {isCollapsed: boolean}) {
                 </Skeleton>
               </Avatar>
               <div className={isCollapsed ? 'hidden': 'flex items-center w-full justify-between mx-2'}>
-                <p className="text-sm text-start text-muted-foreground truncate grow pt-0.5">{data?.user.name}</p>
+                <p className="text-sm text-start px-1 text-muted-foreground truncate grow pt-0.5">{session?.user.name}</p>
                 <DotsThreeIcon className="size-5" />
               </div>
             </div>

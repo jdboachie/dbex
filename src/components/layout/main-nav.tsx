@@ -58,9 +58,9 @@ const MainNav = ({defaultSize, defaultCollapsed}: {defaultSize: number, defaultC
         {isCollapsed ? <ThemeToggleAlt /> : <ThemeToggle />}
       </div>
       <div className="grid">
-        {/* <React.Suspense fallback={<UserButtonSkeleton isCollapsed={isCollapsed} />}>
+        <React.Suspense fallback={<UserButtonSkeleton isCollapsed={isCollapsed} />}>
           <UserButton isCollapsed={isCollapsed} />
-        </React.Suspense> */}
+        </React.Suspense>
       </div>
     </ResizablePanel>
   )
