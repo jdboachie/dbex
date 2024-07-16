@@ -1,19 +1,20 @@
 'use server'
 
+import { auth } from '@/auth'
 import { prisma } from '../lib/prisma'
-import { Connection, Query, User } from '@prisma/client/edge';
+import { Connection, User } from '@prisma/client/edge';
 import { unstable_noStore as noStore } from "next/cache";
 
 
 // CREATE
-export const createConnection = async (data: any) => {
-  await prisma.connection.create({
+export const createConnection = async (data: any): Promise<Connection> => {
+  return await prisma.connection.create({
     data: data
   })
 }
 
-export const createQuery = async (data: any) : Promise<Query> => {
-  return await prisma.query.create({
+export const createQuery = async (data: any) => {
+  await prisma.query.create({
     data: data
   })
 }
@@ -29,29 +30,30 @@ export const fetchUserByEmail = async (email: string) : Promise<User | null> => 
   return user || null
 }
 
-export const fetchAllConnections = async () : Promise<Connection[]> => {
+export const fetchConnections = async () : Promise<Connection[]> => {
   noStore();
 
-  const connections: Connection[] = await prisma.connection.findMany()
-  return connections
-}
+  const session = await auth()
+  const authId = session?.user?.id
 
-export const fetchUserConnections = async (id: string) : Promise<Connection[]> => {
-  noStore();
-
-  const connections: Connection[] = await prisma.connection.findMany({
-    where: {id: id}
+  return prisma.connection.findMany({
+    where: {
+      userId: authId,
+    }
   })
-  return connections
 }
 
 
 export const fetchConnectionById = async ( id: string ) => {
   noStore();
 
+  const session = await auth()
+  const authId = session?.user?.id
+
   const connection: Connection | null = await prisma.connection.findFirst({
     where: {
-      id: id
+      id: id,
+      userId: authId,
     }
   })
 
@@ -61,14 +63,36 @@ export const fetchConnectionById = async ( id: string ) => {
 export const fetchAllQueries = async () => {
   noStore();
 
+  const session = await auth()
+  const authId = session?.user?.id
+
   const queries = await prisma.query.findMany(
     {
       include: {
         relatedConnection: true
+      },
+      where: {
+        userId: authId
       }
     }
   )
   return queries
+}
+
+export const fetchQuerybyId = async ( id: string ) => {
+  noStore();
+
+  const session = await auth()
+  const authId = session?.user?.id
+
+  const query = await prisma.query.findFirst({
+    where: {
+      id: id,
+      userId: authId,
+    }
+  })
+
+  return query
 }
 
 // DELETE

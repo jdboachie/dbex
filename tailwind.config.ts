@@ -1,4 +1,3 @@
-import {nextui} from '@nextui-org/theme';
 import type { Config } from "tailwindcss";
 
 const config = {
@@ -8,7 +7,6 @@ const config = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
-    "./node_modules/@nextui-org/theme/dist/components/[object Object].js"
   ],
   prefix: "",
   theme: {
@@ -78,15 +76,24 @@ const config = {
           "100%": {
             "transform": "translateX(100%)",
           }
-        }
+        },
+        "rotate-y": {
+          "0%": {
+            transform: "rotateY(0deg)",
+          },
+          "100%": {
+            transform: "rotateY(360deg)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "rotate-y": "rotate-y 5s linear infinite",
       },
     },
   },
-  plugins: [require("tailwindcss-animate"),nextui()],
+  plugins: [require("tailwindcss-animate")],
 } satisfies Config;
 
 export default config;

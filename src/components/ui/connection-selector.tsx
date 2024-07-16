@@ -14,52 +14,51 @@ import {
 } from "@/components/ui/popover"
 import * as React from "react"
 import { cn } from "@/lib/utils"
+import { testConnection } from "@/lib/pg"
 import { Button } from "@/components/ui/button"
-import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
 import { Connection } from "@prisma/client/edge"
-import { fetchAllConnections } from "@/lib/actions"
-import { toast } from "sonner"
-import { Database } from "@phosphor-icons/react"
+import { fetchConnections } from "@/lib/actions"
+import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
 import { useQueryToolContext } from "@/lib/hooks/querytoolsettings"
+import { DatabaseIcon, LoadingIcon } from "../icons"
 
 
 export default function ConnectionSelector() {
 
   const { setQueryToolSettings } = useQueryToolContext();
 
-  const [value, setValue] = React.useState("")
-  const [open, setOpen] = React.useState(false)
+  const [open, setOpen] = React.useState<boolean>(false)
+  const [value, setValue] = React.useState<string>("")
   const [connections, setConnections] = React.useState<Connection[]>([]);
 
   React.useEffect(() => {
-    const fetchConnections = async () => {
-      const res: Connection[] = await fetchAllConnections();
-      setConnections(res)
-    }
-
-    fetchConnections()
-  }, [])
-
+    const getConnections = async () => {
+      await fetchConnections().then((res: Connection[]) => {setConnections(res || [])})
+    };
+    getConnections();
+  }, []);
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <Button
-          variant="outline"
+          variant="ghost"
           role="combobox"
           aria-expanded={open}
-          className="w-[200px] justify-between gap-2"
+          className="w-52 shadow-none justify-between"
         >
-          <Database className="min-w-4" />
-          <p className="truncate">
-            {value
-              ? connections?.find((connection) => connection.databaseName === value)?.databaseName
-              : "Select connection..."}
-          </p>
+          <div className="flex gap-2 items-center">
+            <DatabaseIcon className="size-4 mr-2" />
+            <p className="truncate">
+              {value
+                ? connections?.find((connection) => connection.databaseName === value)?.databaseName
+                : "Select connection..."}
+            </p>
+          </div>
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-52 p-0">
         <Command>
           <CommandInput placeholder="Search connections..." className="h-9" />
           {/* <CommandEmpty>No connection found.</CommandEmpty> */}
@@ -69,6 +68,7 @@ export default function ConnectionSelector() {
                 key={key}
                 onClick={() => {
                   setValue(connection.databaseName)
+                  testConnection(connection.protocol)
                   setQueryToolSettings({connection})
                   setOpen(false)
                 }}
@@ -84,6 +84,7 @@ export default function ConnectionSelector() {
                 />
               </div>
             ))}
+            {!connections && <LoadingIcon className="w-4"/>}
           </CommandGroup>
         </Command>
       </PopoverContent>
