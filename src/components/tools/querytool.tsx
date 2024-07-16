@@ -26,6 +26,7 @@ import { FloppyDiskIcon, LayoutIcon, LoadingIcon } from '@/components/icons';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipArrow } from "@/components/ui/tooltip";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import EmptyState from '../closet/empty-state';
 
 
 const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
@@ -144,6 +145,7 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
               </DropdownMenuContent>
             </DropdownMenu>
             <Input
+              autoFocus
               value={queryName}
               onChange={(e) => setQueryName(e.target.value)}
               placeholder='untitled.sql'
@@ -286,14 +288,11 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
                     :
                     (
                     <div className="p-4 grow h-full">
-                      <div className='h-full border border-dashed rounded-md flex items-center justify-center'>
-                        {/* https://vercel.com/geist/empty-state */}
-                        <div className="h-fit justify-center items-center flex flex-col gap-0">
-                          <LayoutIcon className='border rounded-lg size-16 p-4 m-5 text-muted-foreground' />
-                          <p className="text-base text-primary text-center">No data to show</p>
-                          <p className="text-muted-foreground text-xs">Select a database to view details</p>
-                        </div>
-                      </div>
+                      <EmptyState
+                        icon={LayoutIcon}
+                        title='No data to show'
+                        description='Execute a query to view the output'
+                      />
                     </div>
                     )
                   }

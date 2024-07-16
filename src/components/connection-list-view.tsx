@@ -291,7 +291,7 @@ const ConnectionsListView = () => {
         </Dialog>
       </div>
       <ScrollArea>
-        <TabsContent value="all" className="m-0 dev h-full grid px-4 py-2">
+        <TabsContent value="all" className="m-0 h-full grid px-4 py-2">
           <React.Suspense fallback={<ConnectionCardSkeleton/>}>
             {connections.length >= 1 ?
               <div className='relative grid grid-flow-row size-full gap-2'>
