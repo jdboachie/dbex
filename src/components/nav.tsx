@@ -61,7 +61,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
                   href={link.href || '#'}
                   className={cn(
                     buttonVariants({ variant: pathname.startsWith(link.href || 'undefined') ? 'default': 'ghost', size: "icon" }),
-                    "h-9 w-9",
+                    "size-10",
                     pathname.startsWith(link.href || 'undefined') ?
                       "dark:bg-muted dark:hover:bg-muted dark:hover:text-white dark:text-primary" : "text-muted-foreground"
                   )}

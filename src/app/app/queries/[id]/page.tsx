@@ -3,10 +3,13 @@ import QueryTool from '@/components/tools/querytool'
 
 async function Page({params}: {params: {id: string}}) {
 
-  const queryObject = await fetchQuerybyId(params.id)
+  const data = await fetchQuerybyId(params.id)
 
   return (
-    <QueryTool queryObject={queryObject} />
+    data &&
+      <QueryTool
+        data={data}
+      />
   )
 }
 

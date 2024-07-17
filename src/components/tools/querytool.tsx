@@ -1,50 +1,58 @@
 'use client';
 
 import {
-  FileCsv,
-  Play as PlayIcon,
-  MicrosoftExcelLogo,
-  Download as DownloadIcon,
-} from '@phosphor-icons/react';
+  PlayIcon,
+  LayoutIcon,
+  LoadingIcon,
+  DownloadIcon,
+  FloppyDiskIcon,
+} from '@/components/icons';
 import Papa from 'papaparse';
 import Image from 'next/image';
 import { toast } from 'sonner';
+import {
+  FileCsv,
+  MicrosoftExcelLogo,
+} from '@phosphor-icons/react';
 import { useTheme } from 'next-themes';
 import Editor from '@monaco-editor/react';
 import { Skeleton } from '../ui/skeleton';
 import { createQuery } from '@/lib/actions';
+import { useRouter } from 'next/navigation';
 import EmojiPicker from 'emoji-picker-react';
 import { Input } from '@/components/ui/input';
-import React, { useRef, useState } from 'react';
+import EmptyState from '../closet/empty-state';
 import { Button } from '@/components/ui/button';
 import useDatabase from '@/lib/hooks/useDatabase';
 import { getBuiltinTypeString } from '@/lib/utils';
+import React, { useState, useEffect } from 'react';
 import { useQueryToolContext } from '@/lib/hooks/querytoolsettings';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import ConnectionSelector from '@/components/ui/connection-selector';
-import { FloppyDiskIcon, LayoutIcon, LoadingIcon } from '@/components/icons';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipArrow } from "@/components/ui/tooltip";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import EmptyState from '../closet/empty-state';
+import { Query, Connection } from '@prisma/client';
 
+interface QueryWithConnection extends Query {
+  relatedConnection: Connection;
+}
 
-const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
+const QueryTool = ({data}: {data?: QueryWithConnection}) => {
 
-  //debug. delete later.
-  // if (!queryObject) {
-  //   toast.warning("This page doesn't work yet", {'description': 'We are working on it'})
-  // }
+  const DEFAULT_EMOJI_URL = 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1fae5.png'
 
   // Hooks
+  const router = useRouter();
   const { query } = useDatabase();
   const { queryToolSettings } = useQueryToolContext();
 
   // State
-  const [code, setCode] = useState<string | undefined>(queryObject?.content || '');
-  const [emojiURL, setEmojiURL] = useState<string>(queryObject?.emojiUrl || 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f601.png');
+  // const [shouldUpdateNotCreate, setShouldUpdateNotCreate] = useState<boolean>(false)
+  const [code, setCode] = useState<string | undefined>(data?.content || '');
+  const [emojiURL, setEmojiURL] = useState<string>(data?.emojiUrl || DEFAULT_EMOJI_URL);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [queryName, setQueryName] = useState<string>(queryObject?.name || '')
+  const [queryName, setQueryName] = useState<string>(data?.name || '')
   const [outputData, setOutputData] = useState<{ columns: { name: string, type: number }[], rows: any[] } | null>(null);
   const [queryCompletionTime, setQueryCompletionTime] = useState<number | null>(null);
 
@@ -59,15 +67,16 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
         name: queryName || 'untitled',
         content: code,
         emojiUrl: emojiURL,
-        userId: queryToolSettings?.connection.userId || '',
-        connectionId: queryToolSettings?.connection.id || '',
-      }),
-    {
-      loading: 'Saving query...',
-      success: 'Saved',
-      error: 'Error saving query'
-    }
+        userId: queryToolSettings?.connection?.userId || '',
+        connectionId: queryToolSettings?.connection?.id || '',
+      }).then((res) => router.push(`/app/queries/${res.id}`)),
+      {
+        loading: 'Saving query...',
+        success: 'Saved',
+        error: 'Error saving query'
+      }
     )
+
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -80,8 +89,8 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
         const result = await query(code);
 
         if (result.error) {
-          toast.error(result.error, {
-            description: result.error === 'AggregateError' ? 'Check your connection.' : 'Most likely our fault.'
+          toast.error("Error", {
+            description: result.error === 'AggregateError' ? 'Check your connection.' : result.error
           });
         } else if (result.res) {
           toast.success(`Query run successfully in ${result.time}ms`);
@@ -89,8 +98,8 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
           setOutputData(result.res);
         }
       } catch (error) {
-        toast.error(error!.toString(), {
-          description: error!.toString() === 'AggregateError' ? 'Check your connection.' : 'Try that again.'
+        toast.error("Error", {
+          description: error!.toString() === 'AggregateError' ? 'Check your connection.' : error!.toString()
         });
       }
     }
@@ -126,7 +135,7 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
       <div className="flex p-1 border-b justify-between items-center w-full">
       <form onSubmit={handleSubmit} className='flex justify-between items-center w-full'>
         <div className="flex items-center">
-          <ConnectionSelector />
+          <ConnectionSelector presetConnection={data?.relatedConnection} />
           <div className="flex gap-1">
             <DropdownMenu>
               <DropdownMenuTrigger>
@@ -145,12 +154,11 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
               </DropdownMenuContent>
             </DropdownMenu>
             <Input
-              autoFocus
               value={queryName}
               onChange={(e) => setQueryName(e.target.value)}
-              placeholder='untitled.sql'
+              placeholder='Untitled'
               type='text'
-              className='shadow-none font-medium border-0 focus:border-0 focus:bg-input focus-visible:ring-0 focus:outline-0'
+              className='shadow-none text-primary font-medium border-0 focus:border-0 focus:bg-input focus-visible:ring-0 focus:outline-0'
             />
 
           </div>
@@ -176,7 +184,7 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
                 <FileCsv className='size-4 mr-2'/>
                 <p className='text-xs'>Export to CSV</p>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem disabled>
                 <MicrosoftExcelLogo className='size-4 mr-2' />
                 <p className="text-xs">Export to Microsoft Excel</p>
               </DropdownMenuItem>
@@ -246,12 +254,12 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
               :
               <>
               {outputData ? (
-                <ScrollArea className={`text-sm flex flex-col-reverse place-items-center font-mono tracking-normal w-[calc(100%-0px)] h-[calc(100%-0px)]`}>
+                <ScrollArea className={`text-xs font-medium flex flex-col-reverse place-items-center font-mono tracking-normal w-[calc(100%-0px)] h-[calc(100%-0px)]`}>
                   <table className='text-primary table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
-                    <thead className='sticky top-[-1px] bg-primary-foreground drop-shadow max-h-[1rem] min-h-[1rem]'>
+                    <thead className='sticky top-[-1px] bg-background border-b max-h-[1rem] min-h-[1rem]'>
                       <tr className='truncate'>
                         {outputData.columns.map((col, index) => (
-                          <th key={index} className='border border-t-none p-2 min-w-[10rem] w-[10rem] max-w-[10rem]'>
+                          <th key={index} className='p-2 min-w-[10rem] w-[10rem] max-w-[10rem]'>
                             {col.name}
                             <br />
                             <span className='text-xs font-normal text-muted-foreground'>{getBuiltinTypeString(col.type)}</span>
@@ -259,18 +267,16 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
                         ))}
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className='[&>*:nth-child(even)]:bg-background hover:[&>*:nth-child(even)]:bg-secondary [&>*:nth-child(odd)]:bg-primary-foreground hover:[&>*:nth-child(odd)]:bg-secondary'>
                       {outputData.rows.map((row, rowIndex) => (
                         <tr
                           key={rowIndex}
-                          className='max-h-[1rem] min-h-[1rem] hover:bg-primary-foreground transition-all duration-250 ease-in-out'
+                          className='rounded-md max-h-[1rem] min-h-[1rem] transition-all duration-250 ease-in-out'
                         >
                           {outputData.columns.map((col, colIndex) => (
                             <td
                               key={colIndex}
-                              className='min-w-[10rem] w-[10rem] max-w-[10rem] truncate
-                                        border hover:border-double hover:border-primary
-                                        whitespace-nowrap p-2 hover:bg-primary-foreground'
+                              className='min-w-[10rem] w-[10rem] max-w-[10rem] truncate whitespace-nowrap p-2'
                             >
                               {row[col.name] instanceof Date ? row[col.name].toString() : row[col.name]}
                             </td>

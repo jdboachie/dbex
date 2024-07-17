@@ -2,8 +2,8 @@ import "./globals.css";
 import localFont from "next/font/local";
 
 import type { Metadata } from "next";
-// import { Analytics } from "@vercel/analytics/react"
-// import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/react"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 
 import { SessionProvider } from "next-auth/react"
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -36,9 +36,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans tracking-[initial] text-muted-foreground text-sm`}>
-        {/* <Analytics/>
-        <SpeedInsights/> */}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans text-muted-foreground text-sm`}>
+        <Analytics/>
+        <SpeedInsights/>
         <SessionProvider>
           <ThemeProvider
             attribute="class"
