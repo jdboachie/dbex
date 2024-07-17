@@ -260,7 +260,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
             <div className="grid grid-flow-col gap-2 place-items-center">
               Last query?
               <StatusDot state={
-                isLoading ? 'wait' : (outputData ? 'ok' : (hasFailure ? 'failed' : 'dormant'))
+                isLoading ? 'wait' : (hasFailure ? 'failed' : (outputData ? 'ok' : 'dormant'))
                 }
               />
             </div>
