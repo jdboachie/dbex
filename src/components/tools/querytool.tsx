@@ -33,6 +33,7 @@ import { Tooltip, TooltipContent, TooltipTrigger, TooltipArrow } from "@/compone
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Query, Connection } from '@prisma/client';
+import StatusDot from '../ui/status-dot';
 
 interface QueryWithConnection extends Query {
   relatedConnection: Connection;
@@ -48,7 +49,8 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
   const { queryToolSettings } = useQueryToolContext();
 
   // State
-  // const [shouldUpdateNotCreate, setShouldUpdateNotCreate] = useState<boolean>(false)
+  const [shouldUpdateNotCreate, setShouldUpdateNotCreate] = useState<boolean>(false)
+  const [hasFailure, setHasFailure] = useState<boolean>(false)
   const [code, setCode] = useState<string | undefined>(data?.content || '');
   const [emojiURL, setEmojiURL] = useState<string>(data?.emojiUrl || DEFAULT_EMOJI_URL);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -63,6 +65,8 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
   // Query Editor Functions
   const handleSave = () => {
     toast.promise(
+      // shouldUpdateNotCreate ?
+      //updateQuery({where {id: }, data: {content: content, title: title}})
       createQuery({
         name: queryName || 'untitled',
         content: code,
@@ -89,6 +93,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
         const result = await query(code);
 
         if (result.error) {
+          setHasFailure(true)
           toast.error("Error", {
             description: result.error === 'AggregateError' ? 'Check your connection.' : result.error
           });
@@ -98,6 +103,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
           setOutputData(result.res);
         }
       } catch (error) {
+        setHasFailure(true)
         toast.error("Error", {
           description: error!.toString() === 'AggregateError' ? 'Check your connection.' : error!.toString()
         });
@@ -135,7 +141,9 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
       <div className="flex p-1 border-b justify-between items-center w-full">
       <form onSubmit={handleSubmit} className='flex justify-between items-center w-full'>
         <div className="flex items-center">
-          <ConnectionSelector presetConnection={data?.relatedConnection} />
+          <React.Suspense fallback={<Skeleton className='h-5 w-20'/>}>
+            <ConnectionSelector presetConnection={data?.relatedConnection} />
+          </React.Suspense>
           <div className="flex gap-1">
             <DropdownMenu>
               <DropdownMenuTrigger>
@@ -243,10 +251,19 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
           className='activehandle'
         />
         <ResizablePanel minSize={20} defaultSize={60}>
-          <div className="border-b flex text-sm w-full p-2 gap-2">
-            <div className='flex gap-1'>Num rows: <p className="px-1 rounded bg-primary-foreground">{outputData?.rows.length || '---'}</p></div>
-            <div className="flex gap-1">Num cols: <p className="px-1 rounded bg-primary-foreground">{outputData?.columns.length || '---'}</p></div>
-            <div className='flex gap-1'>Query completed in <p className="px-1 rounded bg-primary-foreground">{queryCompletionTime ? queryCompletionTime : '---'}ms</p></div>
+          <div className="border-b flex justify-between text-xs font-medium w-full p-2 gap-2">
+            <div className="flex gap-2">
+              <div className='flex gap-1'>Num rows: <p className="px-1 rounded bg-primary-foreground">{outputData?.rows.length || '---'}</p></div>
+              <div className="flex gap-1">Num cols: <p className="px-1 rounded bg-primary-foreground">{outputData?.columns.length || '---'}</p></div>
+              <div className='flex gap-1'>Query completed in <p className="px-1 rounded bg-primary-foreground">{queryCompletionTime ? queryCompletionTime : '---'}ms</p></div>
+            </div>
+            <div className="grid grid-flow-col gap-2 place-items-center">
+              Last query?
+              <StatusDot state={
+                isLoading ? 'wait' : (outputData ? 'ok' : (hasFailure ? 'failed' : 'dormant'))
+                }
+              />
+            </div>
           </div>
           <div className="h-[calc(100%-86px)]">
             {isLoading ?

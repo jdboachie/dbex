@@ -21,6 +21,7 @@ import { fetchConnections } from "@/lib/actions"
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
 import { useQueryToolContext } from "@/lib/hooks/querytoolsettings"
 import { DatabaseIcon, LoadingIcon } from "../icons"
+import { Skeleton } from "./skeleton"
 
 
 export default function ConnectionSelector({presetConnection}:{presetConnection?: Connection}) {
@@ -59,11 +60,13 @@ export default function ConnectionSelector({presetConnection}:{presetConnection?
         >
           <div className="flex gap-2 items-center">
             <DatabaseIcon className="size-4 mr-2" />
-            <p className="truncate">
-              {value
-                ? connections?.find((connection) => connection.databaseName === value)?.databaseName
-                : "Select connection..."}
-            </p>
+            {value ?
+              <>{connections ? <p>{connections?.find((connection) => connection.databaseName === value)?.databaseName}</p> : <Skeleton className="bg-primary-foreground rounded-sm w-20 h-5" />}</>
+              :
+              <p className="truncate">
+                Select a connection
+              </p>
+            }
           </div>
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
