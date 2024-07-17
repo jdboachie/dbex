@@ -1,10 +1,5 @@
 "use client";
 
-import {
-  HomeIcon,
-  ServerStackIcon,
-  DocumentMagnifyingGlassIcon
-} from '@heroicons/react/16/solid'
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
@@ -15,6 +10,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { usePathname } from "next/navigation";
+import { HomeIcon, ServerIcon, TerminalWindowIcon } from './icons';
 
 const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
 
@@ -38,14 +34,14 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
     ,
     {
       title: "Connections",
-      label: "3",
-      icon: ServerStackIcon,
+      label: "",
+      icon: ServerIcon,
       href: '/app/connections',
     },
     {
-      title: "Queries",
-      label: "12",
-      icon: DocumentMagnifyingGlassIcon,
+      title: "SQL Editor",
+      label: "",
+      icon: TerminalWindowIcon,
       href: '/app/queries',
     },
   ]
@@ -89,7 +85,8 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
               key={index}
               href={link.href || '#'}
               className={cn(
-                buttonVariants({ variant: pathname.startsWith(link.href || 'undefined') ? 'default': 'ghost', size: "default" }),
+                buttonVariants({ variant: pathname.startsWith(link.href || 'undefined') ? 'default': 'ghost', size: "lg" }),
+                'px-3',
                 pathname.startsWith(link.href || 'undefined') &&
                   "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
                 "justify-start",
@@ -97,7 +94,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
                 "text-primary/70"
               )}
             >
-              <link.icon size={16}  className="mr-2 size-4" />
+              <link.icon className="mr-2 size-4" />
               {link.title}
               {link.label && (
                 <span
