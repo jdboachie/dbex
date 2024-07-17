@@ -1,10 +1,11 @@
 "use client"
+
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
-import { useEffect, useState } from "react"
-import React from "react";
+import Link from "next/link";
 import { BackgroundBeams } from "@/components/ui/background-beams";
+import React, { useState } from 'react';
 
 import {
     MailIcon as Mail,
@@ -24,13 +25,8 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import Link from "next/link"
-
 import { SignInWithGithub, SignInWithGoogle } from "@/components/auth/SignUpWIthGoogleAndGithub"
-// import { signUserIn } from "@/lib/actions"
-import { getCsrfToken } from "next-auth/react"
-
-
+// import { registerUser } from "@/registerUser"
 
 const signInFormSchema = z.object({
     email: z.string().email({
@@ -39,49 +35,31 @@ const signInFormSchema = z.object({
     password: z.string().min(8).refine((data) => data.match(/[a-z]/) && data.match(/[A-Z]/) && data.match(/[0-9]/) && data.match((/^(?=.*[\W_]).*$/)), {
         message: "Password must contain at least one uppercase letter, one lowercase letter, one special character and one number.",
         path: ["password"],
-    })
+    }),
+    confirmPassword: z.string()
+}).refine(data => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
 })
 
 type signInFormSchema = z.infer<typeof signInFormSchema>
 
-export default function SignInPage() {
-    const [csrfToken, setCsrfToken] = useState<string | null>(null)
-
-    useEffect(() => {
-        async function fetchCsrfToken() {
-            const token = await getCsrfToken();
-            console.log('Fetched CSRF token:', token);
-            setCsrfToken(token);
-        }
-
-        fetchCsrfToken();
-    }, []);
-
+export default function SignUpPage() {
 
     const form = useForm<z.infer<typeof signInFormSchema>>({
         resolver: zodResolver(signInFormSchema),
         defaultValues: {
             email: "",
-            password: ""
+            password: "",
+            confirmPassword: ""
         },
     })
 
-    const onSubmit = async (values: z.infer<typeof signInFormSchema>) => {
-        if (!csrfToken) {
-            console.error("CSRF token is not set. Form submission is blocked.");
-            return;
-        }
 
-        console.log("Entered onSubmit");
-        const { email, password } = values;
-        console.log("CSRF token before submission:", csrfToken);
-        // const result = await signUserIn({ email, password, csrfToken });
-        // if (result.success) {
-        //     router.push('/app/home');
-        //   } else {
-        //     console.error(result.error);
-        //   }
-    };
+    const onSubmit = async (values: z.infer<typeof signInFormSchema>) => {
+        // const registerNewUser = await registerUser(values.email, values.password);
+        console.log(values)
+    }
 
     const [isPasswordShown, setIsPasswordShown] = useState(false);
 
@@ -90,20 +68,16 @@ export default function SignInPage() {
         setIsPasswordShown(!isPasswordShown);
     }
 
-
     return (
         <div className="w-full rounded-md dark:bg-neutral-950 relative flex flex-col items-center justify-center antialiased">
             <div className="flex flex-row justify-center items-center min-h-screen font-sans">
                 <div className="form-wrapper w-96 rounded-lg border p-5 shadow-2xl bg-background relative z-50">
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" method="post">
-                            <div className="flex flex-col justify-center items-center gap-3">
+                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                            <div className="flex flex-col justify-center items-center gap-2">
                                 <DbexIcon></DbexIcon>
-                                <h1 className="text-xl font-bold">Welcome Back</h1>
-                                <div className="text-sm">
-                                    <span className="text-muted-foreground">Don't have an account? </span>
-                                    <Link href="/signup" className="underline">Sign Up</Link>
-                                </div>
+                                <h1 className="text-xl font-bold">Create Account</h1>
+                                <div className="text-sm"> <span className="text-muted-foreground">Already have an account? </span><Link href="/signin" className="underline">Sign In</Link></div>
                             </div>
                             <FormField
                                 control={form.control}
@@ -114,7 +88,7 @@ export default function SignInPage() {
                                         <FormControl>
                                             <div className="input-icon flex flex-row relative">
                                                 <Mail className="absolute flex flex-row top-1/2 -translate-y-1/2 mx-2 stroke-slate-400 size-4 text-muted-foreground"></Mail>
-                                                <Input type="email" placeholder="Enter mail" {...field} className="placeholder-shown:px-7 px-7 text-muted-foreground rounded-lg" />
+                                                <Input type="mail" placeholder="Enter email"{...field} className="placeholder-shown:px-7 px-7 text-muted-foreground" />
                                             </div>
                                         </FormControl>
                                         <FormMessage />
@@ -139,18 +113,34 @@ export default function SignInPage() {
                                                     <EyeOffIcon className={`size-4 text-muted-foreground ${!isPasswordShown?'hidden': 'block'}`}/>
                                                     <EyeIcon className={`size-4 text-muted-foreground ${isPasswordShown?'hidden': 'block'}`}/>
                                                 </a>
+
                                             </div>
                                         </FormControl>
                                         <FormMessage />
                                     </FormItem>
                                 )}
                             />
-                            <input name="csrfToken" type="hidden" defaultValue={csrfToken || ""} />
-                            <Button type="submit" className="w-full dark:bg-secondary dark:hover:bg-secondary-foreground dark:text-secondary-foreground dark:hover:text-secondary rounded-lg">Submit</Button>
+                            <FormField
+                                control={form.control}
+                                name="confirmPassword"
+                                render={({ field }) => (
+                                    <FormItem>
+                                        <FormLabel className="text-sm">Confirm Password</FormLabel>
+                                        <FormControl>
+                                            <div className="input-icon flex flex-row relative">
+                                                <Lock className="absolute flex flex-row top-1/2 -translate-y-1/2 mx-2 stroke-slate-400 size-4 text-muted-foreground"></Lock>
+                                                <Input type="text" placeholder="Retype password"{...field} className="placeholder-shown:px-7 px-7 text-muted-foreground" />
+                                            </div>
+                                        </FormControl>
+                                        <FormMessage />
+                                    </FormItem>
+                                )}
+                            />
+                            <Button type="submit" className="w-full dark:bg-secondary bg-secondary-foreground dark:hover:bg-secondary-foreground dark:text-secondary-foreground dark:hover:text-secondary">Submit</Button>
                             <div className="flex flex-row justify-center items-center">
-                                <div className="line w-1/2 h-[1.5px] rounded-full bg-foreground-50"></div>
-                                <span className="text-sm capitalize px-3 text-foreground-300"> OR </span>
-                                <div className="line w-1/2 h-[1.5px] rounded-full bg-foreground-50"></div>
+                                <div className="line w-1/2 h-[1.5px] rounded-full bg-foreground-300 dark:bg-foreground-50"></div>
+                                <span className="text-sm capitalize px-3 text-foreground-400 dark:text-foreground-300"> OR </span>
+                                <div className="line w-1/2 h-[1.5px] rounded-full bg-foreground-300 dark:bg-foreground-50"></div>
                             </div>
                             <div className="signInWithGoogleAndGitHub flex gap-3">
                                 <SignInWithGoogle />
@@ -159,8 +149,9 @@ export default function SignInPage() {
                         </form>
                     </Form>
                 </div>
+
             </div>
-            <BackgroundBeams />
+            <BackgroundBeams className="opacity-0 dark:opacity-100" />
         </div>
 
     )
