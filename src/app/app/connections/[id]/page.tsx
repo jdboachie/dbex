@@ -12,7 +12,7 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     data ? (
-      <div className="grid divide-y max-w-5xl mx-auto">
+      <div className="grid divide-y">
         <div className="p-10 flex justify-between">
           <h2 className="text-4xl text-primary font-medium">
             {data.databaseName}

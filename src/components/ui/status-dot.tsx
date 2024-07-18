@@ -18,7 +18,7 @@ const statusVariants = cva(
         dormant:
           "bg-secondary",
         wait:
-          "bg-amber-500",
+          "bg-amber-500 animate-pulse",
         failed:
           "bg-red-700",
         ok:

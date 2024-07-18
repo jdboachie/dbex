@@ -53,7 +53,7 @@ const QueryListView = async () => {
           <Button
             variant={'ghost'}
             size={'lg'}
-            className='w-full border border-dashed'
+            className='w-full justify-start border border-dashed'
           >
             <PlusIcon className='block size-4 mr-2.5 h-12' />
             New query

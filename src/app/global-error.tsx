@@ -15,7 +15,7 @@ export default function Error({
   }, [error])
 
   return (
-    <div>
+    <div className='dev'>
       <h2>Something went wrong!</h2>
       <button
         onClick={
