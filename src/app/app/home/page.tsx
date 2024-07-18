@@ -4,14 +4,16 @@ import React from 'react'
 import { Button } from '@/components/ui/button'
 import { useSession } from 'next-auth/react'
 import { ResizablePanel } from '@/components/ui/resizable';
-import { DbSvg} from '@/components/svgImage';
+import { DbSvg } from '@/components/svgImage';
 import {
   Card,
   CardDescription,
   CardTitle,
 } from "@/components/ui/card"
 
-import { Code2 as Code, Server } from 'lucide-react';
+import { Code2 as Code } from 'lucide-react';
+
+import { RecentQueries, AnalyticsComponent } from '@/components/home-page';
 
 import {
   DatabaseIcon,
@@ -48,8 +50,8 @@ const Page = () => {
 
               <div className="footer flex flex-row gap-2 py-2">
                 <div className='flex flex-row rounded-lg items-center gap-1'>
-                <Button size={'lg'} className='flex flex-row items-center gap-2 bg-primaryblue hover:bg-primaryblue-foreground'>
-                    <ServerIcon/>
+                  <Button size={'lg'} className='flex flex-row items-center gap-2 bg-primaryblue hover:bg-primaryblue-foreground'>
+                    <ServerIcon />
                     <span>Connect</span>
                   </Button>
                 </div>
@@ -75,36 +77,7 @@ const Page = () => {
               </div>
 
               <div className="tableContent flex-col flex gap-2 w-full relative">
-
-                <div className='flex flex-row justify-between bg-secondary p-3 rounded-lg w-full'>
-                  <div className="flex flex-row items-center gap-1 text-muted-foreground">
-                    <ServerIcon className='size-3' />
-                    <div className='text-xs'>Connection</div>
-                  </div>
-                  <div className="text-xl">
-                    24
-                  </div>
-                </div>
-
-                <div className='flex flex-row justify-between bg-secondary p-3 rounded-lg'>
-                  <div className="flex flex-row items-center justify-center gap-1 text-muted-foreground">
-                    <TableIcon className='size-4 text-muted-foreground'></TableIcon>
-                    <div className='text-xs'>Tables</div>
-                  </div>
-                  <div className="text-xl">
-                    24
-                  </div>
-                </div>
-
-                <div className='flex flex-row justify-between bg-secondary p-3 rounded-lg'>
-                  <div className="flex flex-row items-center gap-1 text-muted-foreground">
-                    <TerminalWindowIcon className='size-3'></TerminalWindowIcon>
-                    <div className='text-xs'>Queries</div>
-                  </div>
-                  <div className="text-xl">
-                    24
-                  </div>
-                </div>
+                <AnalyticsComponent />
               </div>
             </div>
 
@@ -112,7 +85,7 @@ const Page = () => {
           <ChartComponent />
         </div>
         <div className="w-full gap-5 relative grid grid-cols-12">
-          <Card className='flex flex-row col-span-7 lg:col-span-5 gap-4 shadow border rounded-lg py-4 px-5 relative"'>
+          <Card className='flex flex-row col-span-7 lg:col-span-5 gap-4 shadow border rounded-lg py-4 px-5 relative overflow-y-scroll'>
             <div className="flex flex-col justify-between gap-3 w-full">
               <div className='flex gap-3 flex-col'>
                 <div className="icon bg-secondary w-fit p-3 rounded-lg">
@@ -123,35 +96,9 @@ const Page = () => {
                 </CardTitle>
               </div>
 
-              <a href='#' className='flex w-full flex-row justify-between hover:bg-primary-foreground dark:hover:text-secondary bg-secondary p-3 rounded-lg'>
-                <div className="flex dark:text-secondary-foreground flex-col justify-center gap-2">
-                  <div className='flex flex-row items-center gap-1'>
-                    <TerminalWindowIcon className='size-4'></TerminalWindowIcon>
-                    <div className='uppercase'>get_cwa</div>
-                  </div>
-                  <div className='text-muted-foreground'>
-                    Select * from CWA where value > 70; ...
-                  </div>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  2 hours ago
-                </div>
-              </a>
-
-              <a href='#' className='flex w-full flex-row justify-between hover:bg-primary-foreground dark:hover:text-secondary bg-secondary p-3 rounded-lg'>
-                <div className="flex dark:text-secondary-foreground flex-col justify-center gap-2">
-                  <div className='flex flex-row items-center gap-1'>
-                    <TerminalWindowIcon className='size-4'></TerminalWindowIcon>
-                    <div className='uppercase'>get_cwa</div>
-                  </div>
-                  <div className='text-muted-foreground'>
-                    Select * from CWA where value > 70; ...
-                  </div>
-                </div>
-                <div className="text-sm text-muted-foreground">
-                  2 hours ago
-                </div>
-              </a>
+              <div className='flex flex-col lg:h-[10rem] lg:overflow-y-scroll'>
+                <RecentQueries />
+              </div>
             </div>
           </Card>
           <Card className='shadow border grid col-span-5 lg:col-span-3 h-full bg-patternImag bg-bottom  rounded-lg py-4 px-5 relative'>
