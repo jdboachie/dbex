@@ -29,7 +29,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
       title: "Home",
       label: "",
       icon: HomeIcon,
-      href: '/app/home',
+      href: '/app', // DEFINITELY CHANGE THIS JUDE!!!!!
     }
     ,
     {
