@@ -20,7 +20,7 @@ export default async function Home({
 
   const session = await auth()
 
-   if ( session ) {
+   if ( !session ) {
     return (
        <div className='grid size-full h-screen place-items-center gap-4'>
         <div className="gap-2 grid grid-flow-row h-fit">
