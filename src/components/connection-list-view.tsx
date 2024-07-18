@@ -1,6 +1,13 @@
 'use client'
 
 import {
+  PostgresAltIcon,
+  MagnifyingGlassIcon,
+  PlusIcon,
+  MoreHorizontalIcon,
+  DatabaseIcon,
+} from "./icons";
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -32,13 +39,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { DatabaseIcon, PostgresAltIcon } from "./icons";
 import { Badge } from '@/components/ui/badge'
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { PlusCircleIcon, MagnifyingGlassIcon, EllipsisHorizontalIcon } from '@heroicons/react/16/solid'
 import ConnectionCardSkeleton from '@/components/closet/skeletons/ConnectionCardSkeleton';
 
 import { z } from "zod"
@@ -48,7 +52,7 @@ import { toast } from "sonner";
 import { testConnection } from "@/lib/pg"
 import { useForm } from "react-hook-form"
 import { useSession } from "next-auth/react"
-import { Connection, User } from '@prisma/client/edge';
+import { Connection } from '@prisma/client/edge';
 import { zodResolver } from "@hookform/resolvers/zod"
 import { parsePostgresConnectionString } from "@/lib/utils"
 import { createConnection, fetchUserByEmail, fetchConnections } from "@/lib/actions"
@@ -57,89 +61,9 @@ import { useRouter } from "next/navigation"
 import EmptyState from "./closet/empty-state"
 
 
-// const shouldRefreshConnections: booolean = false
-// global connections: Connection[] = []
-
 const ConnectionStringFormSchema = z.object({
   connectionString: z.string().min(1, { message: "Connection string is required." }),
 })
-
-// function ConnectionStringForm() {
-
-//   const { data } = useSession()
-//   const [userId, setUserId] = React.useState<string>('')
-
-//   React.useEffect(() => {
-//     const getId = async () => {
-//       await fetchUserByEmail(data?.user?.email || '')
-//                  .then((res) => {res && setUserId(res.id)})
-//     }
-
-//     getId()
-//   }, [data?.user?.email]);
-
-//   const form = useForm<z.infer<typeof ConnectionStringFormSchema>>({
-//     resolver: zodResolver(ConnectionStringFormSchema),
-//   });
-
-//   async function onSubmit(data: z.infer<typeof ConnectionStringFormSchema>) {
-//     toast.promise(
-//       testConnection(data.connectionString)
-//         .then(() => {
-//           const credentials = parsePostgresConnectionString(data.connectionString);
-//           createConnection({
-//             userId: userId,
-//             username: credentials.username,
-//             password: credentials.password,
-//             hostname: credentials.hostname,
-//             databaseName: credentials.databaseName,
-//             protocol: credentials.protocol,
-//             port: credentials.port,
-//             ssl: credentials.ssl,
-//             isConnected: true,
-//           })
-//         }),
-//       {
-//         loading: 'Connecting...',
-//         success: `Connected successfully`,
-//         error: 'Error connecting to database'
-//       }
-//     )
-//   }
-
-//   return (
-//     <Form {...form}>
-//       <form onSubmit={form.handleSubmit(onSubmit)} className="">
-//         <div className="grid grid-flow-row gap-2 px-6">
-//           <FormField
-//             control={form.control}
-//             name="connectionString"
-//             render={({ field }) => (
-//               <FormItem>
-//                 <FormLabel>Connection String</FormLabel>
-//                 <FormControl>
-//                   <Input spellCheck={false} {...field} />
-//                 </FormControl>
-//                 <FormMessage />
-//               </FormItem>
-//             )}
-//           />
-//         </div>
-//         <DialogFooter className="col-span-2">
-//           <DialogClose asChild>
-//             <Button size={'default'} variant="outline">Cancel</Button>
-//           </DialogClose>
-//           <DialogClose asChild>
-//             <Button size={'default'} type="submit">Save changes</Button>
-//           </DialogClose>
-//         </DialogFooter>
-//       </form>
-//     </Form>
-//   );
-
-// }
-
-
 
 const ConnectionsListView = () => {
 
@@ -223,8 +147,8 @@ const ConnectionsListView = () => {
       <div className="p-4">
         <form>
           <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-2 top-2.5 size-4 text-muted-foreground" />
-            <Input placeholder="Search" className="pl-8" />
+            <MagnifyingGlassIcon className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
+            <Input placeholder="Search" className="pl-9" />
           </div>
         </form>
       </div>
@@ -234,9 +158,9 @@ const ConnectionsListView = () => {
             <Button
               variant={'ghost'}
               size={'lg'}
-              className='w-full border border-dashed'
+              className='w-full justify-start border border-dashed'
             >
-              <PlusCircleIcon className='block size-5 mr-2.5 h-12' />
+              <PlusIcon className='block size-5 mr-2.5 h-12' />
               Add connection
             </Button>
           </DialogTrigger>
@@ -300,27 +224,28 @@ const ConnectionsListView = () => {
                     key={connection.id}
                       href={`/app/connections/${connection.id}`}
                     >
-                    <div className='border rounded-lg transition-colors duration-250 ease-out hover:text-primary p-4 h-fit flex gap-3 items-center justify-start'>
+                    <div className='relative border rounded-lg transition-colors duration-250 ease-out hover:text-primary p-4 h-fit flex gap-3 items-center justify-start'>
                       <PostgresAltIcon className="size-10"/>
                       <div className="grid grid-flow-row w-full gap-1 items-center justify-start">
                         <div className="items-center grid grid-cols-2">
                           <p className="text-start truncate text-sm font-medium">{connection.databaseName}</p>
                           <div className="grid justify-end">
                             <DropdownMenu>
-                              <DropdownMenuTrigger className="rounded-full p-1 hover:bg-secondary">
-                                <EllipsisHorizontalIcon className="size-4 min-w-4"/>
+                              <DropdownMenuTrigger className="rounded-md absolute top-2 right-2 p-1 hover:bg-secondary">
+                                <MoreHorizontalIcon className="size-4 min-w-4"/>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent>
-                                <DropdownMenuLabel className="font-mono tracking-tight">{connection.databaseName}</DropdownMenuLabel>
-                                <DropdownMenuSeparator />
-                                <DropdownMenuItem>View</DropdownMenuItem>
-                                <DropdownMenuItem>Billing</DropdownMenuItem>
-                                <DropdownMenuItem>Team</DropdownMenuItem>
+                                {/* <DropdownMenuLabel className="font-mono tracking-tight">{connection.databaseName}</DropdownMenuLabel>
+                                <DropdownMenuSeparator /> */}
+                                <DropdownMenuItem onClick={() => {router.push(`/app/connections/${connection.id}`)}}>View</DropdownMenuItem>
+                                <DropdownMenuItem disabled>Update</DropdownMenuItem>
+                                <DropdownMenuItem disabled>Share</DropdownMenuItem>
                                 <DropdownMenuItem
+                                 className="hover:bg-destructive"
                                   onClick={() => {handleDelete(connection)}}
                                 >
-                                  <p className="text-red-500 hover:bg-desctruv">
-                                    Remove connection
+                                  <p className="text-red-500">
+                                    Delete
                                   </p>
                                 </DropdownMenuItem>
                               </DropdownMenuContent>
@@ -347,7 +272,7 @@ const ConnectionsListView = () => {
                 small
                 icon={DatabaseIcon}
                 title={'No connections yet'}
-                description={'Add a connection to get started'}
+                // description={'Add a connection to get started'}
               />
             }
           </React.Suspense>

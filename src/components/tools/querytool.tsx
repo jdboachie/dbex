@@ -1,52 +1,65 @@
 'use client';
 
 import {
-  FileCsv,
-  Play as PlayIcon,
-  MicrosoftExcelLogo,
-  Download as DownloadIcon,
-} from '@phosphor-icons/react';
+  PlayIcon,
+  LayoutIcon,
+  LoadingIcon,
+  DownloadIcon,
+  FloppyDiskIcon,
+  CrossIcon,
+} from '@/components/icons';
 import Papa from 'papaparse';
 import Image from 'next/image';
 import { toast } from 'sonner';
+import {
+  FileCsv,
+  MicrosoftExcelLogo,
+} from '@phosphor-icons/react';
 import { useTheme } from 'next-themes';
 import Editor from '@monaco-editor/react';
 import { Skeleton } from '../ui/skeleton';
 import { createQuery } from '@/lib/actions';
+import { useRouter } from 'next/navigation';
 import EmojiPicker from 'emoji-picker-react';
 import { Input } from '@/components/ui/input';
-import React, { useRef, useState } from 'react';
+import EmptyState from '../closet/empty-state';
 import { Button } from '@/components/ui/button';
 import useDatabase from '@/lib/hooks/useDatabase';
 import { getBuiltinTypeString } from '@/lib/utils';
+import React, { useState, useEffect } from 'react';
 import { useQueryToolContext } from '@/lib/hooks/querytoolsettings';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import ConnectionSelector from '@/components/ui/connection-selector';
-import { FloppyDiskIcon, LayoutIcon, LoadingIcon } from '@/components/icons';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipArrow } from "@/components/ui/tooltip";
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import EmptyState from '../closet/empty-state';
+import { Query, Connection } from '@prisma/client';
+import StatusDot from '../ui/status-dot';
 
+interface QueryWithConnection extends Query {
+  relatedConnection: Connection;
+}
 
-const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
+const QueryTool = ({data}: {data?: QueryWithConnection}) => {
 
-  //debug. delete later.
-  // if (!queryObject) {
-  //   toast.warning("This page doesn't work yet", {'description': 'We are working on it'})
-  // }
+  const DEFAULT_EMOJI_URL = 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1fae5.png'
 
   // Hooks
+  const router = useRouter();
   const { query } = useDatabase();
   const { queryToolSettings } = useQueryToolContext();
 
   // State
-  const [code, setCode] = useState<string | undefined>(queryObject?.content || '');
-  const [emojiURL, setEmojiURL] = useState<string>(queryObject?.emojiUrl || 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f601.png');
+  const [shouldUpdateNotCreate, setShouldUpdateNotCreate] = useState<boolean>(data ? true : false)
+  const [hasFailure, setHasFailure] = useState<boolean>(false)
+  const [code, setCode] = useState<string | undefined>(data?.content || '');
+  const [emojiURL, setEmojiURL] = useState<string>(data?.emojiUrl || DEFAULT_EMOJI_URL);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [queryName, setQueryName] = useState<string>(queryObject?.name || '')
+  const [queryName, setQueryName] = useState<string>(data?.name || '')
   const [outputData, setOutputData] = useState<{ columns: { name: string, type: number }[], rows: any[] } | null>(null);
   const [queryCompletionTime, setQueryCompletionTime] = useState<number | null>(null);
+  const [viewDetailedInfo, setViewDetailedInfo] = useState<any | null>(null)
+
 
   // Editor Theme
   const { theme, resolvedTheme } = useTheme();
@@ -55,24 +68,29 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
   // Query Editor Functions
   const handleSave = () => {
     toast.promise(
-      createQuery({
-        name: queryName || 'untitled',
-        content: code,
-        emojiUrl: emojiURL,
-        userId: queryToolSettings?.connection.userId || '',
-        connectionId: queryToolSettings?.connection.id || '',
-      }),
-    {
-      loading: 'Saving query...',
-      success: 'Saved',
-      error: 'Error saving query'
-    }
-    )
+      // shouldUpdateNotCreate ?
+      //updateQuery({where {id: }, data: {content: content, title: title}})
+      createQuery(
+        data?.id || 'noquerysgonnahaveanidlikethislol',
+        {
+          name: queryName || 'untitled',
+          content: code,
+          emojiUrl: emojiURL,
+          userId: queryToolSettings?.connection?.userId || '',
+          connectionId: queryToolSettings?.connection?.id || '',
+        }).then((res) => !data && router.push(`/app/queries/${res.id}`)),
+        {
+          loading: 'Saving query...',
+          success: 'Saved',
+          error: 'Error saving query'
+        }
+      )
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     setIsLoading(true);
+    setViewDetailedInfo(null)
 
     if (code) {
       try {
@@ -80,17 +98,20 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
         const result = await query(code);
 
         if (result.error) {
-          toast.error(result.error, {
-            description: result.error === 'AggregateError' ? 'Check your connection.' : 'Most likely our fault.'
+          setHasFailure(true)
+          toast.error("Error", {
+            description: result.error === 'AggregateError' ? 'Check your connection.' : result.error
           });
         } else if (result.res) {
           toast.success(`Query run successfully in ${result.time}ms`);
           setQueryCompletionTime(result.time || 0);
           setOutputData(result.res);
+          setHasFailure(false)
         }
       } catch (error) {
-        toast.error(error!.toString(), {
-          description: error!.toString() === 'AggregateError' ? 'Check your connection.' : 'Try that again.'
+        setHasFailure(true)
+        toast.error("Error", {
+          description: error!.toString() === 'AggregateError' ? 'Check your connection.' : error!.toString()
         });
       }
     }
@@ -122,11 +143,13 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
   // Query Editor UI
   return (
     // overlay the play icon with the loading icon (relative and absolute) while it is running (also disabled)
-    <div className="size-full">
+    <div className="size-full flex flex-col">
       <div className="flex p-1 border-b justify-between items-center w-full">
       <form onSubmit={handleSubmit} className='flex justify-between items-center w-full'>
         <div className="flex items-center">
-          <ConnectionSelector />
+          <React.Suspense fallback={<Skeleton className='h-5 w-20'/>}>
+            <ConnectionSelector presetConnection={data?.relatedConnection} />
+          </React.Suspense>
           <div className="flex gap-1">
             <DropdownMenu>
               <DropdownMenuTrigger>
@@ -145,12 +168,11 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
               </DropdownMenuContent>
             </DropdownMenu>
             <Input
-              autoFocus
               value={queryName}
               onChange={(e) => setQueryName(e.target.value)}
-              placeholder='untitled.sql'
+              placeholder='Untitled'
               type='text'
-              className='shadow-none font-medium border-0 focus:border-0 focus:bg-input focus-visible:ring-0 focus:outline-0'
+              className='shadow-none text-primary font-medium border-0 focus:border-0 focus:bg-input focus-visible:ring-0 focus:outline-0'
             />
 
           </div>
@@ -176,7 +198,7 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
                 <FileCsv className='size-4 mr-2'/>
                 <p className='text-xs'>Export to CSV</p>
               </DropdownMenuItem>
-              <DropdownMenuItem>
+              <DropdownMenuItem disabled>
                 <MicrosoftExcelLogo className='size-4 mr-2' />
                 <p className="text-xs">Export to Microsoft Excel</p>
               </DropdownMenuItem>
@@ -220,7 +242,7 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
         </TooltipContent>
       </Tooltip>
       </div>
-      <ResizablePanelGroup direction="vertical" className='size-full'>
+      <ResizablePanelGroup direction="vertical" className='w-full'>
         <ResizablePanel defaultSize={40} minSize={0} className='size-full'>
           <Editor
             onChange={(value) => setCode(value)}
@@ -232,75 +254,132 @@ const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
         </ResizablePanel>
         <ResizableHandle
           withHandle
-          className='activehandle'
+          className='activehandle' // implement this class
         />
         <ResizablePanel minSize={20} defaultSize={60}>
-          <div className="border-b flex text-sm w-full p-2 gap-2">
-            <div className='flex gap-1'>Num rows: <p className="px-1 rounded bg-primary-foreground">{outputData?.rows.length || '---'}</p></div>
-            <div className="flex gap-1">Num cols: <p className="px-1 rounded bg-primary-foreground">{outputData?.columns.length || '---'}</p></div>
-            <div className='flex gap-1'>Query completed in <p className="px-1 rounded bg-primary-foreground">{queryCompletionTime ? queryCompletionTime : '---'}ms</p></div>
+          <div className="border-b flex justify-between text-xs w-full p-2 gap-2">
+            <div className="flex gap-2">
+              <div className='flex gap-1'>Num rows: <p className="px-1 rounded bg-primary-foreground">{outputData?.rows.length || '---'}</p></div>
+              <div className="flex gap-1">Num cols: <p className="px-1 rounded bg-primary-foreground">{outputData?.columns.length || '---'}</p></div>
+              <div className='flex gap-1'>Query completed in <p className="px-1 rounded bg-primary-foreground">{queryCompletionTime ? queryCompletionTime : '---'}ms</p></div>
+            </div>
+            <div className="grid grid-flow-col gap-2 place-items-center">
+              <span>Last query</span>
+              <StatusDot state={
+                isLoading ? 'wait' : (hasFailure ? 'failed' : (outputData ? 'ok' : 'dormant'))
+                }
+              />
+            </div>
           </div>
-          <div className="h-[calc(100%-86px)]">
-            {isLoading ?
-              <Skeleton className='grow h-full' />
-              :
-              <>
-              {outputData ? (
-                <ScrollArea className={`text-sm flex flex-col-reverse place-items-center font-mono tracking-normal w-[calc(100%-0px)] h-[calc(100%-0px)]`}>
-                  <table className='text-primary table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
-                    <thead className='sticky top-[-1px] bg-primary-foreground drop-shadow max-h-[1rem] min-h-[1rem]'>
-                      <tr className='truncate'>
-                        {outputData.columns.map((col, index) => (
-                          <th key={index} className='border border-t-none p-2 min-w-[10rem] w-[10rem] max-w-[10rem]'>
-                            {col.name}
-                            <br />
-                            <span className='text-xs font-normal text-muted-foreground'>{getBuiltinTypeString(col.type)}</span>
-                          </th>
-                        ))}
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {outputData.rows.map((row, rowIndex) => (
-                        <tr
-                          key={rowIndex}
-                          className='max-h-[1rem] min-h-[1rem] hover:bg-primary-foreground transition-all duration-250 ease-in-out'
-                        >
-                          {outputData.columns.map((col, colIndex) => (
-                            <td
-                              key={colIndex}
-                              className='min-w-[10rem] w-[10rem] max-w-[10rem] truncate
-                                        border hover:border-double hover:border-primary
-                                        whitespace-nowrap p-2 hover:bg-primary-foreground'
-                            >
-                              {row[col.name] instanceof Date ? row[col.name].toString() : row[col.name]}
-                            </td>
-                          ))}
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                  <ScrollBar orientation="horizontal" />
-                </ScrollArea>
-              ) : (
+          <ResizablePanelGroup direction='horizontal' className="max-h-[calc(100%-33px)]">
+            <ResizablePanel defaultSize={100} className=''>
+              {isLoading ?
+                <Skeleton className='grow h-full' />
+                :
                 <>
-                  {isLoading ?
-                    <></>
-                    :
-                    (
-                    <div className="p-4 grow h-full">
-                      <EmptyState
-                        icon={LayoutIcon}
-                        title='No data to show'
-                        description='Execute a query to view the output'
-                      />
+                {outputData ? (
+                  <ScrollArea className={`text-xs text-[13px] flex flex-col-reverse place-items-center font-mono tracking-normal w-[calc(100%-0px)] h-[calc(100%-0px)]`}>
+                    <div className='grid grid-flow-row text-primary/90 w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
+                      <div className='thead p-2 sticky top-0 bg-background border-b'>
+                        <div className='tr grid grid-flow-col truncate'>
+                          {outputData.columns.map((col, index) => (
+                            <div key={index} className='flex gap-1 items-center font-sans p-2 min-w-[10rem] w-[10rem] max-w-[10rem] truncate'>
+                              <p className="text-sm">{col.name}</p>
+                              <span className='text-[0.6rem] truncate leading-[9px] font-normal text-muted-foreground'>{getBuiltinTypeString(col.type)}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <tbody className='p-1 [&>*:nth-child(even)]:bg-background hover:[&>*:nth-child(even)]:bg-secondary [&>*:nth-child(odd)]:bg-primary-foreground hover:[&>*:nth-child(odd)]:bg-secondary'>
+                        {outputData.rows.map((row, rowIndex) => (
+                          <div
+                            key={rowIndex}
+                            onClick={() => setViewDetailedInfo(row)}
+                            className='tr grid hover:text-primary grid-flow-col rounded transition-all duration-250 ease-in-out'
+                          >
+                            {outputData.columns.map((col, colIndex) => (
+                              <Tooltip
+                                key={colIndex}
+                              >
+                                <TooltipTrigger>
+                                  <div
+                                    className='td text-start min-w-[10em] w-[10rem] max-w-[10rem] truncate whitespace-nowrap p-2'
+                                  >
+                                    {row[col.name] instanceof Date ? row[col.name].toString() : row[col.name]}
+                                  </div>
+                                </TooltipTrigger>
+                                {row[col.name].length > 17 &&
+                                  <TooltipContent>
+                                    {row[col.name]}
+                                    <TooltipArrow className='relative w-0 h-0 border-l-[7px] border-r-[7px] border-t-[7px] border-l-transparent border-r-transparent border-t-primary' />
+                                  </TooltipContent>
+                                }
+                              </Tooltip>
+                            ))}
+                          </div>
+                        ))}
+                      </tbody>
                     </div>
-                    )
-                  }
-                </>
-              )}
-            </>
-          }
-          </div>
+                    <ScrollBar orientation="horizontal" />
+                  </ScrollArea>
+                ) : (
+                  <>
+                    {isLoading ?
+                      <></>
+                      :
+                      (
+                        <div className="p-4 grow h-full">
+                        <EmptyState
+                          icon={LayoutIcon}
+                          title='No data to show'
+                          description='Execute a query to view the output'
+                          />
+                      </div>
+                      )
+                    }
+                  </>
+                )}
+              </>
+            }
+            </ResizablePanel>
+            {viewDetailedInfo &&
+              <>
+                <ResizableHandle withHandle={false} />
+                <ResizablePanel
+                  minSize={30}
+                  maxSize={70}
+                  defaultSize={viewDetailedInfo ? 45 : 0}
+                  className='gap-2 divide-y'
+                >
+                  <div className="p-2 flex items-center justify-between">
+                    <p className="font-medium px-2">Details</p>
+                    <Button
+                      size={'icon'}
+                      variant={'ghost'}
+                      onClick={() => {setViewDetailedInfo(null)}}
+                    >
+                      <CrossIcon className='size-4' />
+                    </Button>
+                  </div>
+                  <ScrollArea className="grid h-[calc(100%-52px)]">
+                    <div className="p-4 grid">
+                      {outputData?.columns.map((column, index) => (
+                        <div
+                          key={index}
+                          className="grid grid-flow-row w-full p-2"
+                        >
+                          <div className='h-fit'>{column.name}</div>
+                          <div className='border shadow-inner rounded-sm'>
+                            <p className='p-2 text-primary'>{viewDetailedInfo[column.name]}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                </ResizablePanel>
+              </>
+            }
+          </ResizablePanelGroup>
         </ResizablePanel>
       </ResizablePanelGroup>
     </div>

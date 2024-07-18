@@ -16,17 +16,15 @@ import {
   ContextMenuSubTrigger,
   ContextMenuCheckboxItem,
 } from "@/components/ui/context-menu"
+import Link from "next/link";
 import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { fetchAllQueries } from '@/lib/actions';
 import { Separator } from "@/components/ui/separator";
 import ConnectionCardSkeleton from '@/components/closet/skeletons/ConnectionCardSkeleton';
-import { MagnifyingGlass as MagnifyingGlassIcon } from "@phosphor-icons/react/dist/ssr";
 
-import { fetchAllQueries } from '@/lib/actions';
-import { PlusCircleIcon } from "@heroicons/react/16/solid";
-import Link from "next/link";
+import { PlusIcon, MagnifyingGlassIcon } from "./icons";
 
 
 const QueryListView = async () => {
@@ -45,20 +43,22 @@ const QueryListView = async () => {
       <div className="p-4">
         <form>
           <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-2 top-2.5 size-5 text-muted-foreground" />
-            <Input placeholder="Search" className="pl-8" />
+            <MagnifyingGlassIcon className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
+            <Input placeholder="Search" className="pl-9" />
           </div>
         </form>
       </div>
       <div className=" grid px-4 mb-2">
-        <Button
-          variant={'ghost'}
-          size={'lg'}
-          className='w-full border border-dashed'
-        >
-          <PlusCircleIcon className='block size-5 mr-2.5 h-12' />
-          New query
-        </Button>
+        <Link href={'/app/queries'}>
+          <Button
+            variant={'ghost'}
+            size={'lg'}
+            className='w-full justify-start border border-dashed'
+          >
+            <PlusIcon className='block size-4 mr-2.5 h-12' />
+            New query
+          </Button>
+        </Link>
       </div>
       <TabsContent value='all'>
         <div className='grid grid-flow-row gap-1 size-full px-4 py-2'>
@@ -82,30 +82,13 @@ const QueryListView = async () => {
                 </Link>
               </ContextMenuTrigger>
               <ContextMenuContent className="w-56">
-                <ContextMenuCheckboxItem checked>
-                  Change this
-                  <ContextMenuShortcut>⌘⇧C</ContextMenuShortcut>
-                </ContextMenuCheckboxItem>
                 <Link href={`/app/queries/${query.id}`}>
                   <ContextMenuItem inset>
                       View
                   </ContextMenuItem>
                 </Link>
-                <ContextMenuItem inset>Delete</ContextMenuItem>
+                <ContextMenuItem>Delete</ContextMenuItem>
                 <ContextMenuSeparator />
-                <ContextMenuSub>
-                  <ContextMenuSubTrigger inset>Export</ContextMenuSubTrigger>
-                  <ContextMenuSubContent className="w-48">
-                    <ContextMenuItem>
-                      CSV
-                      {/* <ContextMenuShortcut>⇧⌘S</ContextMenuShortcut> */}
-                    </ContextMenuItem>
-                    <ContextMenuItem>XLSX</ContextMenuItem>
-                    <ContextMenuItem>HTML</ContextMenuItem>
-                    <ContextMenuSeparator />
-                    <ContextMenuItem>PDF</ContextMenuItem>
-                  </ContextMenuSubContent>
-                </ContextMenuSub>
               </ContextMenuContent>
           </ContextMenu>
           ))}

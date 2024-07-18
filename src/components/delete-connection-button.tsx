@@ -1,8 +1,8 @@
 'use client';
 
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button'
 import { deleteConnection } from '@/lib/actions'
-import { useRouter } from 'next/navigation';
 
 function DeleteConnection({connectionId} : {connectionId: string}) {
   const router = useRouter()
@@ -11,7 +11,7 @@ function DeleteConnection({connectionId} : {connectionId: string}) {
     <Button
       size={'lg'}
       variant={'outline'}
-      className='text-red-500 hover:text-red-500'
+      className='text-red-500 hover:text-red-500 border-destructive hover:bg-destructive/50'
       onClick={() => {deleteConnection(connectionId).then(() => router.push('/app/connections'))}}
     >
       Remove connection

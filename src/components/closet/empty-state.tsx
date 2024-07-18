@@ -2,16 +2,18 @@ type EmptyStateProps = {
   icon: any,
   small?: boolean,
   title: string,
-  description: string,
+  description?: string,
 }
 
 function EmptyState(props: EmptyStateProps) {
   return (
-    <div className='size-full border border-dashed rounded-md flex items-center justify-center'>
+    <div className='z-10 size-full border border-dashed rounded-md flex items-center justify-center truncate'>
       {/* https://vercel.com/geist/empty-state */}
-      <div className="h-fit justify-center items-center flex flex-col gap-0">
-        <props.icon className={`border rounded-lg size-16 p-4 m-5 text-muted-foreground ${props.small && 'size-8 p-2 m-2.5'}`} />
-        <p className={`text-base text-primary text-center ${props.small && 'text-sm'}`}>{props.title}</p>
+      <div className="z-0 h-fit justify-center items-center flex flex-col gap-0">
+        <div className={`grid place-items-center border rounded-full ${props.small ? 'size-10 ' : 'size-20 m-4'}`}>
+          <props.icon className={`size-8 text-muted-foreground ${props.small && 'size-4 p-2'}`} />
+        </div>
+        <p className={`text-primary text-center ${props.small ? 'text-sm' : 'text-xl'}`}>{props.title}</p>
         <p className="text-muted-foreground text-xs">{props.description}</p>
       </div>
     </div>

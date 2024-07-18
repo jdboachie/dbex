@@ -31,11 +31,11 @@ export default function UserButton ({isCollapsed} : {isCollapsed: boolean}) {
       <DropdownMenu>
         <DropdownMenuTrigger>
           <Button
-            size={isCollapsed ? 'icon' : 'default'}
+            size={isCollapsed ? 'icon' : 'lg'}
             variant={'ghost'}
             className={cn(
               "flex px-1 w-full h-10",
-              isCollapsed ? 'justify-center w-fit mx-auto' : 'justify-between'
+              isCollapsed ? 'justify-center w-fit mx-auto size-10' : 'justify-between'
             )}
           >
             <div className={cn("flex items-center w-full", isCollapsed && 'w-fit')}>
@@ -57,9 +57,9 @@ export default function UserButton ({isCollapsed} : {isCollapsed: boolean}) {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="mx-2">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="p-0">
+          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem className="px-2.5 py-0">
             <SignOut />
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -78,8 +78,9 @@
   }
 
   .dev {
-    @apply border border-rose-700
+    @apply border border-violet-700
   }
+
   /* --ground: 0 0% 98%; */
   /* --ground: 0 0% 0%; */
 }

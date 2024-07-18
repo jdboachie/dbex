@@ -1,4 +1,5 @@
-import { Button } from "../ui/button"
+import { cn } from "@/lib/utils";
+import { buttonVariants, Button } from "../ui/button"
 import { signOut, signIn } from "next-auth/react";
 
 
@@ -16,12 +17,14 @@ export function SignIn () {
 
 export function SignOut () {
   return (
-    <Button
-      variant={'ghost'}
-      className="w-full h-8 rounded-md px-1.5 py-2 flex justify-start font-normal"
+    <div
+      className={cn(
+        buttonVariants({ variant: 'ghost'}),
+        "w-full rounded-md px-0 py-0 flex justify-start font-normal"
+      )}
       onClick={() => signOut()}
     >
      <span className="p-0">Sign out</span>
-    </Button>
+    </div>
   )
 }

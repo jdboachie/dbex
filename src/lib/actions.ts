@@ -2,8 +2,8 @@
 
 import { auth } from '@/auth'
 import { prisma } from '../lib/prisma'
-import { Connection, User } from '@prisma/client/edge';
 import { unstable_noStore as noStore } from "next/cache";
+import { Connection, User, Query } from '@prisma/client/edge';
 
 
 // CREATE
@@ -13,9 +13,11 @@ export const createConnection = async (data: any): Promise<Connection> => {
   })
 }
 
-export const createQuery = async (data: any) => {
-  await prisma.query.create({
-    data: data
+export const createQuery = async (id: string, data: any): Promise<Query> => {
+  return await prisma.query.upsert({
+    where: {id:  id},
+    update: data,
+    create: data
   })
 }
 
@@ -42,7 +44,6 @@ export const fetchConnections = async () : Promise<Connection[]> => {
     }
   })
 }
-
 
 export const fetchConnectionById = async ( id: string ) => {
   noStore();
@@ -89,11 +90,18 @@ export const fetchQuerybyId = async ( id: string ) => {
     where: {
       id: id,
       userId: authId,
+    },
+    include: {
+      relatedConnection: true
     }
   })
 
   return query
 }
+
+
+// UPDATE
+// I'm using prisma's handy `upsert` command instead
 
 // DELETE
 export const deleteConnection = async (id: string) : Promise<Connection> => { // edit this later

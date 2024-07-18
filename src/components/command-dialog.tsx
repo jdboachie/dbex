@@ -1,6 +1,5 @@
 "use client"
 
-import * as React from "react"
 import {
   Calculator,
   Calendar,
@@ -9,7 +8,7 @@ import {
   Smiley,
   User,
   MagnifyingGlass
-} from "@phosphor-icons/react"
+} from "@phosphor-icons/react" // all these have to be replaced with geist icons
 
 import {
   CommandDialog,
@@ -22,6 +21,9 @@ import {
   CommandShortcut,
 } from "@/components/ui/command"
 import { Button } from "./ui/button"
+import { CommandIcon } from "./icons"
+import * as React from "react"
+
 
 export function CommandDialogButton({navCollapsed}: {navCollapsed: boolean}) {
   const [open, setOpen] = React.useState(false)
@@ -42,7 +44,9 @@ export function CommandDialogButton({navCollapsed}: {navCollapsed: boolean}) {
     <>
       {
         navCollapsed ?
-          <Button onClick={() => {setOpen(true)}} variant='outline' size='icon'><MagnifyingGlass className="size-4 text-muted-foreground bg-transparent" /></Button>
+          <Button onClick={() => {setOpen(true)}} variant='outline' size='icon' className="size-10">
+            <CommandIcon className="size-4 text-muted-foreground bg-transparent" />
+          </Button>
         :
           <Button
             size={'lg'}
