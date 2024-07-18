@@ -4,7 +4,8 @@ import {
   PostgresAltIcon,
   MagnifyingGlassIcon,
   PlusIcon,
-  MoreHorizontalIcon
+  MoreHorizontalIcon,
+  DatabaseIcon,
 } from "./icons";
 import {
   Dialog,
@@ -57,7 +58,7 @@ import { parsePostgresConnectionString } from "@/lib/utils"
 import { createConnection, fetchUserByEmail, fetchConnections } from "@/lib/actions"
 import { deleteConnection } from "@/lib/actions";
 import { useRouter } from "next/navigation"
-// import EmptyState from "./closet/empty-state"
+import EmptyState from "./closet/empty-state"
 
 
 const ConnectionStringFormSchema = z.object({
@@ -223,14 +224,14 @@ const ConnectionsListView = () => {
                     key={connection.id}
                       href={`/app/connections/${connection.id}`}
                     >
-                    <div className='border rounded-lg transition-colors duration-250 ease-out hover:text-primary p-4 h-fit flex gap-3 items-center justify-start'>
+                    <div className='relative border rounded-lg transition-colors duration-250 ease-out hover:text-primary p-4 h-fit flex gap-3 items-center justify-start'>
                       <PostgresAltIcon className="size-10"/>
                       <div className="grid grid-flow-row w-full gap-1 items-center justify-start">
                         <div className="items-center grid grid-cols-2">
                           <p className="text-start truncate text-sm font-medium">{connection.databaseName}</p>
                           <div className="grid justify-end">
                             <DropdownMenu>
-                              <DropdownMenuTrigger className="rounded-full p-1 hover:bg-secondary">
+                              <DropdownMenuTrigger className="rounded-md absolute top-2 right-2 p-1 hover:bg-secondary">
                                 <MoreHorizontalIcon className="size-4 min-w-4"/>
                               </DropdownMenuTrigger>
                               <DropdownMenuContent>
@@ -240,9 +241,10 @@ const ConnectionsListView = () => {
                                 <DropdownMenuItem disabled>Update</DropdownMenuItem>
                                 <DropdownMenuItem disabled>Share</DropdownMenuItem>
                                 <DropdownMenuItem
+                                 className="hover:bg-destructive"
                                   onClick={() => {handleDelete(connection)}}
                                 >
-                                  <p className="text-red-500 hover:bg-desctruv">
+                                  <p className="text-red-500">
                                     Delete
                                   </p>
                                 </DropdownMenuItem>
@@ -266,13 +268,12 @@ const ConnectionsListView = () => {
                 ))}
               </div>
               :
-              // <EmptyState
-              //   small
-              //   icon={DatabaseIcon}
-              //   title={'No connections yet'}
-              //   description={'Add a connection to get started'}
-              // />
-              <></>// TODO: Fix the empty state
+              <EmptyState
+                small
+                icon={DatabaseIcon}
+                title={'No connections yet'}
+                // description={'Add a connection to get started'}
+              />
             }
           </React.Suspense>
         </TabsContent>

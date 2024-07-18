@@ -7,7 +7,7 @@ const Page = () => {
     <div className='flex flex-col h-full'>
       <section className='flex h-fit border-b gap-4 p-4 py-3 items-center'>
         <ServerIcon className='size-4' />
-        <h4 className='text-lg'>Connections</h4>
+        <h4 className='text-base font-medium'>Connections</h4>
       </section>
       <section className="p-8 grow h-full">
         <EmptyState

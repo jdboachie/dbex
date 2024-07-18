@@ -57,9 +57,9 @@ export default function UserButton ({isCollapsed} : {isCollapsed: boolean}) {
         </DropdownMenuTrigger>
         <DropdownMenuContent className="mx-2">
           <DropdownMenuLabel>My Account</DropdownMenuLabel>
-          <DropdownMenuItem>Profile</DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem className="p-0">
+          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem className="px-2.5 py-0">
             <SignOut />
           </DropdownMenuItem>
         </DropdownMenuContent>
