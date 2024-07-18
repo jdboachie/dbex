@@ -22,6 +22,10 @@ const config = {
         sans: ["var(--font-geist-sans)"],
         mono: ["var(--font-geist-mono)"],
       },
+      backgroundImage: {
+        patternImag: "url(/pattern.svg)",
+      },
+
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -72,10 +76,10 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "shimmer": {
+        shimmer: {
           "100%": {
-            "transform": "translateX(100%)",
-          }
+            transform: "translateX(100%)",
+          },
         },
         "rotate-y": {
           "0%": {
