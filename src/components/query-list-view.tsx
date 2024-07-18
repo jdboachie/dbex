@@ -82,30 +82,13 @@ const QueryListView = async () => {
                 </Link>
               </ContextMenuTrigger>
               <ContextMenuContent className="w-56">
-                <ContextMenuCheckboxItem checked>
-                  Change this
-                  <ContextMenuShortcut>⌘⇧C</ContextMenuShortcut>
-                </ContextMenuCheckboxItem>
                 <Link href={`/app/queries/${query.id}`}>
                   <ContextMenuItem inset>
                       View
                   </ContextMenuItem>
                 </Link>
-                <ContextMenuItem inset>Delete</ContextMenuItem>
+                <ContextMenuItem>Delete</ContextMenuItem>
                 <ContextMenuSeparator />
-                <ContextMenuSub>
-                  <ContextMenuSubTrigger inset>Export</ContextMenuSubTrigger>
-                  <ContextMenuSubContent className="w-48">
-                    <ContextMenuItem>
-                      CSV
-                      {/* <ContextMenuShortcut>⇧⌘S</ContextMenuShortcut> */}
-                    </ContextMenuItem>
-                    <ContextMenuItem>XLSX</ContextMenuItem>
-                    <ContextMenuItem>HTML</ContextMenuItem>
-                    <ContextMenuSeparator />
-                    <ContextMenuItem>PDF</ContextMenuItem>
-                  </ContextMenuSubContent>
-                </ContextMenuSub>
               </ContextMenuContent>
           </ContextMenu>
           ))}

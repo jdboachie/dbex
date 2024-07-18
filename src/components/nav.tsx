@@ -20,7 +20,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
     title: string,
     label: string,
     icon: any,
-    href?: string,
+    href: string,
   }
 
 
@@ -29,9 +29,8 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
       title: "Home",
       label: "",
       icon: HomeIcon,
-      href: '/app', // DEFINITELY CHANGE THIS JUDE!!!!!
-    }
-    ,
+      href: '/app/home',
+    },
     {
       title: "Connections",
       label: "",
@@ -60,7 +59,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
                 <Link
                   href={link.href || '#'}
                   className={cn(
-                    buttonVariants({ variant: pathname.startsWith(link.href || 'undefined') ? 'default': 'ghost', size: "icon" }),
+                    buttonVariants({ variant: pathname.startsWith(link.href) ? 'default': 'ghost', size: "icon" }),
                     "size-10",
                     pathname.startsWith(link.href || 'undefined') ?
                       "dark:bg-muted dark:hover:bg-muted dark:hover:text-white dark:text-primary" : "text-muted-foreground"

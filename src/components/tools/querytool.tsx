@@ -71,21 +71,20 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
       // shouldUpdateNotCreate ?
       //updateQuery({where {id: }, data: {content: content, title: title}})
       createQuery(
-      data?.id || 'noquerysgonnahaveanidlikethislol',
-      {
-        name: queryName || 'untitled',
-        content: code,
-        emojiUrl: emojiURL,
-        userId: queryToolSettings?.connection?.userId || '',
-        connectionId: queryToolSettings?.connection?.id || '',
-      }).then((res) => router.push(`/app/queries/${res.id}`)),
-      {
-        loading: 'Saving query...',
-        success: 'Saved',
-        error: 'Error saving query'
-      }
-    )
-
+        data?.id || 'noquerysgonnahaveanidlikethislol',
+        {
+          name: queryName || 'untitled',
+          content: code,
+          emojiUrl: emojiURL,
+          userId: queryToolSettings?.connection?.userId || '',
+          connectionId: queryToolSettings?.connection?.id || '',
+        }).then((res) => !data && router.push(`/app/queries/${res.id}`)),
+        {
+          loading: 'Saving query...',
+          success: 'Saved',
+          error: 'Error saving query'
+        }
+      )
   }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
