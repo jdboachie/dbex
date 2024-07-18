@@ -1,4 +1,3 @@
-import {nextui} from '@nextui-org/theme';
 import type { Config } from "tailwindcss";
 
 const config = {
@@ -8,7 +7,6 @@ const config = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
     "./src/**/*.{ts,tsx}",
-    "./node_modules/@nextui-org/theme/dist/components/[object Object].js"
   ],
   prefix: "",
   theme: {
@@ -24,6 +22,10 @@ const config = {
         sans: ["var(--font-geist-sans)"],
         mono: ["var(--font-geist-mono)"],
       },
+      backgroundImage: {
+        patternImag: "url(/pattern.svg)",
+      },
+
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -39,6 +41,11 @@ const config = {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
+        primaryblue:{
+          DEFAULT: "#1A9AEF",
+          foreground: "#1A9AEF75"
+        }
+        ,
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
@@ -74,19 +81,28 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "shimmer": {
+        shimmer: {
           "100%": {
-            "transform": "translateX(100%)",
-          }
-        }
+            transform: "translateX(100%)",
+          },
+        },
+        "rotate-y": {
+          "0%": {
+            transform: "rotateY(0deg)",
+          },
+          "100%": {
+            transform: "rotateY(360deg)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "rotate-y": "rotate-y 5s linear infinite",
       },
     },
   },
-  plugins: [require("tailwindcss-animate"),nextui()],
+  plugins: [require("tailwindcss-animate")],
 } satisfies Config;
 
 export default config;

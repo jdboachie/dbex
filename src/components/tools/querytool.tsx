@@ -1,46 +1,74 @@
 'use client';
 
-import React, { useRef, useState } from 'react';
-import { toast } from 'sonner';
-import Papa from 'papaparse';
-// import { FieldDef } from 'pg';
-import { useTheme } from 'next-themes';
-import Editor from '@monaco-editor/react';
-import EmojiPicker from 'emoji-picker-react';
-import Image from 'next/image';
-
-import { Button } from '@/components/ui/button';
-import { Input } from '../ui/input';
-import ConnectionSelector from '../ui/connection-selector';
-// import { useQueryToolContext } from '@/lib/hooks/querytoolsettings';
-import useDatabase from '@/lib/hooks/useDatabase';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Tooltip, TooltipContent, TooltipTrigger, TooltipArrow } from "@/components/ui/tooltip";
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
-import { LoadingIcon } from '@/components/icons';
 import {
   FileCsv,
   Play as PlayIcon,
   MicrosoftExcelLogo,
   Download as DownloadIcon,
-  FloppyDisk as FloppyDiskIcon,
 } from '@phosphor-icons/react';
+import Papa from 'papaparse';
+import Image from 'next/image';
+import { toast } from 'sonner';
+import { useTheme } from 'next-themes';
+import Editor from '@monaco-editor/react';
+import { Skeleton } from '../ui/skeleton';
+import { createQuery } from '@/lib/actions';
+import EmojiPicker from 'emoji-picker-react';
+import { Input } from '@/components/ui/input';
+import React, { useRef, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import useDatabase from '@/lib/hooks/useDatabase';
+import { getBuiltinTypeString } from '@/lib/utils';
+import { useQueryToolContext } from '@/lib/hooks/querytoolsettings';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import ConnectionSelector from '@/components/ui/connection-selector';
+import { FloppyDiskIcon, LayoutIcon, LoadingIcon } from '@/components/icons';
+import { Tooltip, TooltipContent, TooltipTrigger, TooltipArrow } from "@/components/ui/tooltip";
+import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/components/ui/resizable";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import EmptyState from '../closet/empty-state';
 
-const QueryTool = () => {
 
+const QueryTool = ({queryObject} : {queryObject?: any | null}) => {
+
+  //debug. delete later.
+  // if (!queryObject) {
+  //   toast.warning("This page doesn't work yet", {'description': 'We are working on it'})
+  // }
+
+  // Hooks
   const { query } = useDatabase();
+  const { queryToolSettings } = useQueryToolContext();
 
-  const editorRef = useRef(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-
-  const [emojiURL, setEmojiURL] = useState<string>('https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f601.png');
+  // State
+  const [code, setCode] = useState<string | undefined>(queryObject?.content || '');
+  const [emojiURL, setEmojiURL] = useState<string>(queryObject?.emojiUrl || 'https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f601.png');
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [queryName, setQueryName] = useState<string>(queryObject?.name || '')
   const [outputData, setOutputData] = useState<{ columns: { name: string, type: number }[], rows: any[] } | null>(null);
-  const [code, setCode] = useState<string | undefined>('SELECT NOW()');
   const [queryCompletionTime, setQueryCompletionTime] = useState<number | null>(null);
 
+  // Editor Theme
   const { theme, resolvedTheme } = useTheme();
   const editorTheme = (theme === 'dark' || resolvedTheme === 'dark') ? 'vs-dark' : 'light';
+
+  // Query Editor Functions
+  const handleSave = () => {
+    toast.promise(
+      createQuery({
+        name: queryName || 'untitled',
+        content: code,
+        emojiUrl: emojiURL,
+        userId: queryToolSettings?.connection.userId || '',
+        connectionId: queryToolSettings?.connection.id || '',
+      }),
+    {
+      loading: 'Saving query...',
+      success: 'Saved',
+      error: 'Error saving query'
+    }
+    )
+  }
 
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -84,18 +112,22 @@ const QueryTool = () => {
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.setAttribute('href', url);
-      link.setAttribute('download', 'query_results.csv');
+      link.setAttribute('download', queryName || 'output');
       link.click();
     } else {
       toast.error('No data to export');
     }
   };
 
+  // Query Editor UI
   return (
+    // overlay the play icon with the loading icon (relative and absolute) while it is running (also disabled)
     <div className="size-full">
-      <form onSubmit={handleSubmit} className='flex p-1 px-2 border-b justify-between items-center w-full'>
+      <div className="flex p-1 border-b justify-between items-center w-full">
+      <form onSubmit={handleSubmit} className='flex justify-between items-center w-full'>
         <div className="flex items-center">
-          <div className="flex">
+          <ConnectionSelector />
+          <div className="flex gap-1">
             <DropdownMenu>
               <DropdownMenuTrigger>
                 <Button size={'icon'} variant={'ghost'}>
@@ -112,31 +144,18 @@ const QueryTool = () => {
                 <EmojiPicker className='bg-primary-foreground border-0' onEmojiClick={(emojiData) => setEmojiURL(emojiData.imageUrl)} />
               </DropdownMenuContent>
             </DropdownMenu>
-            <Input placeholder='untitled.sql' type='text' className='shadow-none font-medium border-0 focus:border-0 focus-visible:ring-0 focus:outline-0' />
+            <Input
+              autoFocus
+              value={queryName}
+              onChange={(e) => setQueryName(e.target.value)}
+              placeholder='untitled.sql'
+              type='text'
+              className='shadow-none font-medium border-0 focus:border-0 focus:bg-input focus-visible:ring-0 focus:outline-0'
+            />
+
           </div>
-          <ConnectionSelector />
         </div>
         <div className="flex gap-1 p-1">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <Button
-                disabled={isLoading}
-                size={'icon'}
-                type='reset'
-                onClick={() => {
-                  setCode('');
-                  setOutputData(null);
-                }}
-                variant={'ghost'}
-              >
-                <FloppyDiskIcon className='size-4' />
-              </Button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <TooltipArrow />
-              <p>Save</p>
-            </TooltipContent>
-          </Tooltip>
           <DropdownMenu>
             <DropdownMenuTrigger>
               <Tooltip>
@@ -166,10 +185,10 @@ const QueryTool = () => {
           <Tooltip>
             <TooltipTrigger>
               <Button
-                disabled={isLoading}
-                size={'icon'}
                 type='submit'
+                size={'icon'}
                 variant={'ghost'}
+                disabled={isLoading}
               >
                 {isLoading ? (
                   <LoadingIcon className='size-4' />
@@ -185,63 +204,102 @@ const QueryTool = () => {
           </Tooltip>
         </div>
       </form>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Button
+            size={'icon'}
+            onClick={() => {handleSave()}}
+            variant={'ghost'}
+          >
+            <FloppyDiskIcon className='size-4' />
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <TooltipArrow />
+          <p>Save</p>
+        </TooltipContent>
+      </Tooltip>
+      </div>
       <ResizablePanelGroup direction="vertical" className='size-full'>
-        <ResizablePanel defaultSize={20} minSize={0} className='size-full'>
+        <ResizablePanel defaultSize={40} minSize={0} className='size-full'>
           <Editor
             onChange={(value) => setCode(value)}
             height="100%"
-            defaultLanguage="sql"
-            defaultValue="SELECT NOW()"
             theme={editorTheme}
+            defaultLanguage="sql"
+            defaultValue={code}
           />
         </ResizablePanel>
         <ResizableHandle
           withHandle
           className='activehandle'
         />
-        <ResizablePanel minSize={20} defaultSize={80}>
-          <div className="border-b flex text-xs w-full p-2 gap-2">
+        <ResizablePanel minSize={20} defaultSize={60}>
+          <div className="border-b flex text-sm w-full p-2 gap-2">
             <div className='flex gap-1'>Num rows: <p className="px-1 rounded bg-primary-foreground">{outputData?.rows.length || '---'}</p></div>
-            <div className="flex gap-1">Num cols: </div>
+            <div className="flex gap-1">Num cols: <p className="px-1 rounded bg-primary-foreground">{outputData?.columns.length || '---'}</p></div>
             <div className='flex gap-1'>Query completed in <p className="px-1 rounded bg-primary-foreground">{queryCompletionTime ? queryCompletionTime : '---'}ms</p></div>
           </div>
-          <div className={`overflow-auto shadow-inner h-[calc(100%-89px)]`}>
-            {outputData ? (
-              <table className='text-sm font-mono tracking-normal table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
-                <thead className='sticky top-[-1px] bg-primary-foreground drop-shadow max-h-[1rem] min-h-[1rem]'>
-                  <tr className='truncate'>
-                    {outputData.columns.map((col, index) => (
-                      <th key={index} className='border border-t-none p-2 min-w-[10rem] w-[10rem] max-w-[10rem]'>
-                        {col.name}
-                        <br />
-                        <span className='text-xs text-foreground/70'>({col.type})</span>
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {outputData.rows.map((row, rowIndex) => (
-                    <tr
-                      key={rowIndex}
-                      className='max-h-[1rem] min-h-[1rem] transition-all duration-300 ease-in-out'
-                    >
-                      {outputData.columns.map((col, colIndex) => (
-                        <td
-                          key={colIndex}
-                          className='min-w-[10rem] w-[10rem] max-w-[10rem] truncate
-                                    border hover:border-double hover:border-primary
-                                    whitespace-nowrap p-2 hover:bg-secondary'
+          <div className="h-[calc(100%-86px)]">
+            {isLoading ?
+              <Skeleton className='grow h-full' />
+              :
+              <>
+              {outputData ? (
+                <ScrollArea className={`text-sm flex flex-col-reverse place-items-center font-mono tracking-normal w-[calc(100%-0px)] h-[calc(100%-0px)]`}>
+                  <table className='text-primary table-auto w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
+                    <thead className='sticky top-[-1px] bg-primary-foreground drop-shadow max-h-[1rem] min-h-[1rem]'>
+                      <tr className='truncate'>
+                        {outputData.columns.map((col, index) => (
+                          <th key={index} className='border border-t-none p-2 min-w-[10rem] w-[10rem] max-w-[10rem]'>
+                            {col.name}
+                            <br />
+                            <span className='text-xs font-normal text-muted-foreground'>{getBuiltinTypeString(col.type)}</span>
+                          </th>
+                        ))}
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {outputData.rows.map((row, rowIndex) => (
+                        <tr
+                          key={rowIndex}
+                          className='max-h-[1rem] min-h-[1rem] hover:bg-primary-foreground transition-all duration-250 ease-in-out'
                         >
-                          {row[col.name] instanceof Date ? row[col.name].toString() : row[col.name]}
-                        </td>
+                          {outputData.columns.map((col, colIndex) => (
+                            <td
+                              key={colIndex}
+                              className='min-w-[10rem] w-[10rem] max-w-[10rem] truncate
+                                        border hover:border-double hover:border-primary
+                                        whitespace-nowrap p-2 hover:bg-primary-foreground'
+                            >
+                              {row[col.name] instanceof Date ? row[col.name].toString() : row[col.name]}
+                            </td>
+                          ))}
+                        </tr>
                       ))}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            ) : (
-              <p className='p-2 size-full flex text-foreground/70 items-center justify-center'>No data to display</p>
-            )}
+                    </tbody>
+                  </table>
+                  <ScrollBar orientation="horizontal" />
+                </ScrollArea>
+              ) : (
+                <>
+                  {isLoading ?
+                    <></>
+                    :
+                    (
+                    <div className="p-4 grow h-full">
+                      <EmptyState
+                        icon={LayoutIcon}
+                        title='No data to show'
+                        description='Execute a query to view the output'
+                      />
+                    </div>
+                    )
+                  }
+                </>
+              )}
+            </>
+          }
           </div>
         </ResizablePanel>
       </ResizablePanelGroup>

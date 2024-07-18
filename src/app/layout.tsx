@@ -1,30 +1,33 @@
 import "./globals.css";
-import type { Metadata } from "next";
 import localFont from "next/font/local";
-import { Inter_Tight } from "next/font/google"
-import { ThemeProvider } from "@/components/theme/theme-provider";
-import { TooltipProvider } from "@/components/ui/tooltip";
+
+import type { Metadata } from "next";
+// import { Analytics } from "@vercel/analytics/react"
+// import { SpeedInsights } from "@vercel/speed-insights/next"
+
 import { SessionProvider } from "next-auth/react"
+import { TooltipProvider } from "@/components/ui/tooltip";
+
 import { Toaster } from "@/components/ui/sonner";
+import { ThemeProvider } from "@/components/theme/theme-provider";
+
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
 });
+
 const geistMono = localFont({
   src: "./fonts/GeistMonoVF.woff",
   variable: "--font-geist-mono",
 });
 
-const inter = Inter_Tight({
-  subsets: ['latin'],
-  weight: ['400', '500', '600', '700', '800', '900'],
-})
 
 export const metadata: Metadata = {
   title: "Dbex",
   description: "Database Explorer and Studio",
 };
+
 
 export default function RootLayout({
   children,
@@ -32,8 +35,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} ${inter.className} antialiased font-sans tracking-tight`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans tracking-[initial] text-muted-foreground text-sm`}>
+        {/* <Analytics/>
+        <SpeedInsights/> */}
         <SessionProvider>
           <ThemeProvider
             attribute="class"

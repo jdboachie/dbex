@@ -1,4 +1,3 @@
-
 export default async function Home () {
   return (
     <div className="h-screen w-screen font-sans flex md:items-center md:justify-center bg-black/[0.96] antialiased bg-grid-white/[0.02] relative overflow-hidden">

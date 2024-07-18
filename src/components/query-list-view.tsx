@@ -26,6 +26,7 @@ import { MagnifyingGlass as MagnifyingGlassIcon } from "@phosphor-icons/react/di
 
 import { fetchAllQueries } from '@/lib/actions';
 import { PlusCircleIcon } from "@heroicons/react/16/solid";
+import Link from "next/link";
 
 
 const QueryListView = async () => {
@@ -60,33 +61,36 @@ const QueryListView = async () => {
         </Button>
       </div>
       <TabsContent value='all'>
-        <div className='grid grid-flow-row gap-1 size-full px-2'>
+        <div className='grid grid-flow-row gap-1 size-full px-4 py-2'>
           {queries.map((query) => (
             <ContextMenu key={query.id}>
               <ContextMenuTrigger>
-                <Button
-                  variant={'ghost'}
-                  className="flex gap-2 px-2 w-full font-normal justify-start"
-                >
-                  <Image
-                    src={query.emojiUrl || ''}
-                    alt={'query emoji'}
-                    width={1000}
-                    height={1000}
-                    className="size-5"
-                  />
-                  {query.name}
-                  <Badge variant={'outline'}>{query.relatedConnection.databaseName}</Badge>
-                </Button>
+                <Link href={`/app/queries/${query.id}`}>
+                  <Button
+                    variant={'ghost'}
+                    className="flex gap-2 px-2 w-full justify-start"
+                    >
+                    <Image
+                      src={query.emojiUrl || ''}
+                      alt={'query emoji'}
+                      width={1000}
+                      height={1000}
+                      className="size-5"
+                      />
+                    {query.name}
+                  </Button>
+                </Link>
               </ContextMenuTrigger>
               <ContextMenuContent className="w-56">
                 <ContextMenuCheckboxItem checked>
                   Change this
                   <ContextMenuShortcut>⌘⇧C</ContextMenuShortcut>
                 </ContextMenuCheckboxItem>
-                <ContextMenuItem inset>
-                    View
-                </ContextMenuItem>
+                <Link href={`/app/queries/${query.id}`}>
+                  <ContextMenuItem inset>
+                      View
+                  </ContextMenuItem>
+                </Link>
                 <ContextMenuItem inset>Delete</ContextMenuItem>
                 <ContextMenuSeparator />
                 <ContextMenuSub>
