@@ -1,19 +1,30 @@
 import Link from 'next/link'
+import Image from 'next/image'
+import { prisma } from '@/lib/prisma'
 import LoadingUI from '@/components/loading-ui'
 import { Button } from '@/components/ui/button'
-import { Connection } from '@prisma/client'
+import { Connection, Query } from '@prisma/client'
 import { fetchConnectionById } from '@/lib/actions'
-import { GlobeIcon, DatabaseIcon, UserIcon, ConnectionIcon, PlayFillIcon } from '@/components/icons'
+import { AnimatedState } from '@/components/experimental/animated-state'
+import { GlobeIcon, DatabaseIcon, UserIcon, ConnectionIcon, PlayFillIcon, ZeroConfigIcon } from '@/components/icons'
+import EmptyState from '@/components/closet/empty-state'
+import { ScrollArea } from '@/components/ui/scroll-area'
 
 
 export default async function Page({ params }: { params: { id: string } }) {
 
   const data: Connection | null = await fetchConnectionById(params.id)
 
+  const relatedQueries: Query[] = await prisma.query.findMany({
+    where: {
+      connectionId : data?.id
+    }
+  })
+
   return (
     data ? (
-      <div className="flex flex-col divide-y w-full">
-        <div className="h-[125px] flex justify-between items-center px-10">
+      <ScrollArea className="flex flex-col w-full h-full">
+        <div className="h-[126px] border-b flex justify-between items-center px-10">
           <h2 className="text-5xl max-lg:text-3xl text-primary font-medium">
             {data.databaseName}
           </h2>
@@ -55,7 +66,40 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
           </section>
         </div>
-      </div>
+        <div className="p-10 grid gap-4">
+          <h5 className="text-base font-medium">Related queries</h5>
+          <AnimatedState>
+            {relatedQueries.length > 0 ?
+              <>
+                {relatedQueries.map((query) => (
+                  <Link key={query.id} href={`/app/queries/${query.id}`}>
+                    <Button
+                      variant={'ghost'}
+                      className="flex gap-2 px-2 w-full justify-start"
+                    >
+                      <Image
+                        src={query.emojiUrl || ''}
+                        alt={'query emoji'}
+                        width={1000}
+                        height={1000}
+                        className="size-5"
+                      />
+                      <p className="truncate">{query.name}</p>
+                    </Button>
+                  </Link>
+                ))}
+              </>
+              :
+              <EmptyState
+                small
+                icon={ZeroConfigIcon}
+                title='No queries on this database'
+                description="Click on the 'Query database"
+              />
+              }
+          </AnimatedState>
+        </div>
+      </ScrollArea>
     ) : (
       <LoadingUI />
     )
