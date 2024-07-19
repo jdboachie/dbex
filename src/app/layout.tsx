@@ -12,9 +12,9 @@ import { Toaster } from "@/components/ui/sonner";
 import { ThemeProvider } from "@/components/theme/theme-provider";
 
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
+const sans = localFont({
+  src: "./fonts/InterTight-VariableFont_wght.ttf",
+  variable: "--font-sans",
 });
 
 const geistMono = localFont({
@@ -36,7 +36,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased font-sans text-muted-foreground text-sm`}>
+      <body className={`${sans.variable} ${geistMono.variable} antialiased font-sans text-muted-foreground text-sm`}>
         <Analytics/>
         <SpeedInsights/>
         <SessionProvider>
@@ -47,7 +47,7 @@ export default function RootLayout({
             disableTransitionOnChange
             >
             <TooltipProvider>
-              <Toaster richColors={false} expand={false} closeButton={true} />
+              <Toaster richColors={true} expand={true} />
               {children}
             </TooltipProvider>
           </ThemeProvider>

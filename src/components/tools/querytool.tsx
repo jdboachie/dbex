@@ -50,15 +50,15 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
   const { queryToolSettings } = useQueryToolContext();
 
   // State
-  const [shouldUpdateNotCreate, setShouldUpdateNotCreate] = useState<boolean>(data ? true : false)
-  const [hasFailure, setHasFailure] = useState<boolean>(false)
   const [code, setCode] = useState<string | undefined>(data?.content || '');
+  const [isEdited, setIsEdited] = useState<boolean>(false)
   const [emojiURL, setEmojiURL] = useState<string>(data?.emojiUrl || DEFAULT_EMOJI_URL);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [queryName, setQueryName] = useState<string>(data?.name || '')
+  const [hasFailure, setHasFailure] = useState<boolean>(false)
   const [outputData, setOutputData] = useState<{ columns: { name: string, type: number }[], rows: any[] } | null>(null);
-  const [queryCompletionTime, setQueryCompletionTime] = useState<number | null>(null);
   const [viewDetailedInfo, setViewDetailedInfo] = useState<any | null>(null)
+  const [queryCompletionTime, setQueryCompletionTime] = useState<number | null>(null);
 
 
   // Editor Theme
@@ -68,8 +68,6 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
   // Query Editor Functions
   const handleSave = () => {
     toast.promise(
-      // shouldUpdateNotCreate ?
-      //updateQuery({where {id: }, data: {content: content, title: title}})
       createQuery(
         data?.id || 'noquerysgonnahaveanidlikethislol',
         {
@@ -87,8 +85,8 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
       )
   }
 
-  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const handleSubmit = async (event?: React.FormEvent<HTMLFormElement>) => {
+    event?.preventDefault();
     setIsLoading(true);
     setViewDetailedInfo(null)
 
@@ -140,6 +138,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
     }
   };
 
+
   // Query Editor UI
   return (
     // overlay the play icon with the loading icon (relative and absolute) while it is running (also disabled)
@@ -147,9 +146,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
       <div className="flex p-1 border-b justify-between items-center w-full">
       <form onSubmit={handleSubmit} className='flex justify-between items-center w-full'>
         <div className="flex items-center">
-          <React.Suspense fallback={<Skeleton className='h-5 w-20'/>}>
-            <ConnectionSelector presetConnection={data?.relatedConnection} />
-          </React.Suspense>
+          <ConnectionSelector presetConnection={data?.relatedConnection} />
           <div className="flex gap-1">
             <DropdownMenu>
               <DropdownMenuTrigger>
@@ -172,7 +169,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
               onChange={(e) => setQueryName(e.target.value)}
               placeholder='Untitled'
               type='text'
-              className='shadow-none text-primary font-medium border-0 focus:border-0 focus:bg-input focus-visible:ring-0 focus:outline-0'
+              className='shadow-none text-primary font-normal border-0'
             />
 
           </div>
@@ -195,11 +192,11 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
             </DropdownMenuTrigger>
             <DropdownMenuContent className='mx-2'>
               <DropdownMenuItem onClick={handleExportCSV}>
-                <FileCsv className='size-4 mr-2'/>
+                <FileCsv weight='fill' className='size-5 mr-2'/>
                 <p className='text-xs'>Export to CSV</p>
               </DropdownMenuItem>
               <DropdownMenuItem disabled>
-                <MicrosoftExcelLogo className='size-4 mr-2' />
+                <MicrosoftExcelLogo weight='fill' className='size-5 mr-2' />
                 <p className="text-xs">Export to Microsoft Excel</p>
               </DropdownMenuItem>
             </DropdownMenuContent>
@@ -232,7 +229,9 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
             size={'icon'}
             onClick={() => {handleSave()}}
             variant={'ghost'}
+            className='relative'
           >
+            <StatusDot state='wait' className={!isEdited ? 'hidden' : 'absolute top-1 right-1'} />
             <FloppyDiskIcon className='size-4' />
           </Button>
         </TooltipTrigger>
@@ -245,7 +244,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
       <ResizablePanelGroup direction="vertical" className='w-full'>
         <ResizablePanel defaultSize={40} minSize={0} className='size-full'>
           <Editor
-            onChange={(value) => setCode(value)}
+            onChange={(value) => {setCode(value)}}
             height="100%"
             theme={editorTheme}
             defaultLanguage="sql"
@@ -278,12 +277,12 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
                 :
                 <>
                 {outputData ? (
-                  <ScrollArea className={`text-xs text-[13px] flex flex-col-reverse place-items-center font-mono tracking-normal w-[calc(100%-0px)] h-[calc(100%-0px)]`}>
-                    <div className='grid grid-flow-row text-primary/90 w-fit h-fit text-left border-collapse transition-all duration-300 ease-in-out'>
+                  <ScrollArea className={`text-xs text-[13px] flex flex-col-reverse place-items-center tracking-normal w-[calc(100%-0px)] h-[calc(100%-0px)]`}>
+                    <div className='grid grid-flow-row text-primary/90 w-fit h-fit text-left border-collapse animate-all'>
                       <div className='thead p-2 sticky top-0 bg-background border-b'>
                         <div className='tr grid grid-flow-col truncate'>
                           {outputData.columns.map((col, index) => (
-                            <div key={index} className='flex gap-1 items-center font-sans p-2 min-w-[10rem] w-[10rem] max-w-[10rem] truncate'>
+                            <div key={index} className='flex gap-1 items-center p-2 min-w-[10rem] w-[10rem] max-w-[10rem] truncate'>
                               <p className="text-sm">{col.name}</p>
                               <span className='text-[0.6rem] truncate leading-[9px] font-normal text-muted-foreground'>{getBuiltinTypeString(col.type)}</span>
                             </div>
@@ -295,7 +294,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
                           <div
                             key={rowIndex}
                             onClick={() => setViewDetailedInfo(row)}
-                            className='tr grid hover:text-primary grid-flow-col rounded transition-all duration-250 ease-in-out'
+                            className='tr grid hover:text-primary grid-flow-col rounded animate-all'
                           >
                             {outputData.columns.map((col, colIndex) => (
                               <Tooltip
@@ -308,7 +307,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
                                     {row[col.name] instanceof Date ? row[col.name].toString() : row[col.name]}
                                   </div>
                                 </TooltipTrigger>
-                                {row[col.name].length > 17 &&
+                                {row[col.name].length > 23 &&
                                   <TooltipContent>
                                     {row[col.name]}
                                     <TooltipArrow className='relative w-0 h-0 border-l-[7px] border-r-[7px] border-t-[7px] border-l-transparent border-r-transparent border-t-primary' />
@@ -330,6 +329,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
                       (
                         <div className="p-4 grow h-full">
                         <EmptyState
+                          small
                           icon={LayoutIcon}
                           title='No data to show'
                           description='Execute a query to view the output'

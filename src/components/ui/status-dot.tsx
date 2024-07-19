@@ -20,7 +20,7 @@ const statusVariants = cva(
         wait:
           "bg-amber-500 animate-pulse",
         failed:
-          "bg-red-700",
+          "bg-red-500",
         ok:
           "bg-green-500",
       },
