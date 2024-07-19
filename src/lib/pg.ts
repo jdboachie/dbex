@@ -1,8 +1,9 @@
 'use server'
 
 import pg from 'pg';
-import { QueryToolSettings } from './hooks/querytoolsettings';
+import { Connection } from '@prisma/client';
 import { parsePostgresConnectionString } from './utils';
+import { QueryToolSettings } from './hooks/querytoolsettings';
 
 const { Pool } = pg;
 
@@ -30,7 +31,7 @@ export async function runQuery(
 }> {
 
 
-  const client = new Pool({
+  const pool = new Pool({
     user: settings?.connection.username,
     database: settings?.connection.databaseName,
     port: settings?.connection.port,
@@ -43,7 +44,7 @@ export async function runQuery(
 
   try {
     const start = Date.now();
-    const result = await client.query(text);
+    const result = await pool.query(text);
     const end = Date.now();
 
     const columns = result.fields.map(field => ({
@@ -60,6 +61,37 @@ export async function runQuery(
   } catch (err) {
     return { error: err!.toString() };
   } finally {
-    await client.end();
+    // await pool.end();
   }
+}
+
+export async function runConnectionSpecificQuery (connection: Connection, text: string) {
+  const pool = new Pool({
+    user: connection.username,
+    database: connection.databaseName,
+    port: connection.port,
+    host: connection.hostname,
+    password: connection.password,
+    ssl: connection.ssl ? true : false,
+    connectionTimeoutMillis: 60000,
+    query_timeout: 60000,
+  });
+
+  const start = Date.now();
+
+  const result = await pool.query(text);
+
+  const end = Date.now();
+
+  const columns = result.fields.map(field => ({
+    name: field.name,
+    type: field.dataTypeID
+  }));
+
+  const rows = result.rows;
+
+  return {
+    res: { columns, rows },
+    time: end - start
+  };
 }
