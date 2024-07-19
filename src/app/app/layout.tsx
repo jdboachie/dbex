@@ -18,18 +18,18 @@ export default async function Home({
   const defaultLayout = layout ? JSON.parse(layout.value) : [15, 25, 65]
   const defaultCollapsed = collapsed ? JSON.parse(collapsed.value) : false
 
-  // const session = await auth()
+  const session = await auth()
 
-  //  if ( !session ) {
-  //   return (
-  //      <div className='grid size-full h-screen place-items-center gap-4'>
-  //       <div className="gap-2 grid grid-flow-row h-fit">
-  //         <p>You are not authorized to access this page</p>
-  //         <SignIn />
-  //        </div>
-  //      </div>
-  //    )
-  //  } else {
+   if ( !session ) {
+    return (
+       <div className='grid size-full h-screen place-items-center gap-4'>
+        <div className="gap-2 grid grid-flow-row h-fit">
+          <p>You are not authorized to access this page</p>
+          <SignIn />
+         </div>
+       </div>
+     )
+   } else {
     return (
       <main className="h-screen w-screen overflow-hidden">
         <ResizablePanelGroup direction="horizontal" className="p-2 pl-0">
@@ -44,5 +44,5 @@ export default async function Home({
         </ResizablePanelGroup>
       </main>
     );
-  // }
+  }
 }
