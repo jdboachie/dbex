@@ -289,7 +289,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
                           ))}
                         </div>
                       </div>
-                      <tbody className='p-1 [&>*:nth-child(even)]:bg-background hover:[&>*:nth-child(even)]:bg-secondary [&>*:nth-child(odd)]:bg-primary-foreground hover:[&>*:nth-child(odd)]:bg-secondary'>
+                      <div className='p-1 [&>*:nth-child(even)]:bg-background hover:[&>*:nth-child(even)]:bg-secondary [&>*:nth-child(odd)]:bg-primary-foreground hover:[&>*:nth-child(odd)]:bg-secondary'>
                         {outputData.rows.map((row, rowIndex) => (
                           <div
                             key={rowIndex}
@@ -307,17 +307,21 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
                                     {row[col.name] instanceof Date ? row[col.name].toString() : row[col.name]}
                                   </div>
                                 </TooltipTrigger>
-                                {row[col.name].length > 23 &&
-                                  <TooltipContent>
-                                    {row[col.name]}
-                                    <TooltipArrow className='relative w-0 h-0 border-l-[7px] border-r-[7px] border-t-[7px] border-l-transparent border-r-transparent border-t-primary' />
-                                  </TooltipContent>
+                                {row[col.name] &&
+                                  <>
+                                  {row[col.name].length > 23 &&
+                                    <TooltipContent>
+                                      {row[col.name]}
+                                      <TooltipArrow className='relative w-0 h-0 border-l-[7px] border-r-[7px] border-t-[7px] border-l-transparent border-r-transparent border-t-primary' />
+                                    </TooltipContent>
+                                  }
+                                  </>
                                 }
                               </Tooltip>
                             ))}
                           </div>
                         ))}
-                      </tbody>
+                      </div>
                     </div>
                     <ScrollBar orientation="horizontal" />
                   </ScrollArea>
