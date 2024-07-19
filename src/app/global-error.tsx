@@ -1,5 +1,8 @@
 'use client' // Error components must be Client Components
 
+import EmptyState from '@/components/closet/empty-state'
+import { ZeroConfigIcon } from '@/components/icons'
+import { Button } from '@/components/ui/button'
 import { useEffect } from 'react'
 
 export default function Error({
@@ -15,16 +18,18 @@ export default function Error({
   }, [error])
 
   return (
-    <div className='dev'>
-      <h2>Something went wrong!</h2>
-      <button
-        onClick={
-          // Attempt to recover by trying to re-render the segment
-          () => reset()
-        }
-      >
-        Try again
-      </button>
+    <div className="p-8 h-full">
+      <EmptyState
+        isError
+        title={'Something went wrong'}
+        description={error.message}
+        icon={ZeroConfigIcon}
+        className='text-red-500 border-red-500'
+        >
+        <Button variant={'destructive'} onClick={() => reset()}>
+          Reset
+        </Button>
+      </EmptyState>
     </div>
   )
 }
