@@ -124,9 +124,7 @@ const ConnectionsListView = () => {
     toast.promise(
       deleteConnection(connection.id)
         .then(() => {
-          if (pathname.endsWith(connection.id)) {
-            router.push('/app/connections')
-          }
+          router.push('/app/connections')
         }),
       {
         loading: `Deleting ${connection.databaseName}...`,

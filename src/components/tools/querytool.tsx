@@ -169,7 +169,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
               onChange={(e) => setQueryName(e.target.value)}
               placeholder='Untitled'
               type='text'
-              className='shadow-none text-primary font-normal border-0 focus:border-0 focus:bg-input focus-visible:ring-0 focus:outline-0'
+              className='shadow-none text-primary font-normal border-0'
             />
 
           </div>

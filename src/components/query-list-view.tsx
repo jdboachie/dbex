@@ -94,7 +94,7 @@ const QueryListView = () => {
                       height={1000}
                       className="size-5"
                       />
-                    {query.name}
+                      <p className="truncate">{query.name}</p>
                   </Button>
                 </Link>
               </ContextMenuTrigger>
