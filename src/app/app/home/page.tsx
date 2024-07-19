@@ -110,7 +110,7 @@ const Page = () => {
                 <div className="flex flex-col gap-1 items-center justify-center text-center">
                   <CardTitle className='text-lg'>Database</CardTitle>
                   <CardDescription className='w-12/12'>
-                    Postgres database the world's most trusted relational database.
+                    Postgres database the world&apos;s most trusted relational database.
                   </CardDescription>
 
                 </div>
