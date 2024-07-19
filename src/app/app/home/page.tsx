@@ -7,7 +7,7 @@ export default async function page () {
       <EmptyState
         icon={ZeroConfigIcon}
         title={'Nothing to see here'}
-        description={'Pick a tab on the left'}
+        description={'Not what you were looking for? Pick a tab on the left'}
         />
     </div>
   )

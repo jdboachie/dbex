@@ -104,11 +104,18 @@ export const fetchQuerybyId = async ( id: string ) => {
 // I'm using prisma's handy `upsert` command instead
 
 // DELETE
-export const deleteConnection = async (id: string) : Promise<Connection> => { // edit this later
-  const deletedConnection = await prisma.connection.delete({
+export const deleteConnection = async (id: string) => {
+  await prisma.connection.delete({
     where: {
       id: id
     }
   })
-  return deletedConnection
+}
+
+export const deleteQuery = async (id: string) => {
+  await prisma.query.delete({
+    where: {
+      id: id
+    }
+  })
 }

@@ -12,9 +12,9 @@ export default async function Page({ params }: { params: { id: string } }) {
 
   return (
     data ? (
-      <div className="grid divide-y">
-        <div className="p-10 flex justify-between">
-          <h2 className="text-4xl text-primary font-medium">
+      <div className="flex flex-col divide-y w-full">
+        <div className="h-[125px] flex justify-between items-center px-10">
+          <h2 className="text-5xl max-lg:text-3xl text-primary font-medium">
             {data.databaseName}
           </h2>
           <div className="grid grid-flow-col gap-2">
@@ -27,30 +27,30 @@ export default async function Page({ params }: { params: { id: string } }) {
           </div>
         </div>
         <div className='p-10 grid gap-4'>
-          <h5 className="text-xl font-semibold">Credentials</h5>
+          <h5 className="text-base font-medium">Credentials</h5>
           <section className="text-primary grid grid-flow-row [&>*:nth-child(even)]:bg-background [&>*:nth-child(odd)]:bg-primary-foreground">
             <div className="p-2 px-3 flex gap-2 items-center rounded-sm">
               <DatabaseIcon className='size-4' />
               <span className='flex items-center'>
-                <p className="w-20 text-muted-foreground text-sm">Schema</p><p className="font-mono tracking-tighter">{data.databaseName}</p>
+                <p className="w-20 text-muted-foreground text-sm">Schema</p><p>{data.databaseName}</p>
               </span>
             </div>
             <div className="p-2 px-3 flex gap-2 items-center rounded-sm">
               <GlobeIcon className='size-4' />
               <span className='flex items-center'>
-                <p className="w-20 text-muted-foreground text-sm">Host</p><p className="font-mono tracking-tighter">{data.hostname}</p>
+                <p className="w-20 text-muted-foreground text-sm">Host</p><p>{data.hostname}</p>
               </span>
             </div>
             <div className="p-2 px-3 flex gap-2 items-center rounded-sm">
               <ConnectionIcon className='size-4'/>
               <span className='flex items-center'>
-                <p className="w-20 text-muted-foreground text-sm">Port</p><p className="font-mono tracking-tighter">{data.port}</p>
+                <p className="w-20 text-muted-foreground text-sm">Port</p><p>{data.port}</p>
               </span>
             </div>
             <div className="p-2 px-3 flex gap-2 items-center rounded-sm">
               <UserIcon className='size-4' />
               <span className='flex items-center'>
-                <p className="w-20 text-muted-foreground text-sm">Username</p><p className="font-mono tracking-tighter">{data.username}</p>
+                <p className="w-20 text-muted-foreground text-sm">Username</p><p>{data.username}</p>
               </span>
             </div>
           </section>

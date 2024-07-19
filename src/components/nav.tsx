@@ -62,7 +62,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
                     buttonVariants({ variant: pathname.startsWith(link.href) ? 'default': 'ghost', size: "icon" }),
                     "size-10",
                     pathname.startsWith(link.href || 'undefined') ?
-                      "dark:bg-muted dark:hover:bg-muted dark:hover:text-white dark:text-primary" : "text-muted-foreground"
+                      "dark:bg-muted dark:hover:bg-muted/90 dark:hover:text-white dark:text-primary" : "text-muted-foreground"
                   )}
                 >
                   <link.icon className="size-4" />
@@ -85,12 +85,9 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
               href={link.href || '#'}
               className={cn(
                 buttonVariants({ variant: pathname.startsWith(link.href || 'undefined') ? 'default': 'ghost', size: "lg" }),
-                'px-3',
-                pathname.startsWith(link.href || 'undefined') &&
-                  "dark:bg-muted dark:text-white dark:hover:bg-muted dark:hover:text-white",
-                "justify-start",
-                !pathname.startsWith(link.href || 'undefined') &&
-                "text-primary/70"
+                'px-3 justify-start',
+                pathname.startsWith(link.href || 'undefined') ?
+                  "dark:bg-primary-foreground dark:text-white dark:hover:bg-primary-foreground/90 dark:hover:text-white" : "text-primary/70"
               )}
             >
               <link.icon className="mr-2 size-4" />

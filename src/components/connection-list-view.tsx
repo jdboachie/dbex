@@ -1,64 +1,62 @@
 'use client'
 
 import {
-  PostgresAltIcon,
-  MagnifyingGlassIcon,
   PlusIcon,
+  ServerIcon,
+  PostgresAltIcon,
   MoreHorizontalIcon,
-  DatabaseIcon,
-} from "./icons";
+  MagnifyingGlassIcon,
+} from "./icons"
 import {
   Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogFooter,
   DialogClose,
   DialogTitle,
+  DialogFooter,
+  DialogHeader,
   DialogTrigger,
+  DialogContent,
+  DialogDescription,
 } from "@/components/ui/dialog"
 import {
   Form,
-  FormControl,
-  FormField,
   FormItem,
+  FormField,
   FormLabel,
-  FormMessage
+  FormMessage,
+  FormControl,
 } from "@/components/ui/form"
 import {
   Tabs,
-  TabsContent,
   TabsList,
-  TabsTrigger
+  TabsTrigger,
+  TabsContent,
 } from "@/components/ui/tabs"
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
+  DropdownMenuContent,
 } from "@/components/ui/dropdown-menu"
-import { Badge } from '@/components/ui/badge'
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import ConnectionCardSkeleton from '@/components/closet/skeletons/ConnectionCardSkeleton';
-
 import { z } from "zod"
-import Link from "next/link";
+import Link from "next/link"
 import * as React from 'react'
-import { toast } from "sonner";
+import { toast } from "sonner"
+import StatusDot from "./ui/status-dot";
 import { testConnection } from "@/lib/pg"
 import { useForm } from "react-hook-form"
 import { useSession } from "next-auth/react"
-import { Connection } from '@prisma/client/edge';
-import { zodResolver } from "@hookform/resolvers/zod"
-import { parsePostgresConnectionString } from "@/lib/utils"
-import { createConnection, fetchUserByEmail, fetchConnections } from "@/lib/actions"
-import { deleteConnection } from "@/lib/actions";
-import { useRouter } from "next/navigation"
 import EmptyState from "./closet/empty-state"
+import { Badge } from '@/components/ui/badge'
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { deleteConnection } from "@/lib/actions"
+import { Connection } from '@prisma/client/edge'
+import { zodResolver } from "@hookform/resolvers/zod"
+import { useRouter, usePathname } from "next/navigation"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { parsePostgresConnectionString } from "@/lib/utils"
+import { AnimatedState } from "./experimental/animated-state"
+import { createConnection, fetchUserByEmail, fetchConnections } from "@/lib/actions"
 
 
 const ConnectionStringFormSchema = z.object({
@@ -69,6 +67,7 @@ const ConnectionsListView = () => {
 
   const router = useRouter()
   const { data } = useSession()
+  const pathname = usePathname()
 
   const [userId, setUserId] = React.useState<string>('')
   const [connections, setConnections] = React.useState<Connection[]>([]);
@@ -109,7 +108,7 @@ const ConnectionsListView = () => {
             isConnected: true,
           })
           .then((res) => {
-            setConnections([...connections, res]);
+            setConnections([res, ...connections]);
             router.push(`/app/connections/${res.id}`)
           })
         }),
@@ -123,42 +122,45 @@ const ConnectionsListView = () => {
 
   const handleDelete = async (connection : Connection) => {
     toast.promise(
-      deleteConnection(connection.id).then(() => router.push('/app/connections')),
+      deleteConnection(connection.id)
+        .then(() => {
+          if (pathname.endsWith(connection.id)) {
+            router.push('/app/connections')
+          }
+        }),
       {
-        loading: `Removing ${connection.databaseName}...`,
+        loading: `Deleting ${connection.databaseName}...`,
         success: () => {
           const newConnectionsList = connections.filter(item => item.id !== connection.id)
           setConnections(newConnectionsList)
           return `Deleted successfully`
         },
-        error: `Error removing ${connection.databaseName}`
+        error: `Error deleting ${connection.databaseName}`
       }
     );
   }
 
   return (
-    <Tabs defaultValue="all" className="flex flex-col items-stretch h-screen">
-      <div className="grid border-b p-2 px-2 items-center">
-        <TabsList>
-          <TabsTrigger value="all" className="w-full">All</TabsTrigger>
-          <TabsTrigger value="active" className="w-full">Active</TabsTrigger>
-        </TabsList>
-      </div>
-      <div className="p-4">
+    <div className="flex flex-col items-stretch">
+      <Link href={'/app/connections'} className='flex gap-4 border-b px-4 py-3.5 items-center hover:text-primary animate-all'>
+        <ServerIcon className='size-4 ml-1' />
+        <p className='text-base font-medium'>Connections</p>
+      </Link>
+      <div className="p-4 border-b">
         <form>
           <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-2.5 size-4 text-muted-foreground" />
+            <MagnifyingGlassIcon className="absolute left-3 top-3 size-4 text-muted-foreground" />
             <Input placeholder="Search" className="pl-9" />
           </div>
         </form>
       </div>
-      <div className="grid px-4">
+      <div className="grid p-4 pb-0">
         <Dialog>
           <DialogTrigger>
             <Button
               variant={'ghost'}
               size={'lg'}
-              className='w-full justify-start border border-dashed'
+              className='w-full justify-start border border-dashed px-3'
             >
               <PlusIcon className='block size-5 mr-2.5 h-12' />
               Add connection
@@ -166,14 +168,14 @@ const ConnectionsListView = () => {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Add a new connection</DialogTitle>
+              <DialogTitle>New connection</DialogTitle>
               <DialogDescription>
-                Add a new connection by filling in the form below
+                Add a new database connection by filling in the form below
               </DialogDescription>
             </DialogHeader>
             <div className="grid">
               <Tabs defaultValue="connection-string" className="w-full">
-                <div className="grid w-fit mr-auto px-6 pt-6">
+                <div className="grid w-fit mr-auto px-6 pt-2">
                   <TabsList>
                     <TabsTrigger value="connection-string">Connection string</TabsTrigger>
                     <TabsTrigger disabled value="credentials">Credentials</TabsTrigger>
@@ -199,10 +201,10 @@ const ConnectionsListView = () => {
                       </div>
                       <DialogFooter className="col-span-2">
                         <DialogClose asChild>
-                          <Button size={'default'} variant="outline">Cancel</Button>
+                          <Button size={'lg'} variant="outline">Cancel</Button>
                         </DialogClose>
                         <DialogClose asChild>
-                          <Button size={'default'} type="submit">Save changes</Button>
+                          <Button size={'lg'} type="submit">Save changes</Button>
                         </DialogClose>
                       </DialogFooter>
                     </form>
@@ -214,78 +216,64 @@ const ConnectionsListView = () => {
           </DialogContent>
         </Dialog>
       </div>
-      <ScrollArea>
-        <TabsContent value="all" className="m-0 h-full grid px-4 py-2">
-          <React.Suspense fallback={<ConnectionCardSkeleton/>}>
-            {connections.length >= 1 ?
-              <div className='relative grid grid-flow-row size-full gap-2'>
-                {connections.map((connection) => (
-                  <Link
-                    key={connection.id}
-                      href={`/app/connections/${connection.id}`}
-                    >
-                    <div className='relative border rounded-lg transition-colors duration-250 ease-out hover:text-primary p-4 h-fit flex gap-3 items-center justify-start'>
-                      <PostgresAltIcon className="size-10"/>
-                      <div className="grid grid-flow-row w-full gap-1 items-center justify-start">
-                        <div className="items-center grid grid-cols-2">
-                          <p className="text-start truncate text-sm font-medium">{connection.databaseName}</p>
-                          <div className="grid justify-end">
-                            <DropdownMenu>
-                              <DropdownMenuTrigger className="rounded-md absolute top-2 right-2 p-1 hover:bg-secondary">
-                                <MoreHorizontalIcon className="size-4 min-w-4"/>
-                              </DropdownMenuTrigger>
-                              <DropdownMenuContent>
-                                {/* <DropdownMenuLabel className="font-mono tracking-tight">{connection.databaseName}</DropdownMenuLabel>
-                                <DropdownMenuSeparator /> */}
-                                <DropdownMenuItem onClick={() => {router.push(`/app/connections/${connection.id}`)}}>View</DropdownMenuItem>
-                                <DropdownMenuItem disabled>Update</DropdownMenuItem>
-                                <DropdownMenuItem disabled>Share</DropdownMenuItem>
-                                <DropdownMenuItem
-                                 className="hover:bg-destructive"
-                                  onClick={() => {handleDelete(connection)}}
-                                >
-                                  <p className="text-red-500">
-                                    Delete
-                                  </p>
-                                </DropdownMenuItem>
-                              </DropdownMenuContent>
-                            </DropdownMenu>
-                          </div>
-                        </div>
-                        <Badge variant={'secondary'} className='px-1 truncate w-full font-normal font-mono text-xs tracking-tighter'>
-                          {connection.isConnected ? (
-                            <div className="block bg-green-500 size-3 min-w-3 mr-2 animate-pulse rounded-full" />
-                          ) : (
-                            <div className="block bg-neutral-500 size-3 min-w-3 mr-2 rounded-full" />
-                          )}
-                          <p className="w-fit truncate">
-                            {connection.hostname}:{connection.port}
-                          </p>
-                        </Badge>
+      <ScrollArea className="p-4">
+        {connections.length >= 1 ?
+            <AnimatedState>
+              {connections.map((connection) => (
+                <div
+                  key={connection.id}
+                  onClick={() => {router.push(`/app/connections/${connection.id}`)}}
+                  className='cursor-pointer relative border hover:shadow-sm transition-shadow duration-200 ease-out rounded-lg hover:text-primary p-4 mb-2 h-fit flex gap-3 items-center justify-start'
+                >
+                  <PostgresAltIcon className="size-10"/>
+                  <div className="grid grid-flow-row w-full gap-1 items-center justify-start">
+                    <div className="items-center grid grid-cols-2">
+                      <p className="text-start truncate text-sm font-medium">{connection.databaseName}</p>
+                      <div className="grid justify-end">
+                        <DropdownMenu>
+                          <DropdownMenuTrigger className="rounded-md absolute top-2 right-2 p-1 hover:bg-secondary">
+                            <MoreHorizontalIcon className="size-4 min-w-4"/>
+                          </DropdownMenuTrigger>
+                          <DropdownMenuContent>
+                            <DropdownMenuItem onClick={() => {router.push(`/app/connections/${connection.id}`)}}>View</DropdownMenuItem>
+                            <DropdownMenuItem disabled>Update</DropdownMenuItem>
+                            <DropdownMenuItem disabled>Share</DropdownMenuItem>
+                            <DropdownMenuItem
+                              className="hover:bg-destructive"
+                              onClick={() => {handleDelete(connection)}}
+                            >
+                              <p className="text-red-500">
+                                Delete
+                              </p>
+                            </DropdownMenuItem>
+                          </DropdownMenuContent>
+                        </DropdownMenu>
                       </div>
                     </div>
-                  </Link>
-                ))}
-              </div>
-              :
-              <EmptyState
-                small
-                icon={DatabaseIcon}
-                title={'No connections yet'}
-                // description={'Add a connection to get started'}
-              />
-            }
-          </React.Suspense>
-        </TabsContent>
-        <TabsContent value="active" className="m-0 px-4 pb-8 grid gap-2">
-          <ConnectionCardSkeleton />
-          <ConnectionCardSkeleton />
-          <ConnectionCardSkeleton />
-          <ConnectionCardSkeleton />
-          <ConnectionCardSkeleton />
-        </TabsContent>
+                    <Badge variant={'secondary'} className='px-1 truncate w-full gap-1 text-xs font-medium'>
+                      {connection.isConnected ? (
+                        <StatusDot state="ok" />
+                      ) : (
+                        <StatusDot />
+                      )}
+                      <p className="w-fit truncate">
+                        {connection.hostname}:{connection.port}
+                      </p>
+                    </Badge>
+                  </div>
+                </div>
+              ))}
+            </AnimatedState>
+          :
+          <EmptyState
+            small
+            icon={ServerIcon}
+            title={'No connections yet'}
+            // description={'Add a connection to get started'}
+          />
+        }
       </ScrollArea>
-    </Tabs>
+    </div>
   )
 }
 
