@@ -9,21 +9,20 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { ScrollArea } from "./ui/scroll-area";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { deleteQuery, fetchAllQueries } from '@/lib/actions';
 import { Connection, Query } from "@prisma/client";
-import { PlusIcon, MagnifyingGlassIcon, TerminalWindowIcon } from "./icons";
-import { ScrollArea } from "./ui/scroll-area";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
+import { deleteQuery, fetchAllQueries } from '@/lib/actions';
 import { AnimatedState } from "./experimental/animated-state";
+import { PlusIcon, MagnifyingGlassIcon, TerminalWindowIcon } from "./icons";
 
 
 interface QueryWithConnection extends Query {
   relatedConnection: Connection;
 }
-
 
 const QueryListView = () => {
 
@@ -58,15 +57,7 @@ const QueryListView = () => {
         <TerminalWindowIcon className='size-4 ml-1' />
         <p className='text-base font-medium'>Queries</p>
       </Link>
-      <div className="p-4 border-b">
-        <form>
-          <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-3 size-4 text-muted-foreground" />
-            <Input placeholder="Search" className="pl-9" />
-          </div>
-        </form>
-      </div>
-      <div className="grid p-4 pb-0">
+      <div className="p-4 border-b grid">
         <Button
           size={'lg'}
           variant={'ghost'}

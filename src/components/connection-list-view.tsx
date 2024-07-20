@@ -52,7 +52,7 @@ import { Button } from "@/components/ui/button"
 import { deleteConnection } from "@/lib/actions"
 import { Connection } from '@prisma/client/edge'
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter, usePathname } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { parsePostgresConnectionString } from "@/lib/utils"
 import { AnimatedState } from "./experimental/animated-state"
@@ -67,7 +67,6 @@ const ConnectionsListView = () => {
 
   const router = useRouter()
   const { data } = useSession()
-  const pathname = usePathname()
 
   const [userId, setUserId] = React.useState<string>('')
   const [connections, setConnections] = React.useState<Connection[]>([]);
@@ -144,15 +143,7 @@ const ConnectionsListView = () => {
         <ServerIcon className='size-4 ml-1' />
         <p className='text-base font-medium'>Connections</p>
       </Link>
-      <div className="p-4 border-b">
-        <form>
-          <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-3 size-4 text-muted-foreground" />
-            <Input placeholder="Search" className="pl-9" />
-          </div>
-        </form>
-      </div>
-      <div className="grid p-4 pb-0">
+      <div className="p-4 border-b grid">
         <Dialog>
           <DialogTrigger>
             <Button
@@ -160,7 +151,7 @@ const ConnectionsListView = () => {
               size={'lg'}
               className='w-full justify-start border border-dashed px-3'
             >
-              <PlusIcon className='block size-5 mr-2.5 h-12' />
+              <PlusIcon className='block size-5 mr-2.5' />
               Add connection
             </Button>
           </DialogTrigger>
@@ -234,8 +225,8 @@ const ConnectionsListView = () => {
                           </DropdownMenuTrigger>
                           <DropdownMenuContent>
                             <DropdownMenuItem onClick={() => {router.push(`/app/connections/${connection.id}`)}}>View</DropdownMenuItem>
-                            <DropdownMenuItem disabled>Update</DropdownMenuItem>
-                            <DropdownMenuItem disabled>Share</DropdownMenuItem>
+                            {/* <DropdownMenuItem disabled>Update</DropdownMenuItem>
+                            <DropdownMenuItem disabled>Share</DropdownMenuItem> */}
                             <DropdownMenuItem
                               className="hover:bg-destructive"
                               onClick={() => {handleDelete(connection)}}

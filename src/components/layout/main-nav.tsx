@@ -3,10 +3,11 @@
 import * as React from 'react'
 import { cn } from "@/lib/utils";
 import Nav from "@/components/nav";
-import UserButton from "@/components/auth/user-button"
+import UserButton from "@/components/auth/user-button";
+import { useSession } from 'next-auth/react';
 import { ResizablePanel } from "@/components/ui/resizable";
-import { ThemeToggle, ThemeToggleAlt } from "@/components/theme/theme-toggle";
 import { CommandDialogButton } from "@/components/command-dialog";
+import { ThemeToggle, ThemeToggleAlt } from "@/components/theme/theme-toggle";
 import UserButtonSkeleton from "@/components/closet/skeletons/UserButtonSkeleton";
 
 const MainNav = ({defaultSize, defaultCollapsed}: {defaultSize: number, defaultCollapsed: boolean}) => {
@@ -51,9 +52,9 @@ const MainNav = ({defaultSize, defaultCollapsed}: {defaultSize: number, defaultC
         {isCollapsed ? <ThemeToggleAlt /> : <ThemeToggle />}
       </div>
       <div className="grid">
-        <React.Suspense fallback={<UserButtonSkeleton isCollapsed={isCollapsed} />}>
-          <UserButton isCollapsed={isCollapsed} />
-        </React.Suspense>
+          <React.Suspense fallback={<UserButtonSkeleton isCollapsed={isCollapsed} />}>
+            <UserButton isCollapsed={isCollapsed} />
+          </React.Suspense>
       </div>
     </ResizablePanel>
   )

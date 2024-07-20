@@ -34,12 +34,12 @@ export default function UserButton ({isCollapsed} : {isCollapsed: boolean}) {
             size={isCollapsed ? 'icon' : 'lg'}
             variant={'ghost'}
             className={cn(
-              "flex px-1 w-full h-10",
+              "flex px-1 w-full",
               isCollapsed ? 'justify-center w-fit mx-auto size-10' : 'justify-between'
             )}
           >
             <div className={cn("flex items-center w-full", isCollapsed && 'w-fit')}>
-              <Avatar className="">
+              <Avatar className="border">
                 <AvatarImage
                   src={data?.user.image || ''}
                   alt="user avatar"
@@ -56,9 +56,9 @@ export default function UserButton ({isCollapsed} : {isCollapsed: boolean}) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="mx-2">
-          <DropdownMenuLabel>My Account</DropdownMenuLabel>
+          {/* <DropdownMenuLabel>My Account</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>Profile</DropdownMenuItem>
+          <DropdownMenuItem>Profile</DropdownMenuItem> */}
           <DropdownMenuItem className="px-2.5 py-0">
             <SignOut />
           </DropdownMenuItem>

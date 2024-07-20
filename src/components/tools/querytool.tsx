@@ -35,6 +35,7 @@ import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from "@/componen
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Query, Connection } from '@prisma/client';
 import StatusDot from '../ui/status-dot';
+import { AnimatePresence } from 'framer-motion';
 
 interface QueryWithConnection extends Query {
   relatedConnection: Connection;
@@ -76,7 +77,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
           emojiUrl: emojiURL,
           userId: queryToolSettings?.connection?.userId || '',
           connectionId: queryToolSettings?.connection?.id || '',
-        }).then((res) => !data && router.push(`/app/queries/${res.id}`)),
+        }),
         {
           loading: 'Saving query...',
           success: 'Saved',
@@ -128,6 +129,28 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
 
       const csv = Papa.unparse(csvData);
       const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.setAttribute('href', url);
+      link.setAttribute('download', queryName || 'output');
+      link.click();
+    } else {
+      toast.error('No data to export');
+    }
+  };
+
+  const handleExportXLSX = () => {
+    if (outputData) {
+      const csvData = outputData.rows.map(row => {
+        const rowData: { [key: string]: any } = {};
+        outputData.columns.forEach(col => {
+          rowData[col.name] = row[col.name];
+        });
+        return rowData;
+      });
+
+      const csv = Papa.unparse(csvData);
+      const blob = new Blob([csv], { type: 'text/xlsx;charset=utf-8;' });
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.setAttribute('href', url);
@@ -195,7 +218,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
                 <FileCsv weight='fill' className='size-5 mr-2'/>
                 <p className='text-xs'>Export to CSV</p>
               </DropdownMenuItem>
-              <DropdownMenuItem disabled>
+              <DropdownMenuItem disabled onClick={handleExportXLSX}>
                 <MicrosoftExcelLogo weight='fill' className='size-5 mr-2' />
                 <p className="text-xs">Export to Microsoft Excel</p>
               </DropdownMenuItem>
@@ -271,7 +294,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
             </div>
           </div>
           <ResizablePanelGroup direction='horizontal' className="max-h-[calc(100%-33px)]">
-            <ResizablePanel defaultSize={100} className=''>
+            <ResizablePanel defaultSize={100}>
               {isLoading ?
                 <Skeleton className='grow h-full' />
                 :
@@ -346,43 +369,45 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
               </>
             }
             </ResizablePanel>
-            {viewDetailedInfo &&
-              <>
-                <ResizableHandle withHandle={false} />
-                <ResizablePanel
-                  minSize={30}
-                  maxSize={70}
-                  defaultSize={viewDetailedInfo ? 45 : 0}
-                  className='gap-2 divide-y'
-                >
-                  <div className="p-2 flex items-center justify-between">
-                    <p className="font-medium px-2">Details</p>
-                    <Button
-                      size={'icon'}
-                      variant={'ghost'}
-                      onClick={() => {setViewDetailedInfo(null)}}
-                    >
-                      <CrossIcon className='size-4' />
-                    </Button>
-                  </div>
-                  <ScrollArea className="grid h-[calc(100%-52px)]">
-                    <div className="p-4 grid">
-                      {outputData?.columns.map((column, index) => (
-                        <div
+            <AnimatePresence mode="popLayout" initial={false}>
+              {viewDetailedInfo &&
+                <>
+                  <ResizableHandle withHandle={false} />
+                  <ResizablePanel
+                    minSize={30}
+                    maxSize={70}
+                    defaultSize={viewDetailedInfo ? 50 : 0}
+                    className='gap-2 divide-y'
+                  >
+                    <div className="p-2 flex items-center justify-between">
+                      <p className="font-medium px-2">Details</p>
+                      <Button
+                        size={'icon'}
+                        variant={'ghost'}
+                        onClick={() => {setViewDetailedInfo(null)}}
+                      >
+                        <CrossIcon className='size-4' />
+                      </Button>
+                    </div>
+                    <ScrollArea className="grid h-[calc(100%-52px)]">
+                      <div className="p-4 grid">
+                        {outputData?.columns.map((column, index) => (
+                          <div
                           key={index}
                           className="grid grid-flow-row w-full p-2"
-                        >
-                          <div className='h-fit'>{column.name}</div>
-                          <div className='border shadow-inner rounded-sm'>
-                            <p className='p-2 text-primary'>{viewDetailedInfo[column.name]}</p>
+                          >
+                            <div className='h-fit'>{column.name}</div>
+                            <div className='border shadow-inner rounded-sm'>
+                              <p className='p-2 text-primary'>{viewDetailedInfo[column.name]}</p>
+                            </div>
                           </div>
-                        </div>
-                      ))}
-                    </div>
-                  </ScrollArea>
-                </ResizablePanel>
-              </>
-            }
+                        ))}
+                      </div>
+                    </ScrollArea>
+                  </ResizablePanel>
+                </>
+              }
+            </AnimatePresence>
           </ResizablePanelGroup>
         </ResizablePanel>
       </ResizablePanelGroup>
