@@ -59,7 +59,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
                 <Link
                   href={link.href || '#'}
                   className={cn(
-                    buttonVariants({ variant: pathname.startsWith(link.href) ? 'default': 'ghost', size: "icon" }),
+                    buttonVariants({ variant: pathname.startsWith(link.href) ? 'secondary': 'ghost', size: "icon" }),
                     "size-10",
                     pathname.startsWith(link.href || 'undefined') ?
                       "dark:bg-muted dark:hover:bg-muted/90 dark:hover:text-white dark:text-primary" : "text-muted-foreground"
@@ -84,7 +84,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
               key={index}
               href={link.href || '#'}
               className={cn(
-                buttonVariants({ variant: pathname.startsWith(link.href || 'undefined') ? 'default': 'ghost', size: "lg" }),
+                buttonVariants({ variant: pathname.startsWith(link.href || 'undefined') ? 'secondary': 'ghost', size: "lg" }),
                 'px-3 justify-start',
                 pathname.startsWith(link.href || 'undefined') ?
                   "dark:bg-primary-foreground dark:text-white dark:hover:bg-primary-foreground/90 dark:hover:text-white" : "text-primary/70"
