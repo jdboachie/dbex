@@ -4,7 +4,6 @@ import localFont from "next/font/local";
 import type { Metadata } from "next";
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
-
 import { SessionProvider } from "next-auth/react"
 import { TooltipProvider } from "@/components/ui/tooltip";
 
