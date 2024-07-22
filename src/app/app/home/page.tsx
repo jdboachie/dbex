@@ -11,13 +11,12 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-import { Code2 as Code } from 'lucide-react';
+import { CodeIcon as Code } from '@/components/icons';
 
 import { RecentQueries, AnalyticsComponent } from '@/components/home-page';
 
 import {
   DatabaseIcon,
-  TableIcon,
   TerminalWindowIcon,
   Analytics,
   ServerIcon
