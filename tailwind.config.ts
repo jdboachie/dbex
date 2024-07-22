@@ -22,6 +22,10 @@ const config = {
         sans: ["var(--font-sans)"],
         mono: ["var(--font-geist-mono)"],
       },
+      backgroundImage: {
+        patternImag: "url(/pattern.svg)",
+      },
+
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -37,6 +41,11 @@ const config = {
           DEFAULT: "hsl(var(--secondary))",
           foreground: "hsl(var(--secondary-foreground))",
         },
+        primaryblue:{
+          DEFAULT: "#1A9AEF",
+          foreground: "#1A9AEF75"
+        }
+        ,
         destructive: {
           DEFAULT: "hsl(var(--destructive))",
           foreground: "hsl(var(--destructive-foreground))",
@@ -72,10 +81,10 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
-        "shimmer": {
+        shimmer: {
           "100%": {
-            "transform": "translateX(100%)",
-          }
+            transform: "translateX(100%)",
+          },
         },
         "rotate-y": {
           "0%": {
