@@ -52,7 +52,7 @@ import { Button } from "@/components/ui/button"
 import { deleteConnection } from "@/lib/actions"
 import { Connection } from '@prisma/client/edge'
 import { zodResolver } from "@hookform/resolvers/zod"
-import { useRouter, usePathname } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { parsePostgresConnectionString } from "@/lib/utils"
 import { AnimatedState } from "./experimental/animated-state"
@@ -67,7 +67,6 @@ const ConnectionsListView = () => {
 
   const router = useRouter()
   const { data } = useSession()
-  const pathname = usePathname()
 
   const [userId, setUserId] = React.useState<string>('')
   const [connections, setConnections] = React.useState<Connection[]>([]);
@@ -144,15 +143,7 @@ const ConnectionsListView = () => {
         <ServerIcon className='size-4 ml-1' />
         <p className='text-base font-medium'>Connections</p>
       </Link>
-      <div className="p-4 border-b">
-        <form>
-          <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-3 size-4 text-muted-foreground" />
-            <Input placeholder="Search" className="pl-9" />
-          </div>
-        </form>
-      </div>
-      <div className="grid p-4 pb-0">
+      <div className="p-4 border-b grid">
         <Dialog>
           <DialogTrigger>
             <Button
@@ -160,7 +151,7 @@ const ConnectionsListView = () => {
               size={'lg'}
               className='w-full justify-start border border-dashed px-3'
             >
-              <PlusIcon className='block size-5 mr-2.5 h-12' />
+              <PlusIcon className='block size-5 mr-2.5' />
               Add connection
             </Button>
           </DialogTrigger>
@@ -216,52 +207,52 @@ const ConnectionsListView = () => {
       </div>
       <ScrollArea className="p-4">
         {connections.length >= 1 ?
-            <AnimatedState>
-              {connections.map((connection) => (
-                <div
-                  key={connection.id}
-                  onClick={() => {router.push(`/app/connections/${connection.id}`)}}
-                  className='cursor-pointer relative border hover:shadow-sm transition-shadow duration-200 ease-out rounded-lg hover:text-primary p-4 mb-2 h-fit flex gap-3 items-center justify-start'
-                >
-                  <PostgresAltIcon className="size-10"/>
-                  <div className="grid grid-flow-row w-full gap-1 items-center justify-start">
-                    <div className="items-center grid grid-cols-2">
-                      <p className="text-start truncate text-sm font-medium">{connection.databaseName}</p>
-                      <div className="grid justify-end">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger className="rounded-md absolute top-2 right-2 p-1 hover:bg-secondary">
-                            <MoreHorizontalIcon className="size-4 min-w-4"/>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent>
-                            <DropdownMenuItem onClick={() => {router.push(`/app/connections/${connection.id}`)}}>View</DropdownMenuItem>
-                            <DropdownMenuItem disabled>Update</DropdownMenuItem>
-                            <DropdownMenuItem disabled>Share</DropdownMenuItem>
-                            <DropdownMenuItem
-                              className="hover:bg-destructive"
-                              onClick={() => {handleDelete(connection)}}
-                            >
-                              <p className="text-red-500">
-                                Delete
-                              </p>
-                            </DropdownMenuItem>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
-                      </div>
+          <AnimatedState>
+            {connections.map((connection) => (
+              <div
+                key={connection.id}
+                onClick={() => {router.push(`/app/connections/${connection.id}`)}}
+                className='cursor-pointer relative border hover:shadow-sm transition-shadow duration-200 ease-out rounded-lg hover:text-primary p-4 mb-2 h-fit flex gap-3 items-center justify-start'
+              >
+                <PostgresAltIcon className="size-10"/>
+                <div className="grid grid-flow-row w-full gap-1 items-center justify-start">
+                  <div className="items-center grid grid-cols-2">
+                    <p className="text-start truncate text-sm font-medium">{connection.databaseName}</p>
+                    <div className="grid justify-end">
+                      <DropdownMenu>
+                        <DropdownMenuTrigger className="rounded-md absolute top-2 right-2 p-1 hover:bg-secondary">
+                          <MoreHorizontalIcon className="size-4 min-w-4"/>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                          <DropdownMenuItem onClick={() => {router.push(`/app/connections/${connection.id}`)}}>View</DropdownMenuItem>
+                          {/* <DropdownMenuItem disabled>Update</DropdownMenuItem>
+                          <DropdownMenuItem disabled>Share</DropdownMenuItem> */}
+                          <DropdownMenuItem
+                            className="hover:bg-destructive"
+                            onClick={() => {handleDelete(connection)}}
+                          >
+                            <p className="text-red-500">
+                              Delete
+                            </p>
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
-                    <Badge variant={'secondary'} className='px-1 truncate w-full gap-1 text-xs font-medium'>
-                      {connection.isConnected ? (
-                        <StatusDot state="ok" />
-                      ) : (
-                        <StatusDot />
-                      )}
-                      <p className="w-fit truncate">
-                        {connection.hostname}:{connection.port}
-                      </p>
-                    </Badge>
                   </div>
+                  <Badge variant={'secondary'} className='px-1 truncate w-full gap-1 text-xs font-medium text-muted-foreground'>
+                    {connection.isConnected ? (
+                      <StatusDot state="ok" />
+                    ) : (
+                      <StatusDot />
+                    )}
+                    <p className="w-fit truncate">
+                      {connection.hostname}:{connection.port}
+                    </p>
+                  </Badge>
                 </div>
-              ))}
-            </AnimatedState>
+              </div>
+            ))}
+          </AnimatedState>
           :
           <EmptyState
             small

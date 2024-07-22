@@ -1,8 +1,11 @@
 'use client'
+
+import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
+import { QueryListView } from "../query-list-view";
 import { ConnectionsListView } from "../connection-list-view";
 import { ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
-import { QueryListView } from "../query-list-view";
+
 
 export default function AppLayout({
   children, layout
@@ -15,19 +18,23 @@ export default function AppLayout({
 
   return (
     <>
-      <ResizablePanel
+    {!pathname.startsWith('/app/home') &&
+      <>
+        <ResizablePanel
         defaultSize={layout[1]}
-        minSize={15}
+        minSize={17}
         maxSize={25}
         className="h-full rounded-l-lg bg-background border border-r-0"
-      >
-        {pathname.startsWith('/app/queries') && <QueryListView />}
-        {pathname.startsWith('/app/connections') && <ConnectionsListView />}
-      </ResizablePanel>
-      <ResizableHandle />
+        >
+          {pathname.startsWith('/app/queries') && <QueryListView />}
+          {pathname.startsWith('/app/connections') && <ConnectionsListView />}
+        </ResizablePanel>
+        <ResizableHandle />
+      </>
+    }
       <ResizablePanel
-        defaultSize={layout[2]}
-        className="h-full bg-background rounded-r-lg border border-l-0"
+        defaultSize={!pathname.startsWith('app/home') ? layout[2] : layout[1] + layout[2]}
+        className={cn("h-full bg-background rounded-r-lg border border-l-0", pathname.startsWith('/app/home') && 'border rounded-lg' )}
       >
         { children }
       </ResizablePanel>

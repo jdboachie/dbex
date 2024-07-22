@@ -49,7 +49,7 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
     // fix repeated code pathname.startsWith(link.href || 'undefined')
     <div
       data-collapsed={isCollapsed}
-      className="group flex flex-col gap-2 py-2 data-[collapsed=true]:py-2"
+      className="group flex flex-col gap-2 py--2 ata-[collapsed=true]:py-2"
     >
       <nav className="grid gap-1 px-2 group-[[data-collapsed=true]]:justify-center group-[[data-collapsed=true]]:px-2">
         {links.map((link, index) =>
@@ -59,10 +59,10 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
                 <Link
                   href={link.href || '#'}
                   className={cn(
-                    buttonVariants({ variant: pathname.startsWith(link.href) ? 'default': 'ghost', size: "icon" }),
+                    buttonVariants({ variant: pathname.startsWith(link.href) ? 'outline': 'ghost', size: "icon" }),
                     "size-10",
-                    pathname.startsWith(link.href || 'undefined') ?
-                      "dark:bg-muted dark:hover:bg-muted/90 dark:hover:text-white dark:text-primary" : "text-muted-foreground"
+                    pathname.startsWith(link.href) &&
+                      "text-primary"
                   )}
                 >
                   <link.icon className="size-4" />
@@ -84,10 +84,9 @@ const Nav = ({ isCollapsed } : { isCollapsed : boolean }) => {
               key={index}
               href={link.href || '#'}
               className={cn(
-                buttonVariants({ variant: pathname.startsWith(link.href || 'undefined') ? 'default': 'ghost', size: "lg" }),
+                buttonVariants({ variant: pathname.startsWith(link.href) ? 'outline': 'ghost', size: "lg" }),
                 'px-3 justify-start',
-                pathname.startsWith(link.href || 'undefined') ?
-                  "dark:bg-primary-foreground dark:text-white dark:hover:bg-primary-foreground/90 dark:hover:text-white" : "text-primary/70"
+                pathname.startsWith(link.href) && 'text-primary'
               )}
             >
               <link.icon className="mr-2 size-4" />

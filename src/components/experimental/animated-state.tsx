@@ -3,9 +3,9 @@
 import { AnimatePresence, motion } from "framer-motion";
 
 const variants = {
-  initial: { opacity: 0, y: -25 },
+  initial: { opacity: 0, y: -5 },
   visible: { opacity: 1, y: 0 },
-  exit: { opacity: 0, y: 25 },
+  exit: { opacity: 0, y: 5 },
 };
 
 export function AnimatedState({ children }: { children: React.ReactNode }) {

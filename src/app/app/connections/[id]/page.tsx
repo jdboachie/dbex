@@ -10,25 +10,28 @@ import { GlobeIcon, DatabaseIcon, UserIcon, ConnectionIcon, PlayFillIcon, ZeroCo
 import EmptyState from '@/components/closet/empty-state'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { runConnectionSpecificQuery } from '@/lib/pg'
+import NotFoundUI from '@/app/not-found'
 
 
-interface Column {
-  name: string;
-  type: number;
-}
+// interface Column {
+//   name: string;
+//   type: number;
+// }
 
-interface Row {
-  [key: string]: string | number;
-}
+// interface Row {
+//   [key: string]: string | number;
+// }
 
-interface Table {
-  columns: Column[];
-  rows: Row[];
-}
+// interface Table {
+//   columns: Column[];
+//   rows: Row[];
+// }
 
 export default async function Page({ params }: { params: { id: string } }) {
 
   const data: Connection | null = await fetchConnectionById(params.id)
+
+  if (!data) { return <NotFoundUI />}
 
   const relatedQueries: Query[] = await prisma.query.findMany({
     where: {
@@ -36,31 +39,31 @@ export default async function Page({ params }: { params: { id: string } }) {
     }
   })
 
-  let schemas: any[] = [];
-  let tables;
+  // let schemas: any[] = [];
+  // let tables;
 
-  if (data) {
+  // if (data) {
 
-    tables = await runConnectionSpecificQuery(
-      data,
-      `
-      SELECT table_name
-      FROM information_schema.tables
-      WHERE table_type = 'BASE TABLE'
-      AND table_schema = 'public';
-      `
-    )
-    // for (table in tables?.res) {
+  //   tables = await runConnectionSpecificQuery(
+  //     data,
+  //     `
+  //     SELECT table_name
+  //     FROM information_schema.tables
+  //     WHERE table_type = 'BASE TABLE'
+  //     AND table_schema = 'public';
+  //     `
+  //   )
+  //   // for (table in tables?.res) {
 
-    // }
-      await runConnectionSpecificQuery(
-        data,
-        `
-        SELECT column_name, data_type
-        FROM information_schema.columns
-        WHERE table_name = '';
-        `)
-  }
+  //   // }
+  //     await runConnectionSpecificQuery(
+  //       data,
+  //       `
+  //       SELECT column_name, data_type
+  //       FROM information_schema.columns
+  //       WHERE table_name = '';
+  //       `)
+  // }
 
   return (
     data ? (
@@ -107,13 +110,9 @@ export default async function Page({ params }: { params: { id: string } }) {
             </div>
           </section>
         </div>
-        <div className="p-10 grid gap-4 dev">
-          <h5 className="text-base font-medium">Connection Schemas</h5>
-          {schemas &&
-          <>
-          {schemas.toLocaleString()}
-          </>
-          }
+        <div className="p-10 grid gap-4">
+          <h5 className="text-base font-medium">Database Schemas</h5>
+          <p className="text-muted-foreground italic">coming soon...</p>
       </div>
         <div className="p-10 grid gap-4">
           <h5 className="text-base font-medium">Related queries</h5>
@@ -143,7 +142,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 small
                 icon={ZeroConfigIcon}
                 title='No queries on this database'
-                description="Click on the 'Query database"
+                description="Click on the 'Query database' to run a query"
               />
               }
           </AnimatedState>

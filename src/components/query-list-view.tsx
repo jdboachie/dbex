@@ -9,25 +9,26 @@ import {
   ContextMenuItem,
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { deleteQuery, fetchAllQueries } from '@/lib/actions';
-import { Connection, Query } from "@prisma/client";
-import { PlusIcon, MagnifyingGlassIcon, TerminalWindowIcon } from "./icons";
-import { ScrollArea } from "./ui/scroll-area";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { usePathname, useRouter } from "next/navigation";
+import { ScrollArea } from "./ui/scroll-area";
+// import { Input } from "@/components/ui/input";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Connection, Query } from "@prisma/client";
+import { deleteQuery, fetchAllQueries } from '@/lib/actions';
 import { AnimatedState } from "./experimental/animated-state";
+import { PlusIcon, MagnifyingGlassIcon, TerminalWindowIcon } from "./icons";
+import { cn } from "@/lib/utils";
 
 
 interface QueryWithConnection extends Query {
   relatedConnection: Connection;
 }
 
-
 const QueryListView = () => {
 
   const router = useRouter()
+  const pathname = usePathname()
   const [queries, setQueries] = React.useState<QueryWithConnection[]>([])
 
   React.useEffect(() => {
@@ -58,44 +59,36 @@ const QueryListView = () => {
         <TerminalWindowIcon className='size-4 ml-1' />
         <p className='text-base font-medium'>Queries</p>
       </Link>
-      <div className="p-4 border-b">
-        <form>
-          <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-3 top-3 size-4 text-muted-foreground" />
-            <Input placeholder="Search" className="pl-9" />
-          </div>
-        </form>
-      </div>
-      <div className="grid p-4 pb-0">
-        <Button
-          size={'lg'}
-          variant={'ghost'}
-          onClick={() => {router.push('/app/queries')}}
-          className='w-full justify-start border border-dashed px-3'
+      <div className="p-4 border-b grid">
+        <Link
+          href={`/app/queries`}
+          className={cn(buttonVariants({size: 'lg', variant: 'ghost'}), 'w-full justify-start border border-dashed px-3')}
         >
           <PlusIcon className='block size-4 mr-2.5 h-12' />
           New query
-        </Button>
+        </Link>
       </div>
-      <ScrollArea className='grid grid-flow-row gap-1 size-full p-4'>
-        <AnimatedState>
+      <AnimatedState>
+        <ScrollArea className='size-full p-4'>
+          <div className="grid gap-1">
           {queries.map((query) => (
             <ContextMenu key={query.id}>
               <ContextMenuTrigger>
-                <Link href={`/app/queries/${query.id}`}>
-                  <Button
-                    variant={'ghost'}
-                    className="flex gap-2 px-2 w-full justify-start"
-                    >
-                    <Image
-                      src={query.emojiUrl || ''}
-                      alt={'query emoji'}
-                      width={1000}
-                      height={1000}
-                      className="size-5"
-                      />
-                      <p className="truncate">{query.name}</p>
-                  </Button>
+                <Link
+                  className={cn(
+                    buttonVariants({variant: pathname.endsWith(query.id) ? 'secondary' : 'ghost', size: 'default'}),
+                    "flex gap-2 px-2 w-full justify-start"
+                  )}
+                  href={`/app/queries/${query.id}`}
+                >
+                  <Image
+                    src={query.emojiUrl || ''}
+                    alt={'query emoji'}
+                    width={1000}
+                    height={1000}
+                    className="size-5"
+                  />
+                  <p className="truncate">{query.name}</p>
                 </Link>
               </ContextMenuTrigger>
               <ContextMenuContent>
@@ -110,8 +103,9 @@ const QueryListView = () => {
               </ContextMenuContent>
           </ContextMenu>
           ))}
-        </AnimatedState>
-      </ScrollArea>
+          </div>
+        </ScrollArea>
+      </AnimatedState>
     </div>
   )
 }

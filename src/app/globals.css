@@ -104,6 +104,10 @@
     @apply transition-all duration-200 ease-out
   }
 
+  .activehandle {
+    @apply animate-all hover:border-ring/75 active:border-ring hover:rounded-full active:rounded-full
+  }
+
   /* --ground: 0 0% 98%; */
   /* --ground: 0 0% 0%; */
 }

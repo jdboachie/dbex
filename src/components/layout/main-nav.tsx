@@ -3,11 +3,12 @@
 import * as React from 'react'
 import { cn } from "@/lib/utils";
 import Nav from "@/components/nav";
-import UserButton from "@/components/auth/user-button"
+import UserButton from "@/components/auth/user-button";
 import { ResizablePanel } from "@/components/ui/resizable";
-import { ThemeToggle, ThemeToggleAlt } from "@/components/theme/theme-toggle";
 import { CommandDialogButton } from "@/components/command-dialog";
+import { ThemeToggle, ThemeToggleAlt } from "@/components/theme/theme-toggle";
 import UserButtonSkeleton from "@/components/closet/skeletons/UserButtonSkeleton";
+import { Empty } from '../ui/empty';
 
 const MainNav = ({defaultSize, defaultCollapsed}: {defaultSize: number, defaultCollapsed: boolean}) => {
 
@@ -36,24 +37,25 @@ const MainNav = ({defaultSize, defaultCollapsed}: {defaultSize: number, defaultC
         )}`;
       }}
       className={cn(
-        "flex flex-col mx-2",
+        "flex flex-col gap-4 mx-2",
         isCollapsed &&
           "min-w-[50px] animate-all items-center",
       )}
     >
+      <div className={cn("grid place-items-center p-2 w-full", isCollapsed && 'px-1')}>
+        <Empty className={cn('size-full min-h-10 min-w-10', isCollapsed && 'size-10')} />
+      </div>
       <div className=''>
         <Nav isCollapsed={isCollapsed} />
       </div>
       <div className="grow p-2">
         <CommandDialogButton navCollapsed={isCollapsed} />
       </div>
-      <div className="grid p-2 gap-2">
+      <div className="p-2 grid">
         {isCollapsed ? <ThemeToggleAlt /> : <ThemeToggle />}
       </div>
-      <div className="grid">
-        <React.Suspense fallback={<UserButtonSkeleton isCollapsed={isCollapsed} />}>
-          <UserButton isCollapsed={isCollapsed} />
-        </React.Suspense>
+      <div>
+        <UserButton isCollapsed={isCollapsed} />
       </div>
     </ResizablePanel>
   )
