@@ -61,7 +61,7 @@ const QueryListView = () => {
       </Link>
       <div className="p-4 border-b grid">
         <Link
-          href={`/app/new`}
+          href={`/app/queries`}
           className={cn(buttonVariants({size: 'lg', variant: 'ghost'}), 'w-full justify-start border border-dashed px-3')}
         >
           <PlusIcon className='block size-4 mr-2.5 h-12' />
@@ -76,7 +76,7 @@ const QueryListView = () => {
               <ContextMenuTrigger>
                 <Link
                   className={cn(
-                    buttonVariants({variant: pathname.endsWith(query.id) ? 'secondary' : 'ghost'}),
+                    buttonVariants({variant: pathname.endsWith(query.id) ? 'secondary' : 'ghost', size: 'default'}),
                     "flex gap-2 px-2 w-full justify-start"
                   )}
                   href={`/app/queries/${query.id}`}

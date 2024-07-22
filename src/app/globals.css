@@ -86,7 +86,7 @@
   }
 
   .activehandle {
-    @apply animate-all hover:border-2 hover:border-ring/75 active:border-2 active:border-ring hover:rounded-full active:rounded-full
+    @apply animate-all hover:border-ring/75 active:border-ring hover:rounded-full active:rounded-full
   }
 
   /* --ground: 0 0% 98%; */
