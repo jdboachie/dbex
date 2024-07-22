@@ -119,3 +119,10 @@ export const deleteQuery = async (id: string) => {
     }
   })
 }
+
+export const Analytics = async () => {
+  const queries = await prisma.query.count();
+  const connection = await prisma.connection.count();
+
+  return { queries, connection };
+};

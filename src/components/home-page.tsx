@@ -1,4 +1,5 @@
 import { TerminalWindowIcon, TableIcon, ServerIcon } from "./icons";
+import { Analytics } from "@/lib/actions";
 
 export const RecentQueries = () => {
 
@@ -61,17 +62,18 @@ export const RecentQueries = () => {
 }
 
 
-export const AnalyticsComponent = () => {
+export const AnalyticsComponent = async() => {
     interface IAnalytics {
         component: string,
         value: number,
         icon: React.FC<any>
     }
 
+    const {queries, connection} = await Analytics();
     const analytics: IAnalytics[] = [
-        { component: "Tables", value: 10, icon: TableIcon },
-        { component: "Connection", value: 5, icon: ServerIcon },
-        { component: "Queries", value: 2, icon: TerminalWindowIcon }
+        { component: "Tables", value:10, icon: TableIcon },
+        { component: "Connection", value: queries, icon: ServerIcon },
+        { component: "Queries", value: connection, icon: TerminalWindowIcon }
     ]
     return (
         <>
