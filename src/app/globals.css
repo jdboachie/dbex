@@ -97,8 +97,13 @@
   }
 
   .dev {
-    @apply border border-rose-700
+    @apply border border-violet-700
   }
+
+  .animate-all {
+    @apply transition-all duration-200 ease-out
+  }
+
   /* --ground: 0 0% 98%; */
   /* --ground: 0 0% 0%; */
 }

@@ -1,67 +1,84 @@
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs"
+'use client'
+
+import Link from "next/link";
+import * as React from 'react';
+import Image from "next/image";
 import {
   ContextMenu,
   ContextMenuContent,
   ContextMenuItem,
   ContextMenuTrigger,
-  ContextMenuShortcut,
-  ContextMenuSeparator,
-  ContextMenuSub,
-  ContextMenuSubContent,
-  ContextMenuSubTrigger,
-  ContextMenuCheckboxItem,
 } from "@/components/ui/context-menu"
-import Image from "next/image";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import ConnectionCardSkeleton from '@/components/closet/skeletons/ConnectionCardSkeleton';
-import { MagnifyingGlass as MagnifyingGlassIcon } from "@phosphor-icons/react/dist/ssr";
+import { deleteQuery, fetchAllQueries } from '@/lib/actions';
+import { Connection, Query } from "@prisma/client";
+import { PlusIcon, MagnifyingGlassIcon, TerminalWindowIcon } from "./icons";
+import { ScrollArea } from "./ui/scroll-area";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { AnimatedState } from "./experimental/animated-state";
 
-import { fetchAllQueries } from '@/lib/actions';
-import { PlusCircleIcon } from "@heroicons/react/16/solid";
-import Link from "next/link";
+
+interface QueryWithConnection extends Query {
+  relatedConnection: Connection;
+}
 
 
-const QueryListView = async () => {
+const QueryListView = () => {
 
-  const queries = await fetchAllQueries()
+  const router = useRouter()
+  const [queries, setQueries] = React.useState<QueryWithConnection[]>([])
+
+  React.useEffect(() => {
+    const performEffect = async () => {
+      await fetchAllQueries().then((res) => {res && setQueries(res)})
+    }
+    performEffect();
+  }, [])
+
+  const handleDelete = async (query : Query) => {
+    toast.promise(
+      deleteQuery(query.id).then(() => router.push('/app/queries')),
+      {
+        loading: `Removing ${query.name}...`,
+        success: () => {
+          const newQueriesList = queries.filter(item => item.id !== query.id)
+          setQueries(newQueriesList)
+          return `Deleted successfully`
+        },
+        error: `Error removing ${query.name}`
+      }
+    );
+  }
 
   return (
-    <Tabs defaultValue="all">
-      <div className="grid p-2">
-        <TabsList className="w-full">
-          <TabsTrigger value="all" className="w-full"> All </TabsTrigger>
-          <TabsTrigger value="active" className="w-full"> Active </TabsTrigger>
-        </TabsList>
-      </div>
-      <Separator />
-      <div className="p-4">
+    <div className="flex flex-col items-stretch">
+      <Link href={'/app/queries'} className='flex gap-4 border-b px-4 py-3.5 items-center hover:text-primary animate-all'>
+        <TerminalWindowIcon className='size-4 ml-1' />
+        <p className='text-base font-medium'>Queries</p>
+      </Link>
+      <div className="p-4 border-b">
         <form>
           <div className="relative">
-            <MagnifyingGlassIcon className="absolute left-2 top-2.5 size-5 text-muted-foreground" />
-            <Input placeholder="Search" className="pl-8" />
+            <MagnifyingGlassIcon className="absolute left-3 top-3 size-4 text-muted-foreground" />
+            <Input placeholder="Search" className="pl-9" />
           </div>
         </form>
       </div>
-      <div className=" grid px-4 mb-2">
+      <div className="grid p-4 pb-0">
         <Button
-          variant={'ghost'}
           size={'lg'}
-          className='w-full border border-dashed'
+          variant={'ghost'}
+          onClick={() => {router.push('/app/queries')}}
+          className='w-full justify-start border border-dashed px-3'
         >
-          <PlusCircleIcon className='block size-5 mr-2.5 h-12' />
+          <PlusIcon className='block size-4 mr-2.5 h-12' />
           New query
         </Button>
       </div>
-      <TabsContent value='all'>
-        <div className='grid grid-flow-row gap-1 size-full px-4 py-2'>
+      <ScrollArea className='grid grid-flow-row gap-1 size-full p-4'>
+        <AnimatedState>
           {queries.map((query) => (
             <ContextMenu key={query.id}>
               <ContextMenuTrigger>
@@ -77,44 +94,25 @@ const QueryListView = async () => {
                       height={1000}
                       className="size-5"
                       />
-                    {query.name}
+                      <p className="truncate">{query.name}</p>
                   </Button>
                 </Link>
               </ContextMenuTrigger>
-              <ContextMenuContent className="w-56">
-                <ContextMenuCheckboxItem checked>
-                  Change this
-                  <ContextMenuShortcut>⌘⇧C</ContextMenuShortcut>
-                </ContextMenuCheckboxItem>
+              <ContextMenuContent>
                 <Link href={`/app/queries/${query.id}`}>
-                  <ContextMenuItem inset>
+                  <ContextMenuItem>
                       View
                   </ContextMenuItem>
                 </Link>
-                <ContextMenuItem inset>Delete</ContextMenuItem>
-                <ContextMenuSeparator />
-                <ContextMenuSub>
-                  <ContextMenuSubTrigger inset>Export</ContextMenuSubTrigger>
-                  <ContextMenuSubContent className="w-48">
-                    <ContextMenuItem>
-                      CSV
-                      {/* <ContextMenuShortcut>⇧⌘S</ContextMenuShortcut> */}
-                    </ContextMenuItem>
-                    <ContextMenuItem>XLSX</ContextMenuItem>
-                    <ContextMenuItem>HTML</ContextMenuItem>
-                    <ContextMenuSeparator />
-                    <ContextMenuItem>PDF</ContextMenuItem>
-                  </ContextMenuSubContent>
-                </ContextMenuSub>
+                <ContextMenuItem onClick={() => {handleDelete(query)}}>
+                  <p className="text-red-500 hover:text-red-500">Delete</p>
+                </ContextMenuItem>
               </ContextMenuContent>
           </ContextMenu>
           ))}
-        </div>
-      </TabsContent>
-      <TabsContent value="active" className="m-0 px-4">
-        <ConnectionCardSkeleton />
-      </TabsContent>
-    </Tabs>
+        </AnimatedState>
+      </ScrollArea>
+    </div>
   )
 }
 

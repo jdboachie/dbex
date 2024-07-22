@@ -1,7 +1,7 @@
 'use client' // Error components must be Client Components
 
 import EmptyState from '@/components/closet/empty-state'
-import { WarningIcon } from '@/components/icons'
+import { ZeroConfigIcon } from '@/components/icons'
 import { Button } from '@/components/ui/button'
 import { useEffect } from 'react'
 
@@ -23,7 +23,7 @@ export default function Error({
         isError
         title={'Something went wrong'}
         description={error.message}
-        icon={WarningIcon}
+        icon={ZeroConfigIcon}
         className='text-red-500 border-red-500'
         >
         <Button variant={'destructive'} onClick={() => reset()}>

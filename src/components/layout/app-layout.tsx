@@ -1,25 +1,36 @@
 'use client'
-import { ResizablePanelGroup } from "@/components/ui/resizable";
+import { usePathname } from "next/navigation";
+import { ConnectionsListView } from "../connection-list-view";
+import { ResizablePanel, ResizableHandle } from "@/components/ui/resizable";
+import { QueryListView } from "../query-list-view";
 
 export default function AppLayout({
-  children,
+  children, layout
 }: {
   children: React.ReactNode,
+  layout: number[]
 }) {
 
+  const pathname = usePathname()
+
   return (
-    <main className="h-screen size-full">
-      <ResizablePanelGroup
-        direction="horizontal"
-        onLayout={(sizes: number[]) => {
-          document.cookie = `react-resizable-panels:layout=${JSON.stringify(
-            sizes,
-          )}`;
-        }}
-        className="grid size-full items-stretch p-2"
+    <>
+      <ResizablePanel
+        defaultSize={layout[1]}
+        minSize={15}
+        maxSize={25}
+        className="h-full rounded-l-lg bg-background border border-r-0"
       >
-        {children}
-      </ResizablePanelGroup>
-    </main>
+        {pathname.startsWith('/app/queries') && <QueryListView />}
+        {pathname.startsWith('/app/connections') && <ConnectionsListView />}
+      </ResizablePanel>
+      <ResizableHandle />
+      <ResizablePanel
+        defaultSize={layout[2]}
+        className="h-full bg-background rounded-r-lg border border-l-0"
+      >
+        { children }
+      </ResizablePanel>
+    </>
   );
 }

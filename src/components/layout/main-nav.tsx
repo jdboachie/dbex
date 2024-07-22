@@ -3,8 +3,6 @@
 import * as React from 'react'
 import { cn } from "@/lib/utils";
 import Nav from "@/components/nav";
-import { DbexIcon } from "@/components/icons"
-import { Separator } from "@/components/ui/separator";
 import UserButton from "@/components/auth/user-button"
 import { ResizablePanel } from "@/components/ui/resizable";
 import { ThemeToggle, ThemeToggleAlt } from "@/components/theme/theme-toggle";
@@ -38,16 +36,11 @@ const MainNav = ({defaultSize, defaultCollapsed}: {defaultSize: number, defaultC
         )}`;
       }}
       className={cn(
-        "flex flex-col mr-2",
+        "flex flex-col mx-2",
         isCollapsed &&
-          "min-w-[50px] transition-all duration-300 ease-in-out items-center",
+          "min-w-[50px] animate-all items-center",
       )}
     >
-      {/* <div className="py-2 px-4 flex gap-2 place-items-center">
-        <DbexIcon className="size-6 -rotate-6 text-primary grayscale" />
-        {!isCollapsed && <p className="text-base font-mono font-medium">DBEX</p> }
-      </div> */}
-      {/* <Separator className='bg-transparent' /> */}
       <div className=''>
         <Nav isCollapsed={isCollapsed} />
       </div>

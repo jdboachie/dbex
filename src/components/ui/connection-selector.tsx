@@ -16,19 +16,29 @@ import * as React from "react"
 import { cn } from "@/lib/utils"
 import { testConnection } from "@/lib/pg"
 import { Button } from "@/components/ui/button"
-import { Connection } from "@prisma/client/edge"
+import { Connection } from "@prisma/client"
 import { fetchConnections } from "@/lib/actions"
 import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons"
 import { useQueryToolContext } from "@/lib/hooks/querytoolsettings"
 import { DatabaseIcon, LoadingIcon } from "../icons"
+import { Skeleton } from "./skeleton"
 
 
-export default function ConnectionSelector() {
+export default function ConnectionSelector({presetConnection}:{presetConnection?: Connection}) {
 
-  const { setQueryToolSettings } = useQueryToolContext();
+  const { queryToolSettings, setQueryToolSettings } = useQueryToolContext();
+
+  React.useEffect(() => {
+    // Only set the query tool settings if they are not already set or if the connection has changed
+    if (presetConnection) {
+      if (!queryToolSettings || queryToolSettings.connection.id !== presetConnection.id) {
+        setQueryToolSettings({ connection: presetConnection });
+      }
+    }
+  }, [presetConnection, queryToolSettings, setQueryToolSettings]);
 
   const [open, setOpen] = React.useState<boolean>(false)
-  const [value, setValue] = React.useState<string>("")
+  const [value, setValue] = React.useState<string>(presetConnection?.databaseName || "")
   const [connections, setConnections] = React.useState<Connection[]>([]);
 
   React.useEffect(() => {
@@ -37,6 +47,7 @@ export default function ConnectionSelector() {
     };
     getConnections();
   }, []);
+
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -49,11 +60,13 @@ export default function ConnectionSelector() {
         >
           <div className="flex gap-2 items-center">
             <DatabaseIcon className="size-4 mr-2" />
-            <p className="truncate">
-              {value
-                ? connections?.find((connection) => connection.databaseName === value)?.databaseName
-                : "Select connection..."}
-            </p>
+            {value ?
+              <>{connections ? <p>{connections?.find((connection) => connection.databaseName === value)?.databaseName}</p> : <Skeleton className="bg-primary-foreground rounded-sm w-20 h-5" />}</>
+              :
+              <p className="truncate">
+                Select a connection
+              </p>
+            }
           </div>
           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
