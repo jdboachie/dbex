@@ -7,7 +7,6 @@ import {
   GearFine,
   Smiley,
   User,
-  MagnifyingGlass
 } from "@phosphor-icons/react" // all these have to be replaced with geist icons
 
 import {
@@ -21,7 +20,7 @@ import {
   CommandShortcut,
 } from "@/components/ui/command"
 import { Button } from "./ui/button"
-import { CommandIcon } from "./icons"
+import { CommandIcon, MagnifyingGlassIcon } from "./icons"
 import * as React from "react"
 
 
@@ -44,20 +43,20 @@ export function CommandDialogButton({navCollapsed}: {navCollapsed: boolean}) {
     <>
       {
         navCollapsed ?
-          <Button onClick={() => {setOpen(true)}} variant='outline' size='icon' className="size-10">
-            <CommandIcon className="size-4 text-muted-foreground bg-transparent" />
+          <Button onClick={() => {setOpen(true)}} variant='secondary' size='icon' className="size-10">
+            <CommandIcon className="size-4 bg-transparent" />
           </Button>
         :
           <Button
             size={'lg'}
             variant={'secondary'}
             onClick={() => {setOpen(true)}}
-            className="w-full relative bg-background cursor-pointer flex justify-between p-2 px-4 rounded-md"
+            className="w-full relative bg-input hover:bg-input shadow-none flex justify-between text-muted-foreground p-2 px-4"
           >
-            <MagnifyingGlass className="absolute left-4 top-3 size-4" />
-            <p className={`pl-6 text-muted-foreground truncate`}>Commands</p>
-            <p className={`text-sm text-muted-foreground`}>
-              <kbd className="pointer-events-none right-2 top-2.5 inline-flex h-5 select-none items-center gap-1 rounded border-input bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
+            <MagnifyingGlassIcon className="absolute left-3 top-3 size-4" />
+            <p className={`pl-5 truncate`}>Commands</p>
+            <p className={`text-sm`}>
+              <kbd className="pointer-events-none right-2 top-2.5 inline-flex h-5 select-none items-center gap-1 rounded border shadow bg-muted px-1.5 font-mono text-[10px] font-medium text-muted-foreground opacity-100">
                 <span className="text-xs">⌘</span>J
               </kbd>
             </p>

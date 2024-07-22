@@ -77,21 +77,26 @@ export async function runConnectionSpecificQuery (connection: Connection, text: 
     query_timeout: 60000,
   });
 
-  const start = Date.now();
+  try {
+    const start = Date.now();
 
-  const result = await pool.query(text);
+    const result = await pool.query(text);
 
-  const end = Date.now();
+    const end = Date.now();
 
-  const columns = result.fields.map(field => ({
-    name: field.name,
-    type: field.dataTypeID
-  }));
+    const columns = result.fields.map(field => ({
+      name: field.name,
+      type: field.dataTypeID
+    }));
 
-  const rows = result.rows;
+    const rows = result.rows;
 
-  return {
-    res: { columns, rows },
-    time: end - start
-  };
+    return {
+      res: { columns, rows },
+      time: end - start
+    };
+  } catch (err) {
+    return { error: err!.toString() };
+  } finally {
+  }
 }

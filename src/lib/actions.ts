@@ -15,9 +15,9 @@ export const createConnection = async (data: any): Promise<Connection> => {
 
 export const createQuery = async (id: string, data: any): Promise<Query> => {
   return await prisma.query.upsert({
-    where: {id:  id},
+    where: {id: id},
     update: data,
-    create: data
+    create: data,
   })
 }
 
@@ -41,7 +41,7 @@ export const fetchConnections = async () : Promise<Connection[]> => {
   return prisma.connection.findMany({
     where: {
       userId: authId,
-    }
+    },
   })
 }
 
@@ -74,6 +74,9 @@ export const fetchAllQueries = async () => {
       },
       where: {
         userId: authId
+      },
+      orderBy: {
+        updatedAt: 'desc'
       }
     }
   )

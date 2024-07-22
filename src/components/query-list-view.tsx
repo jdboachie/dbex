@@ -10,14 +10,15 @@ import {
   ContextMenuTrigger,
 } from "@/components/ui/context-menu"
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ScrollArea } from "./ui/scroll-area";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+// import { Input } from "@/components/ui/input";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Connection, Query } from "@prisma/client";
 import { deleteQuery, fetchAllQueries } from '@/lib/actions';
 import { AnimatedState } from "./experimental/animated-state";
 import { PlusIcon, MagnifyingGlassIcon, TerminalWindowIcon } from "./icons";
+import { cn } from "@/lib/utils";
 
 
 interface QueryWithConnection extends Query {
@@ -27,6 +28,7 @@ interface QueryWithConnection extends Query {
 const QueryListView = () => {
 
   const router = useRouter()
+  const pathname = usePathname()
   const [queries, setQueries] = React.useState<QueryWithConnection[]>([])
 
   React.useEffect(() => {
@@ -58,35 +60,35 @@ const QueryListView = () => {
         <p className='text-base font-medium'>Queries</p>
       </Link>
       <div className="p-4 border-b grid">
-        <Button
-          size={'lg'}
-          variant={'ghost'}
-          onClick={() => {router.push('/app/queries')}}
-          className='w-full justify-start border border-dashed px-3'
+        <Link
+          href={`/app/new`}
+          className={cn(buttonVariants({size: 'lg', variant: 'ghost'}), 'w-full justify-start border border-dashed px-3')}
         >
           <PlusIcon className='block size-4 mr-2.5 h-12' />
           New query
-        </Button>
+        </Link>
       </div>
-      <ScrollArea className='grid grid-flow-row gap-1 size-full p-4'>
-        <AnimatedState>
+      <AnimatedState>
+        <ScrollArea className='size-full p-4'>
+          <div className="grid gap-1">
           {queries.map((query) => (
             <ContextMenu key={query.id}>
               <ContextMenuTrigger>
-                <Link href={`/app/queries/${query.id}`}>
-                  <Button
-                    variant={'ghost'}
-                    className="flex gap-2 px-2 w-full justify-start"
-                    >
-                    <Image
-                      src={query.emojiUrl || ''}
-                      alt={'query emoji'}
-                      width={1000}
-                      height={1000}
-                      className="size-5"
-                      />
-                      <p className="truncate">{query.name}</p>
-                  </Button>
+                <Link
+                  className={cn(
+                    buttonVariants({variant: pathname.endsWith(query.id) ? 'secondary' : 'ghost'}),
+                    "flex gap-2 px-2 w-full justify-start"
+                  )}
+                  href={`/app/queries/${query.id}`}
+                >
+                  <Image
+                    src={query.emojiUrl || ''}
+                    alt={'query emoji'}
+                    width={1000}
+                    height={1000}
+                    className="size-5"
+                  />
+                  <p className="truncate">{query.name}</p>
                 </Link>
               </ContextMenuTrigger>
               <ContextMenuContent>
@@ -101,8 +103,9 @@ const QueryListView = () => {
               </ContextMenuContent>
           </ContextMenu>
           ))}
-        </AnimatedState>
-      </ScrollArea>
+          </div>
+        </ScrollArea>
+      </AnimatedState>
     </div>
   )
 }

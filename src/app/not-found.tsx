@@ -1,9 +1,7 @@
-'use server'
-
 import { CompassIcon } from "@/components/icons"
 import EmptyState from "@/components/closet/empty-state"
 
-export default async function notFound () {
+export default function NotFoundUI () {
   return (
     <div className="size-full h-screen p-10">
       <EmptyState
