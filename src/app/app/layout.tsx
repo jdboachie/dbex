@@ -31,7 +31,7 @@ export default async function Home({
      )
    } else {
     return (
-      <main className="h-screen w-screen overflow-hidden">
+      <main className="h-screen w-screen bg-ground overflow-hidden">
         <ResizablePanelGroup direction="horizontal" className="p-2 pl-0">
           <MainNav
             defaultCollapsed={defaultCollapsed}

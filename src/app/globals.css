@@ -93,7 +93,7 @@
   }
   body {
     text-rendering: optimizeLegibility;
-    @apply bg-ground text-foreground;
+    @apply bg-background text-foreground;
   }
 
   .dev {
