@@ -1,5 +1,5 @@
-import { TerminalWindowIcon, TableIcon, ServerIcon} from "./icons";
-
+import { TerminalWindowIcon, TableIcon, ServerIcon, FeedbackIcon} from "./icons";
+import { Analytics } from "@/lib/actions";
 import {
     Card,
     CardDescription,
@@ -18,7 +18,7 @@ import {
     DialogClose
 } from "@/components/ui/dialog"
 
-import { Textarea } from "@/components/ui/text-area"
+import { Textarea } from "@/components/ui/textarea"
 import {
     Form,
     FormControl,
@@ -95,17 +95,17 @@ export const RecentQueries = () => {
 }
 
 
-export const AnalyticsComponent = () => {
+export const AnalyticsComponent = async() => {
     interface IAnalytics {
         component: string,
         value: number,
         icon: React.FC<any>
     }
-
+    // const {queries,connection} = await Analytics();
     const analytics: IAnalytics[] = [
         { component: "Tables", value: 10, icon: TableIcon },
-        { component: "Connection", value: 5, icon: ServerIcon },
-        { component: "Queries", value: 2, icon: TerminalWindowIcon }
+        { component: "Connection", value: 10, icon: ServerIcon },
+        { component: "Queries", value: 10, icon: TerminalWindowIcon }
     ]
     return (
         <>
