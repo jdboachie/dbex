@@ -122,3 +122,26 @@ export const deleteQuery = async (id: string) => {
     }
   })
 }
+
+export const Analytics = async () => {
+  const queries = await prisma.query.count();
+  const connection = await prisma.connection.count();
+
+  return { queries, connection };
+};
+
+export const SendMail = async (email: string, message: string) => {
+  const apiEndpoint = '/api/email';
+
+  fetch(apiEndpoint, {
+    method: 'POST',
+    body: JSON.stringify({email,message}),
+  })
+    .then((res) => res.json())
+    .then((response) => {
+      alert(response.message);
+    })
+    .catch((err) => {
+      alert(err);
+    });
+};
