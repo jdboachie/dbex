@@ -144,7 +144,7 @@ export default function SignUpPage() {
                             </div>
                             <div className="signInWithGoogleAndGitHub flex gap-3">
                                 <SignInWithGoogle />
-                                <SignInWithGithub />
+                                {/* <SignInWithGithub /> */}
                             </div>
                         </form>
                     </Form>
