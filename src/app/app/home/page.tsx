@@ -7,7 +7,6 @@ import { ResizablePanel } from '@/components/ui/resizable';
 import { DbSvg } from '@/components/svgImage';
 import { useRouter } from 'next/navigation';
 import { Folder as CodeIcon } from "@phosphor-icons/react";
-import { AnalyticsComponentData } from '@/lib/homepageactions';
 import {
   Card,
   CardDescription,
