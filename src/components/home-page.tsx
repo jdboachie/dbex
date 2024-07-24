@@ -1,6 +1,7 @@
 import { TerminalWindowIcon, TableIcon, ServerIcon, FeedbackIcon } from "./icons";
 import { userQueries, Analytics } from "@/lib/actions";
 import EmptyState from '@/components/closet/empty-state'
+import { useState,useEffect } from "react";
 import { ZeroConfigIcon } from "./icons";
 import Image from "next/image";
 import {
@@ -38,8 +39,24 @@ import { Input } from "./ui/input";
 import { Button } from "@/components/ui/button";
 
 export const RecentQueries = async () => {
-
-    const Queries = await userQueries();
+    interface queries{
+        id: string,
+        userId: string,
+        connectionId: string,
+        name: string,
+        content: string | null,
+        emojiUrl: string | null,
+        createdAt: Date,
+        updatedAt: Date
+    }
+    const [Queries, setQueries] = useState<queries[]>([]);
+    useEffect(()=>{
+        const fetchData = async()=>{
+            const queries = await userQueries();
+            setQueries(queries);
+        }
+        fetchData();
+    }, [])
     const timestamp = (time: Date) => {
         if (time) {
             const milliseconds = Date.now() - new Date(time).getTime();
@@ -99,40 +116,48 @@ export const RecentQueries = async () => {
 }
 
 
-export const AnalyticsComponent = async () => {
+export const AnalyticsComponent = () => {
     interface IAnalytics {
         component: string,
         value: number,
         icon: React.FC<any>
     }
-    const { queries, connection } = await Analytics();
-    const analytics: IAnalytics[] = [
-        { component: "Tables", value: 10, icon: TableIcon },
-        { component: "Connection", value: connection, icon: ServerIcon },
-        { component: "Queries", value: queries, icon: TerminalWindowIcon }
-    ]
+
+    const [analytics, setAnalytics] = useState<IAnalytics[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const { queries, connection } = await Analytics();
+            const data: IAnalytics[] = [
+                { component: "Tables", value: 10, icon: TableIcon },
+                { component: "Connection", value: connection, icon: ServerIcon },
+                { component: "Queries", value: queries, icon: TerminalWindowIcon }
+            ];
+            setAnalytics(data);
+        };
+
+        fetchData();
+    }, []);
+
     return (
         <>
             {
-                analytics.map((item: IAnalytics, index: number) => {
-                    return (
-                        <div key={index} className="flex w-full flex-row justify-between hover:bg-primary-foreground dark:hover:text-secondary bg-secondary p-3 rounded-lg transition-colors">
-                            <div className='flex flex-row justify-between rounded-lg w-full'>
-                                <div className="flex flex-row items-center gap-1 text-muted-foreground">
-                                    {<item.icon className="size-4 text-muted-foreground" />}
-                                    <div className='text-xs'>{item.component}</div>
-                                </div>
-                                <div className="text-lg">
-                                    {item.value}
-                                </div>
+                analytics.map((item: IAnalytics, index: number) => (
+                    <div key={index} className="flex w-full flex-row justify-between hover:bg-primary-foreground dark:hover:text-secondary bg-secondary p-3 rounded-lg transition-colors">
+                        <div className='flex flex-row justify-between rounded-lg w-full'>
+                            <div className="flex flex-row items-center gap-1 text-muted-foreground">
+                                {<item.icon className="size-4 text-muted-foreground" />}
+                                <div className='text-xs'>{item.component}</div>
+                            </div>
+                            <div className="text-lg">
+                                {item.value}
                             </div>
                         </div>
-                    )
-                })
+                    </div>
+                ))
             }
         </>
-
-    )
+    );
 }
 
 export const FeedbakCard = () => {

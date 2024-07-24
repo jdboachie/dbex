@@ -6,6 +6,8 @@ import { useSession } from 'next-auth/react'
 import { ResizablePanel } from '@/components/ui/resizable';
 import { DbSvg } from '@/components/svgImage';
 import { useRouter } from 'next/navigation';
+import { Folder as CodeIcon } from "@phosphor-icons/react";
+import { AnalyticsComponentData } from '@/lib/homepageactions';
 import {
   Card,
   CardDescription,
@@ -78,7 +80,7 @@ const Page = async () => {
               </div>
 
               <div className="tableContent flex-col flex gap-2 w-full relative">
-                <AnalyticsComponent />
+                <AnalyticsComponent/>
               </div>
             </div>
 
@@ -92,7 +94,7 @@ const Page = async () => {
             <div className="flex justify-between flex-col gap-3">
               <div className='flex gap-3 flex-col items-center justify-center'>
                 <div className="icon bg-secondary w-fit p-3 rounded-lg">
-                  <DatabaseIcon className="size-4 text-primaryblue" />
+                  <CodeIcon className="size-4 text-primaryblue" />
                 </div>
                 <div className="flex flex-col gap-1 items-center justify-center text-center">
                   <CardTitle className='text-lg'>View Project</CardTitle>

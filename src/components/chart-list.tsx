@@ -16,14 +16,29 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import { useState, useEffect } from "react"
 
 
 export const ChartComponent = async () => {
-  const { queries, connection } = await Analytics();
+
+  interface typeAnalytics {
+    queries: number,
+    connection: number
+  }
+  const [analytics, setAnalytics] = useState<typeAnalytics>({queries: 0, connection: 0});
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const analyticsData = await Analytics();
+      setAnalytics(analyticsData);
+    };
+
+    fetchData();
+  }, []);
   const chartData = [
-    { browser: "chrome", visitors: connection, fill: "var(--color-chrome)" },
+    { browser: "chrome", visitors: analytics.queries, fill: "var(--color-chrome)" },
     { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-    { browser: "firefox", visitors: queries, fill: "var(--color-firefox)" },
+    { browser: "firefox", visitors: analytics.connection, fill: "var(--color-firefox)" },
   ]
 
   const chartConfig = {
