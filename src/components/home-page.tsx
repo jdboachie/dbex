@@ -1,5 +1,9 @@
-import { TerminalWindowIcon, TableIcon, ServerIcon, FeedbackIcon} from "./icons";
-import { Analytics } from "@/lib/actions";
+import { TerminalWindowIcon, TableIcon, ServerIcon, FeedbackIcon } from "./icons";
+import { userQueries, Analytics } from "@/lib/actions";
+import EmptyState from '@/components/closet/empty-state'
+import { useState,useEffect } from "react";
+import { ZeroConfigIcon } from "./icons";
+import Image from "next/image";
 import {
     Card,
     CardDescription,
@@ -34,60 +38,77 @@ import { z } from "zod"
 import { Input } from "./ui/input";
 import { Button } from "@/components/ui/button";
 
-export const RecentQueries = () => {
-
-    interface Query {
-        title: string,
-        description: string,
-        timestamp: string,
-        icon: React.FC<any>
+export const RecentQueries = async () => {
+    interface queries{
+        id: string,
+        userId: string,
+        connectionId: string,
+        name: string,
+        content: string | null,
+        emojiUrl: string | null,
+        createdAt: Date,
+        updatedAt: Date
     }
-
-    const Queries: Query[] = [
-        {
-            title: 'get_cwa',
-            description: 'Select * from CWA where value > 70; ...',
-            timestamp: '2 hours ago',
-            icon: TerminalWindowIcon
-        },
-        {
-            title: 'get_cwa_v2',
-            description: 'Select * from CWA_v2 where value > 70; ...',
-            timestamp: '1 day ago',
-            icon: TerminalWindowIcon
-        },
-        {
-            title: 'get_cwa_v3',
-            description: 'Select * from CWA_v3 where value > 70; ...',
-            timestamp: '2 days ago',
-            icon: TerminalWindowIcon
-        },
-    ];
+    const [Queries, setQueries] = useState<queries[]>([]);
+    useEffect(()=>{
+        const fetchData = async()=>{
+            const queries = await userQueries();
+            setQueries(queries);
+        }
+        fetchData();
+    }, [])
+    const timestamp = (time: Date) => {
+        if (time) {
+            const milliseconds = Date.now() - new Date(time).getTime();
+            const seconds = Math.floor(milliseconds / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            if (days > 0) return days + 'days'
+            else if (hours > 0) return hours + 'hours'
+            else if (minutes > 0) return minutes + 'minutes'
+            else return seconds + 'seconds'
+        }
+        return '';
+    }
 
     return (
         <>
             {
                 Queries.length > 0 ? (
-                    Queries.map((query: Query, index: number) => {
+                    Queries.map((query, index) => {
                         return (
                             <a key={index} href='#' className='flex w-full flex-row justify-between hover:bg-primary-foreground dark:hover:text-secondary bg-secondary p-3 rounded-lg'>
                                 <div className="flex dark:text-secondary-foreground flex-col justify-center gap-2">
                                     <div className='flex flex-row items-center gap-1'>
-                                        <query.icon className="size-4" />
-                                        <div className='uppercase'>{query.title}</div>
+                                        <Image
+                                            src={query.emojiUrl ? query.emojiUrl : ''}
+                                            alt='queryemoji'
+                                            width={1000}
+                                            height={1000}
+                                            className='size-5'
+                                        />
+                                        <div className='uppercase'>{query.name}</div>
                                     </div>
-                                    <div className='text-muted-foreground'>
-                                        {query.description}
+                                    <div className='text-muted-foreground text-ellipsis nowrap'>
+                                        {query?.content}
                                     </div>
                                 </div>
                                 <div className="text-sm text-muted-foreground">
-                                    {query.timestamp}
+                                    {timestamp(query.updatedAt) === '' ? '' : timestamp(query.updatedAt) + ' ago'}
                                 </div>
                             </a>
                         )
                     })
                 ) : (
-                    <div className="text-sm text-muted-foreground">No recent queries</div>
+                    <div className="flex flex-col justify-center items-center">
+                        <EmptyState
+                            small
+                            icon={ZeroConfigIcon}
+                            title='No queries on this database'
+                            description="Click on the 'Query database' to run a query"
+                        />
+                    </div>
                 )
             }
         </>
@@ -95,40 +116,48 @@ export const RecentQueries = () => {
 }
 
 
-export const AnalyticsComponent = async() => {
+export const AnalyticsComponent = () => {
     interface IAnalytics {
         component: string,
         value: number,
         icon: React.FC<any>
     }
-    // const {queries,connection} = await Analytics();
-    const analytics: IAnalytics[] = [
-        { component: "Tables", value: 10, icon: TableIcon },
-        { component: "Connection", value: 10, icon: ServerIcon },
-        { component: "Queries", value: 10, icon: TerminalWindowIcon }
-    ]
+
+    const [analytics, setAnalytics] = useState<IAnalytics[]>([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const { queries, connection } = await Analytics();
+            const data: IAnalytics[] = [
+                { component: "Tables", value: 10, icon: TableIcon },
+                { component: "Connection", value: connection, icon: ServerIcon },
+                { component: "Queries", value: queries, icon: TerminalWindowIcon }
+            ];
+            setAnalytics(data);
+        };
+
+        fetchData();
+    }, []);
+
     return (
         <>
             {
-                analytics.map((item: IAnalytics, index: number) => {
-                    return (
-                        <div key={index} className="flex w-full flex-row justify-between hover:bg-primary-foreground dark:hover:text-secondary bg-secondary p-3 rounded-lg transition-colors">
-                            <div className='flex flex-row justify-between rounded-lg w-full'>
-                                <div className="flex flex-row items-center gap-1 text-muted-foreground">
-                                    {<item.icon className="size-4 text-muted-foreground" />}
-                                    <div className='text-xs'>{item.component}</div>
-                                </div>
-                                <div className="text-lg">
-                                    {item.value}
-                                </div>
+                analytics.map((item: IAnalytics, index: number) => (
+                    <div key={index} className="flex w-full flex-row justify-between hover:bg-primary-foreground dark:hover:text-secondary bg-secondary p-3 rounded-lg transition-colors">
+                        <div className='flex flex-row justify-between rounded-lg w-full'>
+                            <div className="flex flex-row items-center gap-1 text-muted-foreground">
+                                {<item.icon className="size-4 text-muted-foreground" />}
+                                <div className='text-xs'>{item.component}</div>
+                            </div>
+                            <div className="text-lg">
+                                {item.value}
                             </div>
                         </div>
-                    )
-                })
+                    </div>
+                ))
             }
         </>
-
-    )
+    );
 }
 
 export const FeedbakCard = () => {
