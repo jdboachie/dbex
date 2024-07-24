@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button'
 import { useSession } from 'next-auth/react'
 import { ResizablePanel } from '@/components/ui/resizable';
 import { DbSvg } from '@/components/svgImage';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import {
   Card,
   CardDescription,
@@ -27,6 +29,7 @@ import { ChartComponent } from '@/components/chart-list';
 
 const Page = async() => {
   // const { data } = useSession()
+  const router = useRouter();
 
   return (
     <ResizablePanel>
@@ -49,13 +52,13 @@ const Page = async() => {
 
               <div className="footer flex flex-row gap-2 py-2">
                 <div className='flex flex-row rounded-lg items-center gap-1'>
-                  <Button size={'lg'} className='flex flex-row items-center gap-2 bg-primaryblue hover:bg-primaryblue-foreground'>
+                  <Button onClick={()=>router.push('/app/connections')} size={'lg'} className='flex flex-row items-center gap-2 bg-primaryblue hover:bg-primaryblue-foreground'>
                     <ServerIcon />
                     <span>Connect</span>
                   </Button>
                 </div>
                 <div className='flex flex-row rounded-lg items-center gap-1'>
-                  <Button size={'lg'} className='flex flex-row items-center gap-2'>
+                  <Button onClick={()=>router.push('/app/queries')} size={'lg'} className='flex flex-row items-center gap-2'>
                     <Code></Code>
                     <span>Run Query</span>
                   </Button>

@@ -124,11 +124,14 @@ export const deleteQuery = async (id: string) => {
 }
 
 export const Analytics = async () => {
+  const session = await auth();
+  if(!session) return { queries: 0, connection: 0 };
   const queries = await prisma.query.count();
   const connection = await prisma.connection.count();
 
   return { queries, connection };
 };
+
 
 export const SendMail = async (email: string, message: string) => {
   const apiEndpoint = '/api/email';
@@ -145,3 +148,18 @@ export const SendMail = async (email: string, message: string) => {
       alert(err);
     });
 };
+
+export const userQueries = async()=>{
+  const session = await auth();
+  if(!session) return [];
+  const authId = session?.user?.id
+  const userQueries = await prisma.query.findMany({
+    where: {
+      userId: authId
+    },
+    orderBy: {
+      updatedAt: 'desc'
+    }
+  })
+  return userQueries
+}

@@ -2,6 +2,7 @@
 
 import { Pie, PieChart, Sector } from "recharts"
 import { PieSectorDataItem } from "recharts/types/polar/Pie"
+import { Analytics } from "@/lib/actions"
 
 import {
   Card,
@@ -15,33 +16,10 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-]
 
-import { Analytics } from "./icons"
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Connection",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Table",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Query",
-    color: "hsl(var(--chart-3))",
-  }
-} satisfies ChartConfig
-
-export function ChartComponent() {
+export const ChartComponent = async() =>{
+  const {queries, connection} = await Analytics();
   return (
     <Card className="shadow border grid col-span-3 h-full dark:bg-custom-gradient rounded-lg py-4 px-5 relative">
       <div className="items-center pb-0">
