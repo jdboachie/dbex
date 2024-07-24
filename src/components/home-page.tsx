@@ -1,5 +1,7 @@
 import { TerminalWindowIcon, TableIcon, ServerIcon, FeedbackIcon } from "./icons";
 import { userQueries, Analytics } from "@/lib/actions";
+import EmptyState from '@/components/closet/empty-state'
+import { ZeroConfigIcon } from "./icons";
 import Image from "next/image";
 import {
     Card,
@@ -38,17 +40,17 @@ import { Button } from "@/components/ui/button";
 export const RecentQueries = async () => {
 
     const Queries = await userQueries();
-    const timestamp = (time: Date)=>{
-        if(time){
-           const milliseconds = Date.now() - new Date(time).getTime();
-           const seconds = Math.floor(milliseconds / 1000);
-           const minutes = Math.floor(seconds / 60);
-           const hours = Math.floor(minutes / 60);
-           const days = Math.floor(hours / 24);
-           if(days > 0) return days + 'days'
-           else if(hours > 0) return hours +'hours'
-           else if(minutes > 0) return minutes +'minutes'
-           else return seconds +'seconds'
+    const timestamp = (time: Date) => {
+        if (time) {
+            const milliseconds = Date.now() - new Date(time).getTime();
+            const seconds = Math.floor(milliseconds / 1000);
+            const minutes = Math.floor(seconds / 60);
+            const hours = Math.floor(minutes / 60);
+            const days = Math.floor(hours / 24);
+            if (days > 0) return days + 'days'
+            else if (hours > 0) return hours + 'hours'
+            else if (minutes > 0) return minutes + 'minutes'
+            else return seconds + 'seconds'
         }
         return '';
     }
@@ -63,7 +65,7 @@ export const RecentQueries = async () => {
                                 <div className="flex dark:text-secondary-foreground flex-col justify-center gap-2">
                                     <div className='flex flex-row items-center gap-1'>
                                         <Image
-                                            src={query.emojiUrl? query.emojiUrl: ''}
+                                            src={query.emojiUrl ? query.emojiUrl : ''}
                                             alt='queryemoji'
                                             width={1000}
                                             height={1000}
@@ -76,13 +78,20 @@ export const RecentQueries = async () => {
                                     </div>
                                 </div>
                                 <div className="text-sm text-muted-foreground">
-                                    {timestamp(query.updatedAt) === ''? '': timestamp(query.updatedAt) + ' ago'}
+                                    {timestamp(query.updatedAt) === '' ? '' : timestamp(query.updatedAt) + ' ago'}
                                 </div>
                             </a>
                         )
                     })
                 ) : (
-                    <div className="text-sm text-muted-foreground">No recent queries</div>
+                    <div className="flex flex-col justify-center items-center">
+                        <EmptyState
+                            small
+                            icon={ZeroConfigIcon}
+                            title='No queries on this database'
+                            description="Click on the 'Query database' to run a query"
+                        />
+                    </div>
                 )
             }
         </>
@@ -96,10 +105,10 @@ export const AnalyticsComponent = async () => {
         value: number,
         icon: React.FC<any>
     }
-    const {queries,connection} = await Analytics();
+    const { queries, connection } = await Analytics();
     const analytics: IAnalytics[] = [
         { component: "Tables", value: 10, icon: TableIcon },
-        { component: "Connection", value: queries, icon: ServerIcon },
+        { component: "Connection", value: connection, icon: ServerIcon },
         { component: "Queries", value: queries, icon: TerminalWindowIcon }
     ]
     return (

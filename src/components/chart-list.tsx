@@ -18,8 +18,32 @@ import {
 } from "@/components/ui/chart"
 
 
-export const ChartComponent = async() =>{
-  const {queries, connection} = await Analytics();
+export const ChartComponent = async () => {
+  const { queries, connection } = await Analytics();
+  const chartData = [
+    { browser: "chrome", visitors: connection, fill: "var(--color-chrome)" },
+    { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
+    { browser: "firefox", visitors: queries, fill: "var(--color-firefox)" },
+  ]
+
+  const chartConfig = {
+    visitors: {
+      label: "Visitors",
+    },
+    chrome: {
+      label: "Connection",
+      color: "hsl(var(--chart-1))",
+    },
+    safari: {
+      label: "Table",
+      color: "hsl(var(--chart-2))",
+    },
+    firefox: {
+      label: "Query",
+      color: "hsl(var(--chart-3))",
+    }
+  } satisfies ChartConfig
+
   return (
     <Card className="shadow border grid col-span-3 h-full dark:bg-custom-gradient rounded-lg py-4 px-5 relative">
       <div className="items-center pb-0">

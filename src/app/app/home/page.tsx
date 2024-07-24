@@ -6,7 +6,6 @@ import { useSession } from 'next-auth/react'
 import { ResizablePanel } from '@/components/ui/resizable';
 import { DbSvg } from '@/components/svgImage';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import {
   Card,
   CardDescription,
@@ -27,7 +26,7 @@ import {
 import { ChartComponent } from '@/components/chart-list';
 
 
-const Page = async() => {
+const Page = async () => {
   // const { data } = useSession()
   const router = useRouter();
 
@@ -42,7 +41,7 @@ const Page = async() => {
                   <DatabaseIcon className="size-4 text-primaryblue" />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <CardTitle className='text-lg'>Database</CardTitle>
+                  <CardTitle className='text-lg'>View Project</CardTitle>
                   <CardDescription className='w-11/12'>
                     Connect and to database and run queries on your data with just a click
                   </CardDescription>
@@ -52,15 +51,15 @@ const Page = async() => {
 
               <div className="footer flex flex-row gap-2 py-2">
                 <div className='flex flex-row rounded-lg items-center gap-1'>
-                  <Button onClick={()=>router.push('/app/connections')} size={'lg'} className='flex flex-row items-center gap-2 bg-primaryblue hover:bg-primaryblue-foreground'>
+                  <Button onClick={() => router.push('/app/connections')} size={'lg'} className='flex flex-row items-center gap-2 bg-primaryblue hover:bg-primaryblue-foreground'>
                     <ServerIcon />
                     <span>Connect</span>
                   </Button>
                 </div>
                 <div className='flex flex-row rounded-lg items-center gap-1'>
-                  <Button onClick={()=>router.push('/app/queries')} size={'lg'} className='flex flex-row items-center gap-2'>
+                  <Button onClick={() => router.push('/app/queries')} size={'lg'} className='flex flex-row items-center gap-2'>
                     <Code></Code>
-                    <span>Run Query</span>
+                    <span>Query Database</span>
                   </Button>
                 </div>
               </div>
@@ -88,7 +87,7 @@ const Page = async() => {
         </div>
 
         <div className="w-full gap-5 relative grid grid-cols-12">
-          
+
           <Card className='shadow border grid col-span-5 lg:col-span-3 h-full dark:bg-custom-gradient bg-bottom  rounded-lg py-4 px-5 relative'>
             <div className="flex justify-between flex-col gap-3">
               <div className='flex gap-3 flex-col items-center justify-center'>
@@ -96,11 +95,13 @@ const Page = async() => {
                   <DatabaseIcon className="size-4 text-primaryblue" />
                 </div>
                 <div className="flex flex-col gap-1 items-center justify-center text-center">
-                  <CardTitle className='text-lg'>Database</CardTitle>
+                  <CardTitle className='text-lg'>View Project</CardTitle>
                   <CardDescription className='w-12/12'>
                     Postgres database the world&apos;s most trusted relational database.
                   </CardDescription>
-
+                  <div className="py-5">
+                    <Button>View Project</Button>
+                  </div>
                 </div>
               </div>
 
@@ -125,7 +126,7 @@ const Page = async() => {
               </div>
             </div>
           </Card>
-          
+
         </div>
       </div>
 
