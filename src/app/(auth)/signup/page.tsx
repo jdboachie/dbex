@@ -138,9 +138,9 @@ export default function SignUpPage() {
                             />
                             <Button type="submit" className="w-full dark:bg-secondary bg-secondary-foreground dark:hover:bg-secondary-foreground dark:text-secondary-foreground dark:hover:text-secondary">Submit</Button>
                             <div className="flex flex-row justify-center items-center">
-                                <div className="line w-1/2 h-[1.5px] rounded-full bg-foreground-300 dark:bg-foreground-50"></div>
-                                <span className="text-sm capitalize px-3 text-foreground-400 dark:text-foreground-300"> OR </span>
-                                <div className="line w-1/2 h-[1.5px] rounded-full bg-foreground-300 dark:bg-foreground-50"></div>
+                                <div className="line w-1/2 h-[1.5px] rounded-full bg-foreground-50"></div>
+                                <span className="text-sm capitalize px-3 text-foreground-300"> OR </span>
+                                <div className="line w-1/2 h-[1.5px] rounded-full bg-foreground-50"></div>
                             </div>
                             <div className="signInWithGoogleAndGitHub flex gap-3">
                                 <SignInWithGoogle />
