@@ -1,28 +1,63 @@
-import NextAuth from "next-auth"
+import NextAuth from "next-auth";
 // import GitHub from "next-auth/providers/github"
-import Google from "next-auth/providers/google"
-import { PrismaAdapter } from "@auth/prisma-adapter"
-import { prisma } from "./lib/prisma"
-import type { Provider } from "next-auth/providers"
-
+import Google from "next-auth/providers/google";
+import { PrismaAdapter } from "@auth/prisma-adapter";
+import { prisma } from "./lib/prisma";
+import type { Provider } from "next-auth/providers";
+import Credentials from "next-auth/providers/credentials";
+import { fetchUserByEmail } from "./lib/actions";
+import bcryptjs from "bcryptjs";
 
 const providers: Provider[] = [
-  Google
-]
+  Google,
+  Credentials({
+    credentials: {
+      email:{
+        label:"Email",
+        type:"email",
+        placeholder:"Email"
+      },
+      password:{
+        label:"Password",
+        type:"password",
+        placeholder:"Password"
+      }
+    },
+    async authorize(credentials){
+      const user = await fetchUserByEmail(credentials.email);
+      if(!user) throw new Error("User not found");
+      if(!user.password) throw new Error("Password not set");
+      const isValid = bcryptjs.compareSync(credentials.password, user.password);
+      if(!isValid) throw new Error("Invalid password");
+      return user;
+    },
+  }),
+];
 
 export const providerMap = providers.map((provider) => {
   if (typeof provider === "function") {
-    const providerData = provider()
-    return { id: providerData.id, name: providerData.name }
+    const providerData = provider();
+    return { id: providerData.id, name: providerData.name };
   } else {
-    return { id: provider.id, name: provider.name }
+    return { id: provider.id, name: provider.name };
   }
-})
+});
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  session: {
+    strategy: "jwt",
+  },
   adapter: PrismaAdapter(prisma),
   providers,
-  pages: {
-    signIn: "/signin",
-  }
-})
+  // pages: {
+  //   signIn: "/signin",
+  // },
+});
+
+
+// let user = null;
+//       const pwHash = saltAndHashPassword(password);
+//       user = await getUserFromDb(credentials.email, pwHash);
+//       if (!user) {
+//         throw new Error("User not found.");
+//       }
