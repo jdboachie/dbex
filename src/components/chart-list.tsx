@@ -1,14 +1,12 @@
 "use client"
 
-import { TrendingUp } from "lucide-react"
-import { Label, Pie, PieChart, Sector } from "recharts"
+import { Pie, PieChart, Sector } from "recharts"
 import { PieSectorDataItem } from "recharts/types/polar/Pie"
+import { Analytics } from "@/lib/actions"
 
 import {
   Card,
-  CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
@@ -18,33 +16,49 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
-const chartData = [
-  { browser: "chrome", visitors: 275, fill: "var(--color-chrome)" },
-  { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
-  { browser: "firefox", visitors: 187, fill: "var(--color-firefox)" },
-]
+import { useState, useEffect } from "react"
 
-import { Analytics } from "./icons"
 
-const chartConfig = {
-  visitors: {
-    label: "Visitors",
-  },
-  chrome: {
-    label: "Connection",
-    color: "hsl(var(--chart-1))",
-  },
-  safari: {
-    label: "Table",
-    color: "hsl(var(--chart-2))",
-  },
-  firefox: {
-    label: "Query",
-    color: "hsl(var(--chart-3))",
+export const ChartComponent = async () => {
+
+  interface typeAnalytics {
+    queries: number,
+    connection: number
   }
-} satisfies ChartConfig
+  const [analytics, setAnalytics] = useState<typeAnalytics>({queries: 0, connection: 0});
 
-export function ChartComponent() {
+  useEffect(() => {
+    const fetchData = async () => {
+      const analyticsData = await Analytics();
+      setAnalytics(analyticsData);
+    };
+
+    fetchData();
+  }, []);
+  const chartData = [
+    { browser: "chrome", visitors: analytics.queries, fill: "var(--color-chrome)" },
+    { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
+    { browser: "firefox", visitors: analytics.connection, fill: "var(--color-firefox)" },
+  ]
+
+  const chartConfig = {
+    visitors: {
+      label: "Visitors",
+    },
+    chrome: {
+      label: "Connection",
+      color: "hsl(var(--chart-1))",
+    },
+    safari: {
+      label: "Table",
+      color: "hsl(var(--chart-2))",
+    },
+    firefox: {
+      label: "Query",
+      color: "hsl(var(--chart-3))",
+    }
+  } satisfies ChartConfig
+
   return (
     <Card className="shadow border grid col-span-3 h-full dark:bg-custom-gradient rounded-lg py-4 px-5 relative">
       <div className="items-center pb-0">
