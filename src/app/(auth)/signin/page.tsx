@@ -15,6 +15,8 @@ import {
     EyeOffIcon
 } from "@/components/icons"
 
+import { toast } from "sonner"
+
 import { Button } from "@/components/ui/button"
 import {
     Form,
@@ -70,7 +72,13 @@ export default function SignInPage() {
     const onSubmit = async (values: z.infer<typeof signInFormSchema>) => {
         console.log("Entered onSubmit");
         const { email, password } = values;
-        signIn('credentials', { email, password, callbackUrl: '/app/home' });
+        toast.promise(
+            signIn('credentials', { email, password, callbackUrl: '/app/home' }),
+            {
+                loading: 'Signing in...',
+                success: 'Signed in successfully',
+                error: 'Failed to sign in'
+            });
     };
 
     const [isPasswordShown, setIsPasswordShown] = useState(false);
@@ -120,14 +128,14 @@ export default function SignInPage() {
                                         <FormControl>
                                             <div className="input-icon flex flex-row relative">
                                                 <Lock className="absolute flex flex-row top-1/2 -translate-y-1/2 mx-2 stroke-slate-400 size-4 text-muted-foreground"></Lock>
-                                                <Input id="password-input" type={isPasswordShown? 'text': 'password'} placeholder="Enter password"{...field} className="password-input placeholder-shown:px-7 px-7 text-muted-foreground" />
+                                                <Input id="password-input" type={isPasswordShown ? 'text' : 'password'} placeholder="Enter password"{...field} className="password-input placeholder-shown:px-7 px-7 text-muted-foreground" />
                                                 <a
                                                     onClick={togglePasswordVisibility}
                                                     href="#"
                                                     className="absolute z-50 flex flex-row top-1/2 -translate-y-1/2 right-0 mx-2"
                                                 >
-                                                    <EyeOffIcon className={`size-4 text-muted-foreground ${!isPasswordShown?'hidden': 'block'}`}/>
-                                                    <EyeIcon className={`size-4 text-muted-foreground ${isPasswordShown?'hidden': 'block'}`}/>
+                                                    <EyeOffIcon className={`size-4 text-muted-foreground ${!isPasswordShown ? 'hidden' : 'block'}`} />
+                                                    <EyeIcon className={`size-4 text-muted-foreground ${isPasswordShown ? 'hidden' : 'block'}`} />
                                                 </a>
                                             </div>
                                         </FormControl>
