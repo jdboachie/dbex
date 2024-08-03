@@ -5,7 +5,7 @@ import { prisma } from "../lib/prisma";
 import { unstable_noStore as noStore } from "next/cache";
 import { Connection, User, Query } from "@prisma/client/edge";
 import bcryptjs from "bcryptjs";
-
+import { redirect } from "next/navigation";
 // CREATE
 export const createConnection = async (data: any): Promise<Connection> => {
   return await prisma.connection.create({
@@ -22,10 +22,10 @@ export const createQuery = async (id: string, data: any): Promise<Query> => {
 };
 
 // READ
-export const fetchUserByEmail = async (email:string): Promise<User | null> => {
+export const fetchUserByEmail = async (email: string): Promise<User | null> => {
   noStore();
   const user = await prisma.user.findUnique({
-    where: { email:  email},
+    where: { email: email },
   });
   return user || null;
 };
@@ -34,7 +34,15 @@ export const fetchConnections = async (): Promise<Connection[]> => {
   noStore();
 
   const session = await auth();
-  const authId = session?.user?.id;
+  let authId = session?.user?.id;
+
+  if (!authId) {
+    const user = await prisma.user.findUnique({
+      where: { email: session?.user?.email ?? "" },
+    });
+
+    authId = user?.id;
+  }
 
   return prisma.connection.findMany({
     where: {
@@ -63,7 +71,15 @@ export const fetchAllQueries = async () => {
   noStore();
 
   const session = await auth();
-  const authId = session?.user?.id;
+  let authId = session?.user?.id;
+
+  if (!authId) {
+    const user = await prisma.user.findUnique({
+      where: { email: session?.user?.email ?? "" },
+    });
+
+    authId = user?.id;
+  }
 
   const queries = await prisma.query.findMany({
     include: {
@@ -121,9 +137,17 @@ export const deleteQuery = async (id: string) => {
 export const Analytics = async () => {
   const session = await auth();
   if (!session) return { queries: 0, connection: 0 };
-  const queries = await prisma.query.count();
-  const connection = await prisma.connection.count();
-
+  let authId = session.user?.id;
+  if (!authId) {
+    const user = await prisma.user.findUnique({
+      where: { email: session.user?.email ?? "" },
+    });
+    authId = user?.id;
+  }
+  const queries = await prisma.query.count({ where: { userId: authId } });
+  const connection = await prisma.connection.count({
+    where: { userId: authId },
+  });
   return { queries, connection };
 };
 
@@ -146,15 +170,23 @@ export const SendMail = async (email: string, message: string) => {
 export const userQueries = async () => {
   const session = await auth();
   if (!session) return [];
-  const authId = session?.user?.id;
+
+  let authId = session.user?.id;
+
+  if (!authId) {
+    const user = await prisma.user.findUnique({
+      where: {
+        email: session.user?.email ?? "",
+      },
+    });
+    authId = user?.id;
+  }
+
   const userQueries = await prisma.query.findMany({
-    where: {
-      userId: authId,
-    },
-    orderBy: {
-      updatedAt: "desc",
-    },
+    where: { userId: authId },
+    orderBy: { updatedAt: "desc" },
   });
+
   return userQueries;
 };
 
@@ -165,17 +197,20 @@ export const createUser = async ({
   email: string;
   password: string;
 }) => {
-  noStore();
+  const hashedPassword = await hashPassword(password);
   try {
     const user = await prisma.user.create({
       data: {
         email: email,
         name: email.split("@")[0],
-        password: password,
+        password: hashedPassword,
       },
     });
+    console.log("User created:", user);
+    return {sucess: true}
   } catch (error) {
-    console.log(error);
+    console.error("Error creating user:", error);
+    return {sucess: false};
   }
 };
 
@@ -183,6 +218,4 @@ export const hashPassword = async (password: string) => {
   const saltRound = 10;
   const hashPassword = await bcryptjs.hash(password, saltRound);
   return hashPassword;
-}
-
-
+};

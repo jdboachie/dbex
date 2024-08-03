@@ -6,6 +6,8 @@ import { z } from "zod"
 import Link from "next/link";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import React, { useState } from 'react';
+import { useRouter } from "next/navigation";
+import { toast } from 'sonner';
 
 import {
     MailIcon as Mail,
@@ -25,8 +27,8 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
-import { SignInWithGithub, SignInWithGoogle } from "@/components/auth/SignUpWIthGoogleAndGithub"
-// import { registerUser } from "@/registerUser"
+import { SignInWithGoogle } from "@/components/auth/SignUpWIthGoogleAndGithub"
+import { createUser } from "@/lib/actions";
 
 const signInFormSchema = z.object({
     email: z.string().email({
@@ -45,7 +47,7 @@ const signInFormSchema = z.object({
 type signInFormSchema = z.infer<typeof signInFormSchema>
 
 export default function SignUpPage() {
-
+    const router = useRouter();
     const form = useForm<z.infer<typeof signInFormSchema>>({
         resolver: zodResolver(signInFormSchema),
         defaultValues: {
@@ -57,8 +59,18 @@ export default function SignUpPage() {
 
 
     const onSubmit = async (values: z.infer<typeof signInFormSchema>) => {
-        // const registerNewUser = await registerUser(values.email, values.password);
-        console.log(values)
+        const { email, password } = values;
+        const toastID = toast.loading('Creating New User...');
+        const result = await createUser({ email, password })
+        if (result.sucess) {
+            toast.dismiss(toastID);
+            toast.success('User Created Successfully');
+            router.push('/signin');
+        } else {
+            toast.dismiss(toastID);
+            toast.error('Error Creating User');
+        }
+
     }
 
     const [isPasswordShown, setIsPasswordShown] = useState(false);
@@ -104,14 +116,14 @@ export default function SignUpPage() {
                                         <FormControl>
                                             <div className="input-icon flex flex-row relative">
                                                 <Lock className="absolute flex flex-row top-1/2 -translate-y-1/2 mx-2 stroke-slate-400 size-4 text-muted-foreground"></Lock>
-                                                <Input id="password-input" type={isPasswordShown? 'text': 'password'} placeholder="Enter password"{...field} className="password-input placeholder-shown:px-7 px-7 text-muted-foreground" />
+                                                <Input id="password-input" type={isPasswordShown ? 'text' : 'password'} placeholder="Enter password"{...field} className="password-input placeholder-shown:px-7 px-7 text-muted-foreground" />
                                                 <a
                                                     onClick={togglePasswordVisibility}
                                                     href="#"
                                                     className="absolute z-50 flex flex-row top-1/2 -translate-y-1/2 right-0 mx-2"
                                                 >
-                                                    <EyeOffIcon className={`size-4 text-muted-foreground ${!isPasswordShown?'hidden': 'block'}`}/>
-                                                    <EyeIcon className={`size-4 text-muted-foreground ${isPasswordShown?'hidden': 'block'}`}/>
+                                                    <EyeOffIcon className={`size-4 text-muted-foreground ${!isPasswordShown ? 'hidden' : 'block'}`} />
+                                                    <EyeIcon className={`size-4 text-muted-foreground ${isPasswordShown ? 'hidden' : 'block'}`} />
                                                 </a>
 
                                             </div>

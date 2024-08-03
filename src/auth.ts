@@ -11,24 +11,19 @@ import bcryptjs from "bcryptjs";
 const providers: Provider[] = [
   Google,
   Credentials({
-    credentials: {
-      email:{
-        label:"Email",
-        type:"email",
-        placeholder:"Email"
-      },
-      password:{
-        label:"Password",
-        type:"password",
-        placeholder:"Password"
-      }
+    credentials: { 
+      email: { label: "Email", type: "email" },
+      password: { label: "Password", type: "password" } 
     },
-    async authorize(credentials){
-      const user = await fetchUserByEmail(credentials.email);
-      if(!user) throw new Error("User not found");
-      if(!user.password) throw new Error("Password not set");
-      const isValid = bcryptjs.compareSync(credentials.password, user.password);
-      if(!isValid) throw new Error("Invalid password");
+    async authorize(credentials) {
+      const {email, password} = credentials;
+      const user = await fetchUserByEmail(email);
+      if (!user) {
+        throw new Error("User not found.");
+      }
+      if (!bcryptjs.compareSync(password, user.password)) {
+        throw new Error("Password is incorrect.");
+      }
       return user;
     },
   }),
@@ -49,11 +44,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   adapter: PrismaAdapter(prisma),
   providers,
-  // pages: {
-  //   signIn: "/signin",
-  // },
+  pages: {
+    signIn: "/signin",
+  },
 });
-
 
 // let user = null;
 //       const pwHash = saltAndHashPassword(password);
