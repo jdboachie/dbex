@@ -15,13 +15,13 @@ const providers: Provider[] = [
       email: { label: "Email", type: "email" },
       password: { label: "Password", type: "password" } 
     },
-    async authorize(credentials) {
-      const {email, password} = credentials;
+    async authorize(credentials: Partial<Record<"email" | "password", unknown>>, request: Request) {
+      const {email, password} = credentials as { email: string, password: string };
       const user = await fetchUserByEmail(email);
       if (!user) {
         throw new Error("User not found.");
       }
-      if (!bcryptjs.compareSync(password, user.password)) {
+      if (!bcryptjs.compareSync(password, user.password?? " ")) {
         throw new Error("Password is incorrect.");
       }
       return user;
