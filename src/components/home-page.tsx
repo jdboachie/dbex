@@ -4,6 +4,7 @@ import EmptyState from '@/components/closet/empty-state'
 import { useState,useEffect } from "react";
 import { ZeroConfigIcon } from "./icons";
 import Image from "next/image";
+
 import {
     Card,
     CardDescription,
@@ -11,7 +12,6 @@ import {
 } from "@/components/ui/card"
 
 import { SendMail } from "@/lib/actions";
-
 import {
     Dialog,
     DialogContent,
