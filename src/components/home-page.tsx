@@ -4,6 +4,7 @@ import EmptyState from '@/components/closet/empty-state'
 import { useState,useEffect } from "react";
 import { ZeroConfigIcon } from "./icons";
 import Image from "next/image";
+
 import {
     Card,
     CardDescription,
@@ -11,7 +12,6 @@ import {
 } from "@/components/ui/card"
 
 import { SendMail } from "@/lib/actions";
-
 import {
     Dialog,
     DialogContent,
@@ -78,7 +78,7 @@ export const RecentQueries = async () => {
                 Queries.length > 0 ? (
                     Queries.map((query, index) => {
                         return (
-                            <a key={index} href='#' className='flex w-full flex-row justify-between hover:bg-primary-foreground dark:hover:text-secondary bg-secondary p-3 rounded-lg'>
+                            <a key={index} href='#' className='flex w-full flex-row justify-between hover:bg-primary-foreground dark:hover:text-secondary bg-secondary p-3 rounded-lg relative'>
                                 <div className="flex dark:text-secondary-foreground flex-col justify-center gap-2">
                                     <div className='flex flex-row items-center gap-1'>
                                         <Image
@@ -90,11 +90,14 @@ export const RecentQueries = async () => {
                                         />
                                         <div className='uppercase'>{query.name}</div>
                                     </div>
-                                    <div className='text-muted-foreground text-ellipsis nowrap'>
-                                        {query?.content}
-                                    </div>
+                                    {
+                                        query?.content && 
+                                        <div className='text-muted-foreground text-ellipsis whitespace-nowrap '>
+                                            {query?.content.length > 60 ? query?.content.slice(0, 60) + '...' : query?.content}
+                                        </div>
+                                    }
                                 </div>
-                                <div className="text-sm text-muted-foreground">
+                                <div className="text-sm text-muted-foreground whitespace-nowrap absolute right-5">
                                     {timestamp(query.updatedAt) === '' ? '' : timestamp(query.updatedAt) + ' ago'}
                                 </div>
                             </a>

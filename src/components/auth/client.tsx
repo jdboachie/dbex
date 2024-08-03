@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { buttonVariants, Button } from "../ui/button"
 import { signOut, signIn } from "next-auth/react";
+import { redirect } from "next/navigation";
 
 
 export function SignIn () {
@@ -22,7 +23,14 @@ export function SignOut () {
         buttonVariants({ variant: 'ghost'}),
         "w-full rounded-md px-0 py-0 flex justify-start font-normal"
       )}
-      onClick={() => signOut()}
+      onClick={() => {
+        signOut(
+          {
+            redirect: true,
+            callbackUrl: "/"
+          }
+        );
+      }}
     >
      <span className="p-0">Sign out</span>
     </div>
