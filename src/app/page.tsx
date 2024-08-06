@@ -15,7 +15,7 @@ export default async function Home () {
         <p className="font-normal text-base text-neutral-700 dark:text-neutral-200 max-w-lg text-center mx-auto">
           Overkill? <span className="italic">Think again</span>.
         </p>
-        <Link href={'/app/home'} className={cn(buttonVariants({variant: 'default', size: 'lg'}), 'rounded-full')}>Give it a spin</Link>
+        <Link href={'/signin'} className={cn(buttonVariants({variant: 'default', size: 'lg'}), 'rounded-full')}>Give it a spin</Link>
       </div>
       <div className="mt-[60vh] col-span-4 z-10">
         <Image
