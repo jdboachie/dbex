@@ -1,9 +1,10 @@
 import { TerminalWindowIcon, TableIcon, ServerIcon, FeedbackIcon } from "./icons";
 import { userQueries, Analytics } from "@/lib/actions";
 import EmptyState from '@/components/closet/empty-state'
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ZeroConfigIcon } from "./icons";
 import Image from "next/image";
+import { fetchConnections } from "@/lib/actions";
 
 import {
     Card,
@@ -39,7 +40,7 @@ import { Input } from "./ui/input";
 import { Button } from "@/components/ui/button";
 
 export const RecentQueries = async () => {
-    interface queries{
+    interface queries {
         id: string,
         userId: string,
         connectionId: string,
@@ -50,8 +51,8 @@ export const RecentQueries = async () => {
         updatedAt: Date
     }
     const [Queries, setQueries] = useState<queries[]>([]);
-    useEffect(()=>{
-        const fetchData = async()=>{
+    useEffect(() => {
+        const fetchData = async () => {
             const queries = await userQueries();
             setQueries(queries);
         }
@@ -91,7 +92,7 @@ export const RecentQueries = async () => {
                                         <div className='uppercase'>{query.name}</div>
                                     </div>
                                     {
-                                        query?.content && 
+                                        query?.content &&
                                         <div className='text-muted-foreground text-ellipsis whitespace-nowrap '>
                                             {query?.content.length > 60 ? query?.content.slice(0, 60) + '...' : query?.content}
                                         </div>
@@ -141,7 +142,6 @@ export const AnalyticsComponent = () => {
 
         fetchData();
     }, []);
-
     return (
         <>
             {
@@ -258,5 +258,31 @@ export const FeedbakCard = () => {
 
             </div>
         </Card>
+    )
+}
+
+
+export const RecentConnections = () => {
+    interface ConnectionTemplate {
+        id: string;
+        userId: string;
+        username: string;
+        hostname: string;
+        password: string;
+        port: number;
+        protocol: string;
+        databaseName: string;
+        isConnected: boolean;
+        ssl: boolean | null;
+    }
+    const [connections, setConnections] = useState<any[]>([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            const connections = await fetchConnections();
+        }
+        fetchData()
+    })
+    return (
+
     )
 }
