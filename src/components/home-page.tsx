@@ -57,7 +57,7 @@ export const RecentQueries = async () => {
             setQueries(queries);
         }
         fetchData();
-    }, [])
+    }, [userQueries]);
     const timestamp = (time: Date) => {
         if (time) {
             const milliseconds = Date.now() - new Date(time).getTime();
@@ -79,7 +79,7 @@ export const RecentQueries = async () => {
                 Queries.length > 0 ? (
                     Queries.map((query, index) => {
                         return (
-                            <a key={index} href='#' className='flex w-full flex-row justify-between hover:bg-primary-foreground dark:hover:text-secondary bg-secondary p-3 rounded-lg relative'>
+                            <Card key={index} className='flex w-full flex-row justify-between p-3 rounded-lg relative hover:bg-secondary transition-colors'>
                                 <div className="flex dark:text-secondary-foreground flex-col justify-center gap-2">
                                     <div className='flex flex-row items-center gap-1'>
                                         <Image
@@ -101,7 +101,7 @@ export const RecentQueries = async () => {
                                 <div className="text-sm text-muted-foreground whitespace-nowrap absolute right-5">
                                     {timestamp(query.updatedAt) === '' ? '' : timestamp(query.updatedAt) + ' ago'}
                                 </div>
-                            </a>
+                            </Card>
                         )
                     })
                 ) : (
@@ -141,7 +141,7 @@ export const AnalyticsComponent = () => {
         };
 
         fetchData();
-    }, []);
+    }, [Analytics]);
     return (
         <>
             {
@@ -275,14 +275,45 @@ export const RecentConnections = () => {
         isConnected: boolean;
         ssl: boolean | null;
     }
-    const [connections, setConnections] = useState<any[]>([]);
+    const [connections, setConnections] = useState<ConnectionTemplate[]>([]);
     useEffect(() => {
         const fetchData = async () => {
             const connections = await fetchConnections();
+            setConnections(connections);
         }
         fetchData()
-    })
+    }, [fetchConnections]);
     return (
+        <>
+            {
+                connections.length > 0 ? connections.map((connection, index) => {
+                    return (
+                        <Card key={index} className="flex w-full flex-row justify-between p-3 rounded-lg relative hover:bg-secondary transition-colors">
+                            <div className="flex dark:text-secondary-foreground flex-col justify-center gap-2">
+                                <div className="uppercase">{connection.databaseName}</div>
+                                <div className="text-muted-foreground">{connection.username.length > 25? `${connection.username.substring(0, 20)}...`:connection.username.length}</div>
+                            </div>
+                            <div className="text-sm text-muted-foreground whitespace-nowrap absolute right-5">
+                                {connection.isConnected ? (
+                                    <div className="size-2 bg-green-500 rounded-full"></div>
+                                ) : (
+                                    <div className="size-2 bg-red-500 rounded-full"></div>
+                                )}
+                            </div>
+                        </Card>
+                    )
+                }) : (
+                    <div className="flex flex-col justify-center items-center">
+                        <EmptyState
+                            small
+                            icon={ZeroConfigIcon}
+                            title='0 connections Found'
+                            description="Click on the Connect to Database"
+                        />
+                    </div>
+                )
+            }
+        </>
 
     )
 }

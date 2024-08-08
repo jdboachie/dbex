@@ -7,6 +7,7 @@ import { ResizablePanel } from '@/components/ui/resizable';
 import { DbSvg } from '@/components/svgImage';
 import { useRouter } from 'next/navigation';
 import { Folder as CodeIcon } from "@phosphor-icons/react";
+import { RecentConnections } from '@/components/home-page';
 import {
   Card,
   CardDescription,
@@ -15,12 +16,11 @@ import {
 
 import { Code2 as Code } from 'lucide-react';
 
-import { RecentQueries, AnalyticsComponent, FeedbakCard } from '@/components/home-page';
+import { RecentQueries, FeedbakCard } from '@/components/home-page';
 
 import {
   DatabaseIcon,
   TerminalWindowIcon,
-  Analytics,
   ServerIcon
 } from '@/components/icons';
 
@@ -69,16 +69,15 @@ const Page = async () => {
           </Card>
           
           <Card className='shadow border grid col-span-3 h-full dark:bg-custom-gradient rounded-lg py-4 px-5 relative'>
-            <div className="flex justify-between flex-col gap-3">
+            <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-3 items-center">
                 <div className="icon bg-secondary w-fit p-3 rounded-lg">
                   <ServerIcon className="size-5 text-primaryblue" />
                 </div>
-                <CardTitle className='text-lg text-center'>Recent Connections</CardTitle>
+                <CardTitle className='text-lg text-center'>Connections</CardTitle>
               </div>
-
-              <div className="tableContent flex-col flex gap-2 w-full relative">
-                <AnalyticsComponent/>
+              <div className="flex flex-col gap-2 w-full relative">
+                <RecentConnections />
               </div>
             </div>
 
