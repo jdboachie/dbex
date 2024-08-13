@@ -48,18 +48,6 @@ const signInFormSchema = z.object({
 type signInFormSchema = z.infer<typeof signInFormSchema>
 
 export default function SignInPage() {
-    const [csrfToken, setCsrfToken] = useState<string | null>(null)
-
-    useEffect(() => {
-        async function fetchCsrfToken() {
-            const token = await getCsrfToken();
-            console.log('Fetched CSRF token:', token);
-            setCsrfToken(token);
-        }
-
-        fetchCsrfToken();
-    }, []);
-
 
     const form = useForm<z.infer<typeof signInFormSchema>>({
         resolver: zodResolver(signInFormSchema),
@@ -143,7 +131,6 @@ export default function SignInPage() {
                                     </FormItem>
                                 )}
                             />
-                            <input name="csrfToken" type="hidden" defaultValue={csrfToken || ""} />
                             <Button type="submit" className="w-full dark:bg-secondary dark:hover:bg-secondary-foreground dark:text-secondary-foreground dark:hover:text-secondary rounded-lg">Submit</Button>
                             <div className="flex flex-row justify-center items-center">
                                 <div className="line w-1/2 h-[1.5px] rounded-full bg-foreground-50"></div>

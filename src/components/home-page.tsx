@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { ZeroConfigIcon } from "./icons";
 import Image from "next/image";
 import { fetchConnections } from "@/lib/actions";
+import { Skeleton } from "./ui/skeleton";
 
 import {
     Card,
@@ -291,7 +292,7 @@ export const RecentConnections = () => {
                         <Card key={index} className="flex w-full flex-row justify-between p-3 rounded-lg relative hover:bg-secondary transition-colors">
                             <div className="flex dark:text-secondary-foreground flex-col justify-center gap-2">
                                 <div className="uppercase">{connection.databaseName}</div>
-                                <div className="text-muted-foreground">{connection.username.length > 25? `${connection.username.substring(0, 20)}...`:connection.username.length}</div>
+                                <div className="text-muted-foreground">{connection.username.length > 25 ? `${connection.username.substring(0, 20)}...` : connection.username.length}</div>
                             </div>
                             <div className="text-sm text-muted-foreground whitespace-nowrap absolute right-5">
                                 {connection.isConnected ? (

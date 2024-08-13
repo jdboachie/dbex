@@ -9,12 +9,12 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { MailIcon as Mail, EyeIcon, EyeOffIcon, LockIcon as Lock } from "@/components/icons"
 import { useState } from "react"
-import { Skeleton } from "@/components/ui/skeleton"
-import { QuoteIcon } from "@radix-ui/react-icons"
+import { useRouter } from "next/navigation"
 import { z } from "zod"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { SignInWithGoogle } from "@/components/auth/SignUpWIthGoogleAndGithub"
+import { createUser } from "@/lib/actions"
 
 import {
     Form,
@@ -32,32 +32,41 @@ const signInFormSchema = z.object({
     password: z.string().min(8).refine((data) => data.match(/[a-z]/) && data.match(/[A-Z]/) && data.match(/[0-9]/) && data.match((/^(?=.*[\W_]).*$/)), {
         message: "Password must contain at least one uppercase letter, one lowercase letter, one special character and one number.",
         path: ["password"],
-    })
+    }),
+    confirmPassword: z.string()
+}).refine(data => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
 })
+
 type signInFormSchema = z.infer<typeof signInFormSchema>
 
 
 export default function Login() {
-
+    const router = useRouter();
     const form = useForm<z.infer<typeof signInFormSchema>>({
         resolver: zodResolver(signInFormSchema),
         defaultValues: {
             email: "",
-            password: ""
+            password: "",
+            confirmPassword: ""
         },
     })
 
     const onSubmit = async (values: z.infer<typeof signInFormSchema>) => {
-        console.log("Entered onSubmit");
         const { email, password } = values;
-        toast.promise(
-            signIn('credentials', { email, password, callbackUrl: '/app/home' }),
-            {
-                loading: 'Signing in...',
-                success: 'Signed in successfully',
-                error: 'Failed to sign in'
-            });
-    };
+        const toastID = toast.loading('Creating New User...');
+        const result = await createUser({ email, password })
+        console.log(result.sucess);
+        if (result.sucess) {
+            toast.dismiss(toastID);
+            toast.success('User Created Successfully');
+            router.push('/login');
+        } else {
+            toast.dismiss(toastID);
+            toast.error('Error Creating User');
+        }
+    }
 
     const [isPasswordShown, setIsPasswordShown] = useState(false);
 
@@ -71,9 +80,9 @@ export default function Login() {
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4" method="post">
                         <div className="grid gap-2">
-                            <h1 className="text-3xl font-bold dark:text-primary">Welcome Back</h1>
+                            <h1 className="text-3xl font-bold dark:text-primary">Create Account</h1>
                             <p className="text-balance text-muted-foreground">
-                                Sign in to your account
+                                Sign up to create new account
                             </p>
                         </div>
 
@@ -97,8 +106,6 @@ export default function Login() {
                                 />
                             </div>
                             <div className="grid gap-2">
-                                <div className="flex items-center">
-                                </div>
                                 <FormField
                                     control={form.control}
                                     name="password"
@@ -124,23 +131,41 @@ export default function Login() {
                                     )}
                                 />
                             </div>
+                            <div className="grid gap-2">
+                                <FormField
+                                    control={form.control}
+                                    name="confirmPassword"
+                                    render={({ field }) => (
+                                        <FormItem>
+                                            <FormLabel className="text-sm">Confirm Password</FormLabel>
+                                            <FormControl>
+                                                <div className="input-icon flex flex-row relative">
+                                                    <Lock className="absolute flex flex-row top-1/2 -translate-y-1/2 mx-2 stroke-slate-400 size-4 text-muted-foreground"></Lock>
+                                                    <Input type="text" placeholder="Retype password"{...field} className="placeholder-shown:px-7 px-7 text-muted-foreground" />
+                                                </div>
+                                            </FormControl>
+                                            <FormMessage />
+                                        </FormItem>
+                                    )}
+                                />
+                            </div>
                             <Button type="submit" className="w-full dark:bg-primary-foreground dark:text-primary dark:hover:bg-secondary">
-                                Login
+                                Sign Up
                             </Button>
                             <div className="flex flex-row justify-center items-center">
                                 <div className="line w-1/2 h-[1px] rounded-full bg-secondary"></div>
                                 <span className="text-sm capitalize px-3"> OR </span>
                                 <div className="line w-1/2 h-[1px] rounded-full bg-secondary"></div>
                             </div>
-                            <SignInWithGoogle signUpText="Login with Google"></SignInWithGoogle>
+                            <SignInWithGoogle signUpText="Sign Up with Google"></SignInWithGoogle>
                         </div>
                     </form>
                 </Form>
 
                 <div className="mt-4 text-center text-sm">
-                    Don&apos;t have an account?{" "}
-                    <Link href="/register" className="underline">
-                        Sign up
+                   Already have an account?{" "}
+                    <Link href="/login" className="underline">
+                        Sign In
                     </Link>
                 </div>
             </div>
