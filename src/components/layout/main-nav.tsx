@@ -9,6 +9,7 @@ import { CommandDialogButton } from "@/components/command-dialog";
 import { ThemeToggle, ThemeToggleAlt } from "@/components/theme/theme-toggle";
 import UserButtonSkeleton from "@/components/closet/skeletons/UserButtonSkeleton";
 import { Empty } from '../ui/empty';
+import { DbexIcon } from '../icons';
 
 const MainNav = ({defaultSize, defaultCollapsed}: {defaultSize: number, defaultCollapsed: boolean}) => {
 
@@ -43,7 +44,8 @@ const MainNav = ({defaultSize, defaultCollapsed}: {defaultSize: number, defaultC
       )}
     >
       <div className={cn("grid place-items-center p-2 w-full", isCollapsed && 'px-1')}>
-        <Empty className={cn('size-full min-h-10 min-w-10', isCollapsed && 'size-10')} />
+        {/* <Empty className={cn('size-full min-h-10 min-w-10', isCollapsed && 'size-10')}> <Empty/> */}
+        <DbexIcon className={cn('size-10 p-2 min-h-10 min-w-10 border', isCollapsed && 'size-5')} />
       </div>
       <div className=''>
         <Nav isCollapsed={isCollapsed} />
