@@ -12,7 +12,8 @@ import { ThemeProvider } from "@/components/theme/theme-provider";
 
 
 const sans = localFont({
-  src: "./fonts/InterTight-VariableFont_wght.ttf",
+  // src: "./fonts/InterTight-VariableFont_wght.ttf",
+  src: "./fonts/GeistVF.woff",
   variable: "--font-sans",
 });
 
@@ -35,7 +36,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${sans.variable} ${geistMono.variable} antialiased font-sans text-muted-foreground text-sm tracking-[0.01em]`}>
+      <body className={`${sans.variable} ${geistMono.variable} antialiased font-sans tracking-tight text-muted-foreground`}>
         <Analytics/>
         <SpeedInsights/>
         <SessionProvider>

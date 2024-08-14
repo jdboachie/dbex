@@ -4,6 +4,7 @@ import { SignIn } from "@/components/auth/server";
 import MainNav from "@/components/layout/main-nav";
 import AppLayout from "@/components/layout/app-layout";
 import { ResizableHandle, ResizablePanelGroup } from "@/components/ui/resizable";
+import SignInPage from "../(auth)/signin/page";
 
 
 export default async function Home({
@@ -20,14 +21,15 @@ export default async function Home({
 
   const session = await auth()
 
-   if ( !session ) {
+   if ( session ) {
     return (
-       <div className='grid size-full h-screen place-items-center gap-4'>
-        <div className="gap-2 grid grid-flow-row h-fit">
-          <p>You are not authorized to access this page</p>
-          <SignIn />
-         </div>
-       </div>
+      //  <div className='grid size-full h-screen place-items-center gap-4'>
+      //   <div className="gap-2 grid grid-flow-row h-fit">
+      //     <p>You are not authorized to access this page</p>
+      //     <SignIn />
+      //    </div>
+      //  </div>
+      <SignInPage />
      )
    } else {
     return (
