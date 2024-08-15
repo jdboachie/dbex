@@ -9,6 +9,7 @@ import {
   CrossIcon,
 } from '@/components/icons';
 import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
 import Image from 'next/image';
 import { toast } from 'sonner';
 import {
@@ -151,20 +152,31 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
         return rowData;
       });
 
-      const csv = Papa.unparse(csvData);
-      const blob = new Blob([csv], { type: 'text/xlsx;charset=utf-8;' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.setAttribute('href', url);
-      link.setAttribute('download', queryName || 'output');
-      link.click();
+      const workbook = XLSX.utils.book_new();
+      const worksheet = XLSX.utils.json_to_sheet(csvData);
+
+      // Add the worksheet to the workbook
+      XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+
+      // Generate a buffer
+      const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+
+      // Create a Blob from the buffer and trigger a download
+      const dataBlob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+      const url = window.URL.createObjectURL(dataBlob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${queryName || 'output'}.xlsx`;
+      a.click();
+      window.URL.revokeObjectURL(url);
     } else {
       toast.error('No data to export');
     }
+
   };
 
   useCtrlEnter(handleSubmit)
-
 
   // Query Editor UI
   return (
@@ -203,7 +215,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
           </div>
           <div className="flex gap-1 p-1">
             <DropdownMenu>
-              <DropdownMenuTrigger>
+              <DropdownMenuTrigger disabled={outputData ? true : false}>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Button size={'icon'} variant={'ghost'}>
@@ -218,11 +230,11 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
                 </Tooltip>
               </DropdownMenuTrigger>
               <DropdownMenuContent className='mx-2'>
-                <DropdownMenuItem onClick={handleExportCSV}>
+                <DropdownMenuItem disabled={outputData === null ? true : false } onClick={handleExportCSV}>
                   <FileCsv weight='fill' className='size-5 mr-2'/>
                   <p className='text-xs'>Export to CSV</p>
                 </DropdownMenuItem>
-                <DropdownMenuItem disabled onClick={handleExportXLSX}>
+                <DropdownMenuItem disabled={outputData === null ? true : false } onClick={handleExportXLSX}>
                   <MicrosoftExcelLogo weight='fill' className='size-5 mr-2' />
                   <p className="text-xs">Export to Microsoft Excel</p>
                 </DropdownMenuItem>

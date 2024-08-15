@@ -5,7 +5,7 @@ import { prisma } from "../lib/prisma";
 import { unstable_noStore as noStore } from "next/cache";
 import { Connection, User, Query } from "@prisma/client/edge";
 import bcryptjs from "bcryptjs";
-import { redirect } from "next/navigation";
+
 // CREATE
 export const createConnection = async (data: any): Promise<Connection> => {
   return await prisma.connection.create({
@@ -150,6 +150,7 @@ export const Analytics = async () => {
   });
   return { queries, connection };
 };
+
 
 export const SendMail = async (email: string, message: string) => {
   const apiEndpoint = "/api/email";

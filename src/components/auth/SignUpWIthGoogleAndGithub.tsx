@@ -9,7 +9,7 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 
-export function SignInWithGoogle() {
+export function SignInWithGoogle({signUpText}: {signUpText: string}) {
     const router = useRouter();
 
     const signInWithGoogle = async () => {
@@ -24,12 +24,13 @@ export function SignInWithGoogle() {
     }
 
     return (
-        <Button onClick={(event) => {
+        <Button variant={'outline'} onClick={(event) => {
             event.preventDefault();
             signInWithGoogle();
         }}
-            className="w-full rounded-lg dark:bg-secondary dark:hover:bg-secondary-foreground dark:text-secondary-foreground dark:hover:text-secondary">
+            className="w-full rounded-lg dark:bg-secondary dark:hover:bg-secondary-foreground dark:text-secondary-foreground dark:hover:text-secondary flex gap-2">
             <GoogleIcon size="24"></GoogleIcon>
+            <span>{signUpText}</span>
         </Button>
     )
 }

@@ -7,6 +7,7 @@ import { ResizablePanel } from '@/components/ui/resizable';
 import { DbSvg } from '@/components/svgImage';
 import { useRouter } from 'next/navigation';
 import { Folder as CodeIcon } from "@phosphor-icons/react";
+import { RecentConnections } from '@/components/home-page';
 import {
   Card,
   CardDescription,
@@ -15,12 +16,11 @@ import {
 
 import { Code2 as Code } from 'lucide-react';
 
-import { RecentQueries, AnalyticsComponent, FeedbakCard } from '@/components/home-page';
+import { RecentQueries, FeedbakCard } from '@/components/home-page';
 
 import {
   DatabaseIcon,
   TerminalWindowIcon,
-  Analytics,
   ServerIcon
 } from '@/components/icons';
 
@@ -42,14 +42,12 @@ const Page = async () => {
                   <DatabaseIcon className="size-4 text-primaryblue" />
                 </div>
                 <div className="flex flex-col gap-1">
-                  <CardTitle className='text-lg'>View Project</CardTitle>
+                  <CardTitle className='text-lg'>Connect To Database</CardTitle>
                   <CardDescription className='w-11/12'>
                     Connect and to database and run queries on your data with just a click
                   </CardDescription>
                 </div>
               </div>
-
-
               <div className="footer flex flex-row gap-2 py-2">
                 <div className='flex flex-row rounded-lg items-center gap-1'>
                   <Button onClick={() => router.push('/app/connections')} size={'lg'} className='flex flex-row items-center gap-2 bg-primaryblue hover:bg-primaryblue-foreground'>
@@ -69,17 +67,17 @@ const Page = async () => {
               <DbSvg className="size-11/12"></DbSvg>
             </div>
           </Card>
+          
           <Card className='shadow border grid col-span-3 h-full dark:bg-custom-gradient rounded-lg py-4 px-5 relative'>
-            <div className="flex justify-between flex-col gap-3">
+            <div className="flex flex-col gap-3">
               <div className="flex flex-col gap-3 items-center">
                 <div className="icon bg-secondary w-fit p-3 rounded-lg">
-                  <Analytics className="size-5 text-primaryblue" />
+                  <ServerIcon className="size-5 text-primaryblue" />
                 </div>
-                <CardTitle className='text-lg text-center'>Analytics</CardTitle>
+                <CardTitle className='text-lg text-center'>Connections</CardTitle>
               </div>
-
-              <div className="tableContent flex-col flex gap-2 w-full relative">
-                <AnalyticsComponent/>
+              <div className="flex flex-col gap-2 w-full relative">
+                <RecentConnections />
               </div>
             </div>
 
@@ -101,7 +99,11 @@ const Page = async () => {
                     Postgres database the world&apos;s most trusted relational database.
                   </CardDescription>
                   <div className="py-5">
-                    <Button>View Project</Button>
+                    <Button>
+                      <a href="https://github.com/jdboachie/dbex" target="_blank">
+                        View Project
+                      </a>
+                    </Button>
                   </div>
                 </div>
               </div>

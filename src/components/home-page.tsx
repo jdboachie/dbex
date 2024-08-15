@@ -1,9 +1,11 @@
 import { TerminalWindowIcon, TableIcon, ServerIcon, FeedbackIcon } from "./icons";
 import { userQueries, Analytics } from "@/lib/actions";
 import EmptyState from '@/components/closet/empty-state'
-import { useState,useEffect } from "react";
+import { useState, useEffect } from "react";
 import { ZeroConfigIcon } from "./icons";
 import Image from "next/image";
+import { fetchConnections } from "@/lib/actions";
+import { Skeleton } from "./ui/skeleton";
 
 import {
     Card,
@@ -39,7 +41,7 @@ import { Input } from "./ui/input";
 import { Button } from "@/components/ui/button";
 
 export const RecentQueries = async () => {
-    interface queries{
+    interface queries {
         id: string,
         userId: string,
         connectionId: string,
@@ -50,13 +52,13 @@ export const RecentQueries = async () => {
         updatedAt: Date
     }
     const [Queries, setQueries] = useState<queries[]>([]);
-    useEffect(()=>{
-        const fetchData = async()=>{
+    useEffect(() => {
+        const fetchData = async () => {
             const queries = await userQueries();
             setQueries(queries);
         }
         fetchData();
-    }, [])
+    }, [userQueries]);
     const timestamp = (time: Date) => {
         if (time) {
             const milliseconds = Date.now() - new Date(time).getTime();
@@ -78,7 +80,7 @@ export const RecentQueries = async () => {
                 Queries.length > 0 ? (
                     Queries.map((query, index) => {
                         return (
-                            <a key={index} href='#' className='flex w-full flex-row justify-between hover:bg-primary-foreground dark:hover:text-secondary bg-secondary p-3 rounded-lg relative'>
+                            <Card key={index} className='flex w-full flex-row justify-between p-3 rounded-lg relative hover:bg-secondary transition-colors'>
                                 <div className="flex dark:text-secondary-foreground flex-col justify-center gap-2">
                                     <div className='flex flex-row items-center gap-1'>
                                         <Image
@@ -91,7 +93,7 @@ export const RecentQueries = async () => {
                                         <div className='uppercase'>{query.name}</div>
                                     </div>
                                     {
-                                        query?.content && 
+                                        query?.content &&
                                         <div className='text-muted-foreground text-ellipsis whitespace-nowrap '>
                                             {query?.content.length > 60 ? query?.content.slice(0, 60) + '...' : query?.content}
                                         </div>
@@ -100,7 +102,7 @@ export const RecentQueries = async () => {
                                 <div className="text-sm text-muted-foreground whitespace-nowrap absolute right-5">
                                     {timestamp(query.updatedAt) === '' ? '' : timestamp(query.updatedAt) + ' ago'}
                                 </div>
-                            </a>
+                            </Card>
                         )
                     })
                 ) : (
@@ -140,8 +142,7 @@ export const AnalyticsComponent = () => {
         };
 
         fetchData();
-    }, []);
-
+    }, [Analytics]);
     return (
         <>
             {
@@ -258,5 +259,62 @@ export const FeedbakCard = () => {
 
             </div>
         </Card>
+    )
+}
+
+
+export const RecentConnections = () => {
+    interface ConnectionTemplate {
+        id: string;
+        userId: string;
+        username: string;
+        hostname: string;
+        password: string;
+        port: number;
+        protocol: string;
+        databaseName: string;
+        isConnected: boolean;
+        ssl: boolean | null;
+    }
+    const [connections, setConnections] = useState<ConnectionTemplate[]>([]);
+    useEffect(() => {
+        const fetchData = async () => {
+            const connections = await fetchConnections();
+            setConnections(connections);
+        }
+        fetchData()
+    }, [fetchConnections]);
+    return (
+        <>
+            {
+                connections.length > 0 ? connections.map((connection, index) => {
+                    return (
+                        <Card key={index} className="flex w-full flex-row justify-between p-3 rounded-lg relative hover:bg-secondary transition-colors">
+                            <div className="flex dark:text-secondary-foreground flex-col justify-center gap-2">
+                                <div className="uppercase">{connection.databaseName}</div>
+                                <div className="text-muted-foreground">{connection.username.length > 25 ? `${connection.username.substring(0, 20)}...` : connection.username.length}</div>
+                            </div>
+                            <div className="text-sm text-muted-foreground whitespace-nowrap absolute right-5">
+                                {connection.isConnected ? (
+                                    <div className="size-2 bg-green-500 rounded-full"></div>
+                                ) : (
+                                    <div className="size-2 bg-red-500 rounded-full"></div>
+                                )}
+                            </div>
+                        </Card>
+                    )
+                }) : (
+                    <div className="flex flex-col justify-center items-center">
+                        <EmptyState
+                            small
+                            icon={ZeroConfigIcon}
+                            title='0 connections Found'
+                            description="Click on the Connect to Database"
+                        />
+                    </div>
+                )
+            }
+        </>
+
     )
 }
