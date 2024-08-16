@@ -58,7 +58,7 @@ export const RecentQueries = async () => {
             setQueries(queries);
         }
         fetchData();
-    }, [userQueries]);
+    }, []);
     const timestamp = (time: Date) => {
         if (time) {
             const milliseconds = Date.now() - new Date(time).getTime();
@@ -142,7 +142,7 @@ export const AnalyticsComponent = () => {
         };
 
         fetchData();
-    }, [Analytics]);
+    }, []);
     return (
         <>
             {
@@ -283,7 +283,7 @@ export const RecentConnections = () => {
             setConnections(connections);
         }
         fetchData()
-    }, [fetchConnections]);
+    }, []);
     return (
         <>
             {

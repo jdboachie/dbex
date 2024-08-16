@@ -27,7 +27,7 @@ import {
 import { ChartComponent } from '@/components/chart-list';
 
 
-const Page = async () => {
+const Page = () => {
   // const { data } = useSession()
   const router = useRouter();
 
