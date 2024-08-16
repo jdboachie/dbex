@@ -20,22 +20,25 @@ export default function AuthLayout({
                     <QuoteIcon className="size-20 z-0 absolute -top-12 -left-11 rotate-180 text-secondary"></QuoteIcon>
                     <span className="relative z-20">
                         DBEX has transformed our data management process with its intuitive design and powerful features.
-                        It's a must-have for teams looking to streamline database operations and boost productivity.
+                        It&aposs a must-have for teams looking to streamline database operations and boost productivity.
                     </span>
 
                 </div>
-                <div className="flex gap-2 items-center text-muted-foreground font-bold">
+                <div className="flex gap-2 items-center text-muted-foreground font-bold relative">
                     <div className="avatar">
-                        {isImageLoad ?
-                            <Image
-                                src={'/avataaars.svg'}
-                                alt=""
-                                width={10}
-                                height={10}
-                                className="size-10 rounded-full bg-secondary"
-                                onLoad={() => setIsImageLoad(true)}
-                            ></Image> :
-                            <Skeleton className="size-10 rounded-full bg-secondary"></Skeleton>
+                        <Image
+                            src={'/avataaars.svg'}
+                            alt=""
+                            width={10}
+                            height={10}
+                            className={`size-10 rounded-full bg-secondary ${isImageLoad ? 'opacity-100' : 'opacity-0'}`}
+                            onLoad={() => setIsImageLoad(true)}
+                        >
+                        </Image>
+                        {
+                            !isImageLoad && (
+                                <Skeleton className="size-10 absolute top-0 rounded-full bg-secondary"></Skeleton>
+                            )
                         }
                     </div>
                     <div className="user-name font-mono">

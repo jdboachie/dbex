@@ -24,6 +24,7 @@ const config = {
       },
       backgroundImage: {
         patternImag: "url(/pattern.svg)",
+        landingImage: "url(/landing-bg.svg)"
       },
 
       colors: {
@@ -100,6 +101,7 @@ const config = {
         "accordion-up": "accordion-up 0.2s ease-out",
         "rotate-y": "rotate-y 5s linear infinite",
       },
+      
     },
   },
   plugins: [require("tailwindcss-animate")],
