@@ -24,7 +24,8 @@ const config = {
       },
       backgroundImage: {
         patternImag: "url(/pattern.svg)",
-        landingImage: "url(/landing-bg.svg)"
+        landingImageDark: "url(/landing-bg-dark.svg)",
+        landingImageLight: "url(/landing-bg-light.svg)"
       },
 
       colors: {

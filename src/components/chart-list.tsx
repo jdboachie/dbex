@@ -37,21 +37,16 @@ export const ChartComponent = async () => {
   }, []);
   const chartData = [
     { browser: "chrome", visitors: analytics.queries, fill: "var(--color-chrome)" },
-    { browser: "safari", visitors: 200, fill: "var(--color-safari)" },
     { browser: "firefox", visitors: analytics.connection, fill: "var(--color-firefox)" },
   ]
 
   const chartConfig = {
     visitors: {
-      label: "Visitors",
+      label: "Analytics",
     },
     chrome: {
       label: "Connection",
       color: "hsl(var(--chart-1))",
-    },
-    safari: {
-      label: "Table",
-      color: "hsl(var(--chart-2))",
     },
     firefox: {
       label: "Query",

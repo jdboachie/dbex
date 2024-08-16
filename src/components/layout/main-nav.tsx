@@ -43,9 +43,10 @@ const MainNav = ({defaultSize, defaultCollapsed}: {defaultSize: number, defaultC
           "min-w-[50px] animate-all items-center",
       )}
     >
-      <div className={cn("grid place-items-center p-2 w-full", isCollapsed && 'px-1')}>
+      <div className={cn("flex flex-row items-center gap-2 h-12 px-2 w-full", isCollapsed && 'px-1')}>
         {/* <Empty className={cn('size-full min-h-10 min-w-10', isCollapsed && 'size-10')}> <Empty/> */}
-        <DbexIcon className={cn('size-10 p-2 min-h-10 min-w-10 border', isCollapsed && 'size-5')} />
+        <DbexIcon className={cn('size-9 min-h-9 min-w-9 ', isCollapsed && 'size-5')} />
+        <span className='text-primary font-bold font-mono text-xl'>DBEX</span>
       </div>
       <div className=''>
         <Nav isCollapsed={isCollapsed} />
