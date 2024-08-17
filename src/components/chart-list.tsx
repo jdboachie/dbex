@@ -3,6 +3,8 @@
 import { Pie, PieChart, Sector } from "recharts"
 import { PieSectorDataItem } from "recharts/types/polar/Pie"
 import { Analytics } from "@/lib/actions"
+import EmptyState from '@/components/closet/empty-state'
+import { ZeroConfigIcon } from '@/components/icons'
 
 import {
   Card,
@@ -25,7 +27,7 @@ export const ChartComponent = async () => {
     queries: number,
     connection: number
   }
-  const [analytics, setAnalytics] = useState<typeAnalytics>({queries: 0, connection: 0});
+  const [analytics, setAnalytics] = useState<typeAnalytics>({ queries: 0, connection: 0 });
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,13 +61,15 @@ export const ChartComponent = async () => {
       <div className="items-center pb-0">
         <CardHeader className="items-center pb-0">
           <CardTitle>Figure of Operations</CardTitle>
-          <CardDescription>January - June 2024</CardDescription>
+          <CardDescription className="text-center">Connections and Queries</CardDescription>
         </CardHeader>
       </div>
       <div className="flex-1 pb-0">
+
         <ChartContainer
           config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
+          className={`mx-auto aspect-square max-h-[250px] ${analytics.queries === 0 && analytics.connection === 0 ? 'hidden' : ''}`}
+
         >
           <PieChart>
             <ChartTooltip
@@ -88,6 +92,14 @@ export const ChartComponent = async () => {
             />
           </PieChart>
         </ChartContainer>
+        <div className={`flex flex-col justify-center items-center ${analytics.connection === 0 && analytics.queries === 0? '': 'hidden'}`}>
+          <EmptyState
+            small
+            icon={ZeroConfigIcon}
+            title='0 connections Found'
+            description="Click on the Connect to Database"
+          />
+        </div>
       </div>
     </Card>
   )

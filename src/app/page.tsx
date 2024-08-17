@@ -72,6 +72,7 @@ export default async function Home() {
         <div className="h-fit p-px col-span-5 gap-5 grid grid-cols-5">
           <GroupImages src={'/elvisgyau.jpg'} alt={'Gyau Boahen Elvis'} />
           <GroupImages src={'/appiahemmanuel.webp'} alt={'Emmanuel Appiah Asiedu'} />
+          <GroupImages src={'/david.jpg'} alt={'David Duah'} />
         </div>
         <div className="col-span-5 p-10"> &copy; a groupthirteen project</div>
       </div>
