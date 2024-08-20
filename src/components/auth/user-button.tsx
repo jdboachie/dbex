@@ -41,7 +41,7 @@ export default function UserButton ({isCollapsed} : {isCollapsed: boolean}) {
             <div className={cn("flex items-center w-full", isCollapsed && 'w-fit')}>
               <Avatar className="border">
                 <AvatarImage
-                  src={data?.user.image || ''}
+                  src={data?.user.image || '/userAvatar.svg'}
                   alt="user avatar"
                 />
                 <Skeleton>

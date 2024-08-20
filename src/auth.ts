@@ -49,9 +49,4 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
 });
 
-// let user = null;
-//       const pwHash = saltAndHashPassword(password);
-//       user = await getUserFromDb(credentials.email, pwHash);
-//       if (!user) {
-//         throw new Error("User not found.");
-//       }
+

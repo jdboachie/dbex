@@ -9,17 +9,17 @@ import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 
 
+
 export function SignInWithGoogle({signUpText}: {signUpText: string}) {
     const router = useRouter();
 
     const signInWithGoogle = async () => {
-        const result = await signIn('google', { callbackUrl: '/app/home' });
+       const result = await signIn('google', { callbackUrl: '/app/home' });
         if (result?.error) {
             toast.error('Sign in with Google failed');
             router.push('/signup');
         } else {
             toast.success('Sign in with Google successful');
-            router.push('/app/home');
         }
     }
 
