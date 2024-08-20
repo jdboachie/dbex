@@ -69,10 +69,14 @@ export default async function Home() {
           />
         </div>
         <div className="text-5xl col-span-5 text-primary py-20 font-semibold">Meet the team</div>
-        <div className="h-fit p-px col-span-5 gap-5 grid grid-cols-5">
+        <div className="p-px col-span-5 w-full grid grid-cols-5 gap-5 overflow-hidden">
           <GroupImages src={'/elvisgyau.jpg'} alt={'Gyau Boahen Elvis'} />
           <GroupImages src={'/appiahemmanuel.webp'} alt={'Emmanuel Appiah Asiedu'} />
+          <GroupImages src={'/akitaeyram.jpg'} alt={'Akita Eyram Priscilla'} />
           <GroupImages src={'/david.jpg'} alt={'David Duah'} />
+          <GroupImages src={'/niilartey.jpg'} alt={'Nii Lartey'} />
+          <GroupImages src={'/dagaduharold.jpg'} alt={'Dagadu Harold Kekeli'} />
+          <GroupImages src={'/sarkodie.jpg'} alt={'Sarkodie'} />
         </div>
         <div className="col-span-5 p-10"> &copy; a groupthirteen project</div>
       </div>
