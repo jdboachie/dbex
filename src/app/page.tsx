@@ -19,9 +19,6 @@ export default async function Home() {
         <span>{' '}</span>
         <span>{' '}</span>
       </div> */}
-      <div className="border bg-background">
-      <ConnectionsListView />
-      </div>
         <div className="border w-fit lgw-1/2 mx-auto p-1 tracking-tigt text-primary text-xs bg-primary-foreground/60 backdrop-blur-md sticky top-4 rounded-full col-span-5 z-50 flex place-items-center">
           {/* <Badge variant={'default'} className="rounded-full">alpha stage</Badge> */}
           <Link className={cn(buttonVariants({variant: 'ghost'}), "rounded-full transition-all duration-700")} href={'/'}><DbexIcon className="size-5 grayscale" /></Link>
