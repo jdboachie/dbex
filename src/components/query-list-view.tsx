@@ -91,6 +91,7 @@ const QueryListView = () => {
             </Button>
           </AnimatePresence>
           <Input
+            autoFocus
             className={`${isShowInput ? 'w-full bg-primary-foreground' : 'w-0 border-0 bg-transparent invisible'} border-2 focus:border-primary-foreground px-3 py-2 animate-all`}
             placeholder="Search connections..."
             value={searchInputValue}

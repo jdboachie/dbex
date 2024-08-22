@@ -12,7 +12,7 @@ export default function AuthLayout({
 }) {
     const [isImageLoad, setIsImageLoad] = useState(false);
     return (
-        <div className="w-full lg:grid lg:min-h-[600px] lg:grid-cols-2 xl:min-h-[800px]">
+        <div className="max-h-screen min-h-screen w-full lg:grid lg:grid-cols-2">
             {children}
             <div className="hidden bg-primary-foreground lg:flex flex-col gap-5 justify-center px-16 text-primary leading-relaxed">
 

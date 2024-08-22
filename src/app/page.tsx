@@ -2,11 +2,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { buttonVariants } from "@/components/ui/button";
-import { DbexIcon, PostgresAltIcon, PostgresIcon } from "@/components/icons";
+import { DbexIcon, PostgresAltIcon } from "@/components/icons";
 import { GroupImages } from "@/components/group-images";
 import { GitHubLogoIcon } from "@radix-ui/react-icons";
-import { QueryListView } from "@/components/query-list-view";
-import { ConnectionsListView } from "@/components/connection-list-view";
 
 export default async function Home() {
   return (

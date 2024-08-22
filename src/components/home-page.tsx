@@ -1,30 +1,11 @@
-import { TerminalWindowIcon, TableIcon, ServerIcon, FeedbackIcon } from "./icons";
-import { userQueries, Analytics } from "@/lib/actions";
-import EmptyState from '@/components/closet/empty-state'
-import { useState, useEffect } from "react";
-import { ZeroConfigIcon } from "./icons";
-import Image from "next/image";
-import { fetchConnections } from "@/lib/actions";
-import { Skeleton } from "./ui/skeleton";
+'use client';
 
+import { z } from "zod"
 import {
     Card,
     CardDescription,
     CardTitle,
 } from "@/components/ui/card"
-
-import { SendMail } from "@/lib/actions";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger,
-    DialogClose
-} from "@/components/ui/dialog"
-
-import { Textarea } from "@/components/ui/textarea"
 import {
     Form,
     FormControl,
@@ -33,14 +14,34 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
-
+import Image from "next/image";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+    DialogClose
+} from "@/components/ui/dialog";
 import { Input } from "./ui/input";
+import { ZeroConfigIcon } from "./icons";
+import { SendMail } from "@/lib/actions";
+import { useForm } from "react-hook-form";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { fetchConnections } from "@/lib/actions";
+import { Textarea } from "@/components/ui/textarea";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { userQueries, Analytics } from "@/lib/actions";
+import EmptyState from '@/components/closet/empty-state';
+import { TerminalWindowIcon, TableIcon, ServerIcon, FeedbackIcon } from "./icons";
+import { ScrollArea } from "./ui/scroll-area";
+import Link from "next/link";
+import StatusDot from "./ui/status-dot";
 
-export const RecentQueries = async () => {
+
+export const RecentQueries = () => {
     interface queries {
         id: string,
         userId: string,
@@ -51,14 +52,17 @@ export const RecentQueries = async () => {
         createdAt: Date,
         updatedAt: Date
     }
-    const [Queries, setQueries] = useState<queries[]>([]);
+
+    const [queries, setQueries] = useState<queries[]>([]);
+
     useEffect(() => {
         const fetchData = async () => {
-            const queries = await userQueries();
-            setQueries(queries);
+            const res = await userQueries();
+            setQueries(res);
         }
         fetchData();
     }, []);
+
     const timestamp = (time: Date) => {
         if (time) {
             const milliseconds = Date.now() - new Date(time).getTime();
@@ -75,51 +79,50 @@ export const RecentQueries = async () => {
     }
 
     return (
-        <>
-            {
-                Queries.length > 0 ? (
-                    Queries.map((query, index) => {
-                        return (
-                            <Card key={index} className='flex w-full flex-row justify-between p-3 rounded-lg relative hover:bg-secondary transition-colors'>
-                                <div className="flex dark:text-secondary-foreground flex-col justify-center gap-2">
-                                    <div className='flex flex-row items-center gap-1'>
-                                        <Image
-                                            src={query.emojiUrl ? query.emojiUrl : ''}
-                                            alt='queryemoji'
-                                            width={1000}
-                                            height={1000}
-                                            className='size-5'
-                                        />
-                                        <div className='uppercase'>{query.name}</div>
-                                    </div>
-                                    {
-                                        query?.content &&
-                                        <div className='text-muted-foreground text-ellipsis whitespace-nowrap '>
-                                            {query?.content.length > 60 ? query?.content.slice(0, 60) + '...' : query?.content}
-                                        </div>
-                                    }
-                                </div>
-                                <div className="text-sm text-muted-foreground whitespace-nowrap absolute right-5">
-                                    {timestamp(query.updatedAt) === '' ? '' : timestamp(query.updatedAt) + ' ago'}
-                                </div>
-                            </Card>
-                        )
-                    })
-                ) : (
-                    <div className="flex flex-col justify-center items-center">
-                        <EmptyState
-                            small
-                            icon={ZeroConfigIcon}
-                            title='No queries on this database'
-                            description="Click on the 'Query database' to run a query"
-                        />
+      <ScrollArea  className='h-full'>
+        <div className="max-h-[300px] flex flex-col gap-2">
+        {queries.length > 0 ? (
+          queries.map((query, index) => {
+            return (
+              <Link key={index} href={`/app/queries/${query.id}`} className='bg-primary-foreground hover:secondary border p-2 rounded-md relative'>
+                <div className="flex dark:text-secondary-foreground flex-col justify-center gap-2">
+                  <div className='flex flex-row items-center gap-2'>
+                    <Image
+                      src={query.emojiUrl ? query.emojiUrl : ''}
+                      alt='queryemoji'
+                      width={1000}
+                      height={1000}
+                      className='size-5'
+                    />
+                    <p className="leading-none">{query.name}</p>
+                  </div>
+                  {query?.content &&
+                    <div className='text-xs font-mono text-muted-foreground text-ellipsis whitespace-nowrap '>
+                      {query?.content.length > 60 ? query?.content.slice(0, 60) + '...' : query?.content}
                     </div>
-                )
-            }
-        </>
+                  }
+                </div>
+                <div className="text-xs p-2 text-muted-foreground whitespace-nowrap absolute top-0 right-0">
+                  {timestamp(query.updatedAt) === '' ? '' : timestamp(query.updatedAt) + ' ago'}
+                </div>
+              </Link>
+            )
+          })
+          ) : (
+            <div className="flex flex-col justify-center items-center">
+              <EmptyState
+                small
+                icon={ZeroConfigIcon}
+                title='No queries on this database'
+                description="Click on the 'Query database' to run a query"
+              />
+            </div>
+          )
+        }
+        </div>
+      </ ScrollArea>
     );
 }
-
 
 export const AnalyticsComponent = () => {
     interface IAnalytics {
@@ -131,17 +134,17 @@ export const AnalyticsComponent = () => {
     const [analytics, setAnalytics] = useState<IAnalytics[]>([]);
 
     useEffect(() => {
-        const fetchData = async () => {
-            const { queries, connection } = await Analytics();
-            const data: IAnalytics[] = [
-                { component: "Tables", value: 10, icon: TableIcon },
-                { component: "Connection", value: connection, icon: ServerIcon },
-                { component: "Queries", value: queries, icon: TerminalWindowIcon }
-            ];
-            setAnalytics(data);
-        };
+      const fetchData = async () => {
+        const { queries, connection } = await Analytics();
+        const data: IAnalytics[] = [
+          { component: "Tables", value: 10, icon: TableIcon },
+          { component: "Connection", value: connection, icon: ServerIcon },
+          { component: "Queries", value: queries, icon: TerminalWindowIcon }
+        ];
+        setAnalytics(data);
+      };
 
-        fetchData();
+      fetchData();
     }, []);
     return (
         <>
@@ -262,7 +265,6 @@ export const FeedbakCard = () => {
     )
 }
 
-
 export const RecentConnections = () => {
     interface ConnectionTemplate {
         id: string;
@@ -276,45 +278,49 @@ export const RecentConnections = () => {
         isConnected: boolean;
         ssl: boolean | null;
     }
-    const [connections, setConnections] = useState<ConnectionTemplate[]>([]);
-    useEffect(() => {
-        const fetchData = async () => {
-            const connections = await fetchConnections();
-            setConnections(connections);
-        }
-        fetchData()
-    }, []);
-    return (
-        <>
-            {
-                connections.length > 0 ? connections.map((connection, index) => {
-                    return (
-                        <Card key={index} className="flex w-full flex-row justify-between p-3 rounded-lg relative hover:bg-secondary transition-colors">
-                            <div className="flex dark:text-secondary-foreground flex-col justify-center gap-2">
-                                <div className="uppercase">{connection.databaseName}</div>
-                                <div className="text-muted-foreground">{connection.username.length > 25 ? `${connection.username.substring(0, 20)}...` : connection.username.length}</div>
-                            </div>
-                            <div className="text-sm text-muted-foreground whitespace-nowrap absolute right-5">
-                                {connection.isConnected ? (
-                                    <div className="size-2 bg-green-500 rounded-full"></div>
-                                ) : (
-                                    <div className="size-2 bg-red-500 rounded-full"></div>
-                                )}
-                            </div>
-                        </Card>
-                    )
-                }) : (
-                    <div className="flex flex-col justify-center items-center">
-                        <EmptyState
-                            small
-                            icon={ZeroConfigIcon}
-                            title='0 connections Found'
-                            description="Click on the Connect to Database"
-                        />
-                    </div>
-                )
-            }
-        </>
 
+    const [connections, setConnections] = useState<ConnectionTemplate[]>([]);
+
+    useEffect(() => {
+      const fetchData = async () => {
+        const connections = await fetchConnections();
+        setConnections(connections);
+      }
+      fetchData()
+    }, []);
+
+
+    return (
+      <ScrollArea>
+        <div className="max-h-[300px] flex flex-col gap-2">
+          {connections.length > 0 ? connections.map((connection, index) => {
+            return (
+              <Link key={index} href={`/app/connections/${connection.id}`} className="bg-primary-foreground border flex w-full flex-row justify-between p-2 rounded-md relative hover:bg-secondary transition-all">
+                <div className="flex dark:text-secondary-foreground flex-col justify-center gap-1">
+                  <p>{connection.databaseName}</p>
+                  <p className="text-muted-foreground truncate text-xs font-mono">{connection.username}</p>
+                </div>
+                <div className="text-sm text-muted-foreground whitespace-nowrap absolute right-5">
+                  {connection.isConnected ? (
+                    <StatusDot state="ok" />
+                  ) : (
+                    <StatusDot state="failed" />
+                  )}
+                </div>
+              </Link>
+            )
+            }) : (
+              <div className="flex flex-col justify-center items-center">
+                <EmptyState
+                  small
+                  icon={ZeroConfigIcon}
+                  title='0 connections Found'
+                  description="Click on the Connect to Database"
+                />
+              </div>
+            )
+          }
+        </div>
+      </ScrollArea>
     )
 }
