@@ -59,6 +59,7 @@ import { AnimatedState } from "./experimental/animated-state"
 import { createConnection, fetchUserByEmail, fetchConnections } from "@/lib/actions"
 import { useState } from "react"
 import { Cross2Icon } from "@radix-ui/react-icons"
+import { AnimatePresence } from "framer-motion"
 
 
 const ConnectionStringFormSchema = z.object({
@@ -160,15 +161,17 @@ const ConnectionsListView = () => {
           <p className='text-base font-medium'>Connections</p>
         </Link>
         <div className="absolute right-2 left-2">
-          <Button title="Search Connections" onClick={toggleIsShowInput} className="bg-transparent border-0 hover:bg-transparent absolute right-0">
-            {
-              !isShowInput ? (
-                <MagnifyingGlassIcon className="text-secondary-foreground" />
-              ) : (
-                <Cross2Icon className="h-4 w-4 text-secondary-foreground" />
-              )
-            }
-          </Button>
+          <AnimatePresence>
+            <Button variant={'ghost'} size={'icon'} title="Search Connections" onClick={toggleIsShowInput} className="bg-transparent border-0 hover:bg-transparent top-0.5 absolute right-0">
+              {
+                !isShowInput ? (
+                  <MagnifyingGlassIcon className="size-4" />
+                ) : (
+                  <Cross2Icon className="size-4" />
+                )
+              }
+            </Button>
+          </AnimatePresence>
           <Input
             className={`${isShowInput ? 'w-full bg-primary-foreground' : 'w-0 border-0 bg-transparent invisible'} border-2 focus:border-primary-foreground px-3 py-2 animate-all`}
             placeholder="Search connections..."

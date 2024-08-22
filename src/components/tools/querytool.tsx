@@ -214,32 +214,6 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
             </div>
           </div>
           <div className="flex gap-1 p-1">
-            <DropdownMenu>
-              <DropdownMenuTrigger disabled={outputData ? true : false}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <Button size={'icon'} variant={'ghost'}>
-                      <DownloadIcon className='size-4' />
-                      <p className="sr-only">Export</p>
-                    </Button>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <TooltipArrow />
-                    <p>Export output</p>
-                  </TooltipContent>
-                </Tooltip>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent className='mx-2'>
-                <DropdownMenuItem disabled={outputData === null ? true : false } onClick={handleExportCSV}>
-                  <FileCsv weight='fill' className='size-5 mr-2'/>
-                  <p className='text-xs'>Export to CSV</p>
-                </DropdownMenuItem>
-                <DropdownMenuItem disabled={outputData === null ? true : false } onClick={handleExportXLSX}>
-                  <MicrosoftExcelLogo weight='fill' className='size-5 mr-2' />
-                  <p className="text-xs">Export to Microsoft Excel</p>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
             <Tooltip>
               <TooltipTrigger>
                 <Button
@@ -262,6 +236,32 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
             </Tooltip>
           </div>
         </form>
+        <DropdownMenu>
+          <DropdownMenuTrigger disabled={outputData ? true : false}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button size={'icon'} variant={'ghost'}>
+                  <DownloadIcon className='size-4' />
+                  <p className="sr-only">Export</p>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <TooltipArrow />
+                <p>Export output</p>
+              </TooltipContent>
+            </Tooltip>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent className='mx-2'>
+            <DropdownMenuItem disabled={outputData === null ? true : false } onClick={handleExportCSV}>
+              <FileCsv weight='fill' className='size-5 mr-2'/>
+              <p className='text-xs'>Export to CSV</p>
+            </DropdownMenuItem>
+            <DropdownMenuItem disabled={outputData === null ? true : false } onClick={handleExportXLSX}>
+              <MicrosoftExcelLogo weight='fill' className='size-5 mr-2' />
+              <p className="text-xs">Export to Microsoft Excel</p>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
         <Tooltip>
           <TooltipTrigger asChild>
             <Button

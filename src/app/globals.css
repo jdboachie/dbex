@@ -91,6 +91,7 @@
   * {
     @apply border-border;
   }
+
   body {
     text-rendering: optimizeLegibility;
     @apply bg-ground text-foreground;
@@ -101,7 +102,7 @@
   }
 
   .animate-all {
-    @apply transition-all duration-200 ease-out
+    @apply transition-all duration-300 ease-out
   }
 
   .activehandle {
