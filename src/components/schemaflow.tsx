@@ -18,6 +18,10 @@ import { fetchConnectionById } from '@/lib/actions';
 import { runConnectionSpecificQuery } from '@/lib/pg';
 import { NumberCircleFour } from '@phosphor-icons/react';
 import LoadingUI from './loading-ui';
+import { Button } from './ui/button';
+import { Maximize2Icon, Minimize2Icon } from 'lucide-react';
+import { AnimatedState } from './experimental/animated-state';
+import { cn } from '@/lib/utils';
 
 const nodeTypes = {
   custom: CustomNode,
@@ -59,14 +63,13 @@ const Flow = ({id} : {id: string}) => {
   const [nodes, setNodes, onNodesChange] = useNodesState([]);
   const [edges, setEdges, onEdgesChange] = useEdgesState(initEdges);
   const [connections, setConnections] = React.useState<ConnectionType[]>();
-  const [queryResult, setQueryResult] = React.useState<any[]>([]);
+  const [maximized, setMaximized] = React.useState<boolean>(false);
 
   const onConnect = React.useCallback(
     (params: Edge | Connection) => setEdges((eds) => addEdge(params, eds)),
     [setEdges],
   );
 
-  const position = { x: 0, y: 0 };
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -125,7 +128,6 @@ const Flow = ({id} : {id: string}) => {
         });
 
         setNodes(newNodes as never[]);
-        setQueryResult(mergedResults);
       }
 
 
@@ -136,26 +138,37 @@ const Flow = ({id} : {id: string}) => {
 
 
   return (
-    <div className="h-[400px] border rounded-lg">
-      {nodes.length > 0 ?
-        <ReactFlow
-          nodes={nodes}
-          edges={edges}
-          onNodesChange={onNodesChange}
-          onEdgesChange={onEdgesChange}
-          onConnect={onConnect}
-          nodeTypes={nodeTypes}
-          fitView
-          className="bg-teal-50"
-        >
-          <MiniMap />
-          <Background />
-          <Controls />
-        </ReactFlow>
-        :
-        <LoadingUI />
-      }
-    </div>
+    <AnimatedState>
+      <div className={cn("h-[450px] border rounded-lg relative bg-background/50 backdrop-blur-sm", maximized  && 'fixed z-50 inset-0 h-screen w-screen p-20')}>
+        <div className={cn("bg-background size-full rounded-xl", maximized && 'shadow-2xl border-2')}>
+          {nodes.length > 0 ?
+            <ReactFlow
+              nodes={nodes}
+              edges={edges}
+              onNodesChange={onNodesChange}
+              onEdgesChange={onEdgesChange}
+              onConnect={onConnect}
+              nodeTypes={nodeTypes}
+              fitView
+              className={cn("", maximized && 'bg-background rounded-xl')}
+            >
+              <MiniMap />
+              <Background />
+              <Controls />
+            </ReactFlow>
+            :
+            <LoadingUI />
+          }
+        </div>
+        <div className="absolute top-2 right-2">
+          {maximized ?
+          <Button size={'icon'} variant={'destructive'} onClick={() => setMaximized(false)}><Maximize2Icon /></Button>
+          :
+          <Button size={'icon'} variant={'outline'} onClick={() => setMaximized(true)}><Minimize2Icon /></Button>
+          }
+        </div>
+      </div>
+    </AnimatedState>
   );
 };
 

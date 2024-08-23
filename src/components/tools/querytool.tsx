@@ -331,7 +331,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
                                   <div
                                     className='td text-start min-w-[10em] w-[10rem] max-w-[10rem] truncate whitespace-nowrap p-2'
                                   >
-                                    {row[col.name] instanceof Date ? row[col.name].toString() : row[col.name]}
+                                    {row[col.name] instanceof Date ? row[col.name].toString() : (row[col.name])}
                                   </div>
                                 </TooltipTrigger>
                                 {row[col.name] &&
