@@ -167,7 +167,7 @@ export const AnalyticsComponent = () => {
     );
 }
 
-export const FeedbakCard = () => {
+export const FeedbakCard = ({className}:{className?:string}) => {
 
     const FeedbackForm = z.object({
         email: z.string().email({
@@ -189,7 +189,7 @@ export const FeedbakCard = () => {
         SendMail(values.email, values.message)
     }
     return (
-        <Card className='shadow border grid col-span-3 lg:col-span-3 h-full dark:bg-custom-gradient bg-bottom  rounded-lg py-4 px-5 relative'>
+        <Card className={`{classsName} shadow border h-full dark:bg-custom-gradient bg-bottom  rounded-lg py-4 px-5 relative`}>
             <div className="flex justify-between flex-col gap-3">
                 <div className='flex gap-3 flex-col items-center justify-center'>
                     <div className="icon bg-secondary w-fit p-3 rounded-lg">
