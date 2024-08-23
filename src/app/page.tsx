@@ -81,6 +81,7 @@ export default async function Home() {
           <GroupImages src={'/jerry.jpg'} alt={'Jeremiah'} />
           <GroupImages src={'/agy.jpg'} alt={'Agyemang Ibiolat Owusu'}/>
           <GroupImages src={'/jude-boachie.jpg'} alt={'Jude Boachie'} />
+          <GroupImages src={'/eugenekofigyimah.jpg'} alt={'Eugene Kofi Gyimah'} />
         </div>
         <div className="col-span-5 p-10"> &copy; a groupthirteen project</div>
       </div>
