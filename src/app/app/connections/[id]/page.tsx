@@ -144,6 +144,7 @@ export default async function Page({ params }: { params: { id: string } }) {
                 icon={ZeroConfigIcon}
                 title='No queries on this database'
                 description="Click on the 'Query database' to run a query"
+                className='z-0'
               />
               }
           </AnimatedState>
