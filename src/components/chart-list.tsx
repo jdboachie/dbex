@@ -21,7 +21,7 @@ import {
 import { useState, useEffect } from "react"
 
 
-export const ChartComponent = async () => {
+export const ChartComponent = async ({className}:{className?:string}) => {
 
   interface typeAnalytics {
     queries: number,
@@ -57,7 +57,7 @@ export const ChartComponent = async () => {
   } satisfies ChartConfig
 
   return (
-    <Card className="shadow border grid col-span-3 h-full dark:bg-custom-gradient rounded-lg py-4 px-5 relative">
+    <Card className={`${className} shadow border grid h-full dark:bg-custom-gradient rounded-lg py-4 px-5 relative`}>
       <div className="items-center pb-0">
         <CardHeader className="items-center pb-0">
           <CardTitle>Figure of Operations</CardTitle>

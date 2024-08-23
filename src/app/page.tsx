@@ -73,10 +73,13 @@ export default async function Home() {
           <GroupImages src={'/elvisgyau.jpg'} alt={'Gyau Boahen Elvis'} />
           <GroupImages src={'/appiahemmanuel.webp'} alt={'Emmanuel Appiah Asiedu'} />
           <GroupImages src={'/akitaeyram.jpg'} alt={'Akita Eyram Priscilla'} />
-          <GroupImages src={'/david.jpg'} alt={'David Duah'} />
+          <GroupImages src={'/david.jpg'} alt={'David Duah Owusu-Boateng'} />
           <GroupImages src={'/niilartey.jpg'} alt={'Nii Lartey'} />
           <GroupImages src={'/dagaduharold.jpg'} alt={'Dagadu Harold Kekeli'} />
           <GroupImages src={'/sarkodie.jpg'} alt={'Emmanuel Sarkodie'} />
+          <GroupImages src={'/sammy.jpg'} alt={'Sammy'} />
+          <GroupImages src={'/jerry.jpg'} alt={'Jeremiah'} />
+          <GroupImages src={'/agy.jpg'} alt={'Agyemang Ibiolat Owusu'}/>
           <GroupImages src={'/jude-boachie.jpg'} alt={'Jude Boachie'} />
           <GroupImages src={'/eugenekofigyimah.jpg'} alt={'Eugene Kofi Gyimah'} />
         </div>
