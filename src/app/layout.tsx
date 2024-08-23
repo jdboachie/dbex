@@ -36,7 +36,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${sans.variable} ${geistMono.variable} antialiased font-sans tracking-tight text-muted-foreground`}>
+      <body className={`${sans.variable} ${geistMono.variable} scroll-smooth antialiased font-sans tracking-[-0.01em] text-muted-foreground`}>
         <Analytics/>
         <SpeedInsights/>
         <SessionProvider>

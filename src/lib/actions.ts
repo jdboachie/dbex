@@ -5,6 +5,32 @@ import { prisma } from "../lib/prisma";
 import { unstable_noStore as noStore } from "next/cache";
 import { Connection, User, Query } from "@prisma/client/edge";
 import bcryptjs from "bcryptjs";
+import { runConnectionSpecificQuery } from "@/lib/pg";
+
+
+// export const runSchemaQuery = async (
+//   connection_array:Connection[]
+// ) => {
+//   const getTableSchema = `SELECT table_schema, table_name, column_name, data_type
+//                         FROM
+//                           information_schema.columns
+//                         WHERE
+//                           table_schema = 'public'
+//                         ORDER BY
+//                           table_schema,
+//                           table_name,
+//                           ordinal_position;`;
+//   const resultsArray = await Promise.all(
+//     connection_array.map(async (connection) => {
+//       const response = await runConnectionSpecificQuery(
+//         connection,
+//         getTableSchema
+//       );
+//       return response.res ? response.res.rows : [];
+//     })
+//   );
+//   return resultsArray;
+// };
 
 // CREATE
 export const createConnection = async (data: any): Promise<Connection> => {
@@ -215,8 +241,11 @@ export const createUser = async ({
   }
 };
 
+
 export const hashPassword = async (password: string) => {
   const saltRound = 10;
   const hashPassword = await bcryptjs.hash(password, saltRound);
   return hashPassword;
 };
+
+
