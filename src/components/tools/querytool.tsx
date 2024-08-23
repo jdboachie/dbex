@@ -237,7 +237,7 @@ const QueryTool = ({data}: {data?: QueryWithConnection}) => {
           </div>
         </form>
         <DropdownMenu>
-          <DropdownMenuTrigger disabled={outputData ? true : false}>
+          <DropdownMenuTrigger>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Button size={'icon'} variant={'ghost'}>

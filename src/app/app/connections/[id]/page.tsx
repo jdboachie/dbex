@@ -11,6 +11,7 @@ import EmptyState from '@/components/closet/empty-state'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { runConnectionSpecificQuery } from '@/lib/pg'
 import NotFoundUI from '@/app/not-found'
+import Flow from '@/components/schemaflow'
 
 
 // interface Column {
@@ -112,7 +113,7 @@ export default async function Page({ params }: { params: { id: string } }) {
         </div>
         <div className="p-10 grid gap-4">
           <h5 className="text-base font-medium">Database Schemas</h5>
-          <p className="text-muted-foreground italic">coming soon...</p>
+          <Flow id={data.id} />
       </div>
         <div className="p-10 grid gap-4">
           <h5 className="text-base font-medium">Related queries</h5>
