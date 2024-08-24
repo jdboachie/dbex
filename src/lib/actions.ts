@@ -5,35 +5,21 @@ import { prisma } from "../lib/prisma";
 import { unstable_noStore as noStore } from "next/cache";
 import { Connection, User, Query } from "@prisma/client/edge";
 import bcryptjs from "bcryptjs";
-import { runConnectionSpecificQuery } from "@/lib/pg";
 
-
-// export const runSchemaQuery = async (
-//   connection_array:Connection[]
-// ) => {
-//   const getTableSchema = `SELECT table_schema, table_name, column_name, data_type
-//                         FROM
-//                           information_schema.columns
-//                         WHERE
-//                           table_schema = 'public'
-//                         ORDER BY
-//                           table_schema,
-//                           table_name,
-//                           ordinal_position;`;
-//   const resultsArray = await Promise.all(
-//     connection_array.map(async (connection) => {
-//       const response = await runConnectionSpecificQuery(
-//         connection,
-//         getTableSchema
-//       );
-//       return response.res ? response.res.rows : [];
-//     })
-//   );
-//   return resultsArray;
-// };
+interface ConnectionType {
+  userId: string,
+  username: string;
+  password: string;
+  hostname: string;
+  databaseName: string;
+  protocol: string;
+  port: number;
+  ssl: boolean;
+  isConnected: boolean;
+}
 
 // CREATE
-export const createConnection = async (data: any): Promise<Connection> => {
+export const createConnection = async (data: ConnectionType): Promise<Connection> => {
   return await prisma.connection.create({
     data: data,
   });
@@ -177,7 +163,6 @@ export const Analytics = async () => {
   return { queries, connection };
 };
 
-
 export const SendMail = async (email: string, message: string) => {
   const apiEndpoint = "/api/email";
 
@@ -234,18 +219,15 @@ export const createUser = async ({
       },
     });
     console.log("User created:", user);
-    return {sucess: true}
+    return { sucess: true };
   } catch (error) {
     console.error("Error creating user:", error);
-    return {sucess: false};
+    return { sucess: false };
   }
 };
-
 
 export const hashPassword = async (password: string) => {
   const saltRound = 10;
   const hashPassword = await bcryptjs.hash(password, saltRound);
   return hashPassword;
 };
-
-
