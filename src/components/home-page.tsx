@@ -277,7 +277,7 @@ export const RecentConnections = () => {
         databaseName: string;
         isConnected: boolean;
         ssl: boolean | null;
-        customName: string;
+        customName: string | null;
     }
 
     const [connections, setConnections] = useState<ConnectionTemplate[]>([]);
