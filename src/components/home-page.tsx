@@ -277,6 +277,7 @@ export const RecentConnections = () => {
         databaseName: string;
         isConnected: boolean;
         ssl: boolean | null;
+        customName: string;
     }
 
     const [connections, setConnections] = useState<ConnectionTemplate[]>([]);
@@ -297,7 +298,7 @@ export const RecentConnections = () => {
             return (
               <Link key={index} href={`/app/connections/${connection.id}`} className="bg-primary-foreground border flex w-full flex-row justify-between p-2 rounded-md relative hover:bg-secondary transition-all">
                 <div className="flex dark:text-secondary-foreground flex-col justify-center gap-1">
-                  <p>{connection.databaseName}</p>
+                  <p>{connection.customName}</p>
                   <p className="text-muted-foreground truncate text-xs font-mono">{connection.username}</p>
                 </div>
                 <div className="text-sm text-muted-foreground whitespace-nowrap absolute right-5">

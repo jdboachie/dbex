@@ -8,23 +8,29 @@ import bcryptjs from "bcryptjs";
 
 interface ConnectionType {
   userId: string,
-  username: string;
-  password: string;
-  hostname: string;
-  databaseName: string;
-  protocol: string;
-  port: number;
-  ssl: boolean;
-  isConnected: boolean;
+  username: string,
+  password: string,
+  hostname: string,
+  databaseName: string,
+  protocol: string,
+  port: number,
+  ssl: boolean,
+  isConnected: boolean,
+  customName: string
 }
 
 // CREATE
 export const createConnection = async (data: ConnectionType): Promise<Connection> => {
   return await prisma.connection.create({
-    data: data,
+    data: data
   });
 };
 
+export const encryptConnection = async(data:ConnectionType)=>{
+  const saltRound = 10;
+  data.password = await bcryptjs.hash(data.password, saltRound);
+  return data;
+}
 export const createQuery = async (id: string, data: any): Promise<Query> => {
   return await prisma.query.upsert({
     where: { id: id },
