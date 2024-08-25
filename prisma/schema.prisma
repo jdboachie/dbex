@@ -14,15 +14,14 @@ model Account {
   type              String
   provider          String
   providerAccountId String  @map("provider_account_id")
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? @db.Text
+  id_token          String?
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")
@@ -43,12 +42,12 @@ model User {
   name          String?
   email         String?      @unique
   emailVerified DateTime?    @map("email_verified")
-  password      String?
   image         String?
+  password      String?
   accounts      Account[]
-  sessions      Session[]
-  queries       Query[]
   connections   Connection[]
+  queries       Query[]
+  sessions      Session[]
 
   @@map("users")
 }
@@ -71,27 +70,27 @@ model Connection {
   port           Int
   protocol       String
   databaseName   String
+  customName     String?
   isConnected    Boolean  @default(true)
   ssl            Boolean? @default(false)
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   relatedQueries Query[]
 
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
-
+  @@index([id])
   @@map("connections")
 }
 
 model Query {
-  id           String   @id @default(cuid())
-  userId       String   @map("user_id")
-  connectionId String   @map("connection_id")
-  name         String   @db.VarChar(255)
-  content      String?  @db.Text
-  emojiUrl     String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @default(now())
-
-  user              User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String     @id @default(cuid())
+  userId            String     @map("user_id")
+  createdAt         DateTime   @default(now())
+  updatedAt         DateTime   @default(now())
+  connectionId      String     @map("connection_id")
+  content           String?
+  emojiUrl          String?
+  name              String     @db.VarChar(255)
   relatedConnection Connection @relation(fields: [connectionId], references: [id], onDelete: Cascade)
+  user              User       @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("queries")
 }
