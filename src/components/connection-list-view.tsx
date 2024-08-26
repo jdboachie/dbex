@@ -64,6 +64,7 @@ import { AnimatePresence } from "framer-motion"
 
 const ConnectionStringFormSchema = z.object({
   connectionString: z.string().min(1, { message: "Connection string is required." }),
+  customName: z.string().min(1, { message: "Custom name is required." }),
 })
 
 const ConnectionsListView = () => {
@@ -108,6 +109,7 @@ const ConnectionsListView = () => {
             port: credentials.port,
             ssl: credentials.ssl,
             isConnected: true,
+            customName: data.customName
           })
             .then((res) => {
               setConnections([res, ...connections]);
@@ -223,6 +225,21 @@ const ConnectionsListView = () => {
                               <FormControl>
                                 <Input spellCheck={false} {...field} />
                               </FormControl>
+
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          control={form.control}
+                          name="customName"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Custom Database Name</FormLabel>
+                              <FormControl>
+                                <Input spellCheck={false} {...field} />
+                              </FormControl>
+                              
                               <FormMessage />
                             </FormItem>
                           )}
@@ -258,7 +275,7 @@ const ConnectionsListView = () => {
                   <PostgresAltIcon className="size-10" />
                   <div className="grid grid-flow-row w-full gap-1 items-center justify-start">
                     <div className="items-center grid grid-cols-2">
-                      <p className="text-start truncate text-sm font-medium">{connection.databaseName}</p>
+                      <p className="text-start truncate text-sm font-medium">{connection.customName}</p>
                       <div className="grid justify-end">
                         <DropdownMenu>
                           <DropdownMenuTrigger className="rounded-md absolute top-2 right-2 p-1 hover:bg-secondary">

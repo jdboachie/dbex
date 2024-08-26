@@ -35,6 +35,7 @@ interface connection {
   databaseName: string;
   isConnected: boolean;
   ssl: boolean | null;
+  customName: string | null;
 }
 
 const initEdges = [
