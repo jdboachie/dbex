@@ -10,7 +10,7 @@ export const GroupImages = ({ src, alt }: { src: string, alt: string }) => {
                 className="aspect-square border grayscale hover:shadow-lg rounded-lg hover:grayscale-0 duration-1000 ease-out transition-all"
             />
             <div className="p-2">
-                <p className="text-base text-primary font-medium">{alt}</p>
+                <p className="text-base text-center text-primary font-medium">{alt}</p>
             </div>
         </div>
     )
